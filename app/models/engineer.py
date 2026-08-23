@@ -27,7 +27,38 @@ class Engineer(Base):
     )
 
     # Phase 2A - local authentication
-    password_hash = Column(String(255), nullable=True)
-    password_set_at = Column(DateTime, nullable=True)
-    must_set_password = Column(Boolean, nullable=False, default=True)
-    last_login_at = Column(DateTime, nullable=True)
+
+    password_hash = Column(
+    String(255),
+    nullable=True,
+)
+
+    password_set_at = Column(
+    DateTime,
+    nullable=True,
+)
+
+    must_set_password = Column(
+    Boolean,
+    nullable=False,
+    default=True,
+)
+
+    last_login_at = Column(
+    DateTime,
+    nullable=True,
+)
+
+# Phase 2B - forgot password
+
+    password_reset_token = Column(
+    String(255),
+    nullable=True,
+    unique=True,
+    index=True,
+)
+
+    password_reset_expires_at = Column(
+    DateTime,
+    nullable=True,
+)

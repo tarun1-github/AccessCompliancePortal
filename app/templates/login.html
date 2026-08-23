@@ -3,276 +3,338 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>
-        Access Compliance Portal - Login
-    </title>
+<title>
+    Access Compliance Portal - Login
+</title>
 
-    <style>
 
-        * {
-            box-sizing: border-box;
-        }
+<style>
 
-        body {
-            margin: 0;
+* {
+    box-sizing: border-box;
+}
 
-            min-height: 100vh;
 
-            font-family:
-                "Segoe UI",
-                Arial,
-                sans-serif;
+body {
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #0f172a,
-                    #1e3a8a
-                );
+    margin: 0;
 
-            display: flex;
+    min-height: 100vh;
 
-            align-items: center;
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
 
-            justify-content: center;
-        }
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e3a8a
+        );
 
+    display: flex;
 
-        .login-container {
-            width: 100%;
+    align-items: center;
 
-            max-width: 430px;
+    justify-content: center;
+}
 
-            padding: 20px;
-        }
 
+.login-container {
 
-        .login-card {
-            background: white;
+    width: 100%;
 
-            border-radius: 14px;
+    max-width: 430px;
 
-            padding: 35px;
+    padding: 20px;
+}
 
-            box-shadow:
-                0 20px 50px
-                rgba(0, 0, 0, 0.25);
-        }
 
+.login-card {
 
-        .logo-area {
-            text-align: center;
+    background: white;
 
-            margin-bottom: 25px;
-        }
+    border-radius: 14px;
 
+    padding: 35px;
 
-        .logo {
-            width: 70px;
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.25);
+}
 
-            height: 70px;
 
-            margin: auto;
+.logo-area {
 
-            border-radius: 50%;
+    text-align: center;
 
-            background: #2563eb;
+    margin-bottom: 25px;
+}
 
-            color: white;
 
-            display: flex;
+.logo {
 
-            align-items: center;
+    width: 70px;
 
-            justify-content: center;
+    height: 70px;
 
-            font-size: 28px;
+    margin: auto;
 
-            font-weight: bold;
-        }
+    border-radius: 50%;
 
+    background: #2563eb;
 
-        h1 {
-            margin: 15px 0 5px;
+    color: white;
 
-            font-size: 24px;
+    display: flex;
 
-            color: #111827;
+    align-items: center;
 
-            text-align: center;
-        }
+    justify-content: center;
 
+    font-size: 28px;
 
-        .subtitle {
-            text-align: center;
+    font-weight: bold;
+}
 
-            color: #6b7280;
 
-            font-size: 14px;
+h1 {
 
-            margin-bottom: 25px;
-        }
+    margin: 15px 0 5px;
 
+    font-size: 24px;
 
-        label {
-            display: block;
+    color: #111827;
 
-            font-size: 14px;
+    text-align: center;
+}
 
-            font-weight: 600;
 
-            color: #374151;
+.subtitle {
 
-            margin-bottom: 7px;
-        }
+    text-align: center;
 
+    color: #6b7280;
 
-        input {
-            width: 100%;
+    font-size: 14px;
 
-            padding: 12px 14px;
+    margin-bottom: 25px;
+}
 
-            border: 1px solid #d1d5db;
 
-            border-radius: 8px;
+label {
 
-            font-size: 15px;
+    display: block;
 
-            outline: none;
+    font-size: 14px;
 
-            margin-bottom: 18px;
-        }
+    font-weight: 600;
 
+    color: #374151;
 
-        input:focus {
-            border-color: #2563eb;
+    margin-bottom: 7px;
+}
 
-            box-shadow:
-                0 0 0 3px
-                rgba(37, 99, 235, 0.12);
-        }
 
+input {
 
-        .login-button {
-            width: 100%;
+    width: 100%;
 
-            border: none;
+    padding: 12px 14px;
 
-            border-radius: 8px;
+    border:
+        1px solid #d1d5db;
 
-            padding: 13px;
+    border-radius: 8px;
 
-            background: #2563eb;
+    font-size: 15px;
 
-            color: white;
+    outline: none;
 
-            font-size: 16px;
+    margin-bottom: 18px;
+}
 
-            font-weight: 600;
 
-            cursor: pointer;
-        }
+input:focus {
 
+    border-color: #2563eb;
 
-        .login-button:hover {
-            background: #1d4ed8;
-        }
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            37,
+            99,
+            235,
+            0.12
+        );
+}
 
 
-        .error {
-            background: #fee2e2;
+.login-button {
 
-            border: 1px solid #fecaca;
+    width: 100%;
 
-            color: #b91c1c;
+    border: none;
 
-            padding: 12px;
+    border-radius: 8px;
 
-            border-radius: 8px;
+    padding: 13px;
 
-            margin-bottom: 18px;
+    background: #2563eb;
 
-            font-size: 14px;
-        }
+    color: white;
 
+    font-size: 16px;
 
-        .first-time-box {
-            margin-top: 10px;
+    font-weight: 600;
 
-            padding: 20px;
+    cursor: pointer;
+}
 
-            border-radius: 10px;
 
-            background: #eff6ff;
+.login-button:hover {
 
-            border: 1px solid #bfdbfe;
+    background: #1d4ed8;
+}
 
-            text-align: center;
-        }
 
+.error {
 
-        .first-time-box h2 {
-            margin: 0 0 10px;
+    background: #fee2e2;
 
-            color: #1e3a8a;
+    border:
+        1px solid #fecaca;
 
-            font-size: 20px;
-        }
+    color: #b91c1c;
 
+    padding: 12px;
 
-        .first-time-box p {
-            margin: 0 0 16px;
+    border-radius: 8px;
 
-            color: #1e40af;
+    margin-bottom: 18px;
 
-            font-size: 14px;
+    font-size: 14px;
+}
 
-            line-height: 1.5;
-        }
 
+.success {
 
-        .setup-button {
-            display: inline-block;
+    background: #dcfce7;
 
-            padding: 11px 20px;
+    border:
+        1px solid #86efac;
 
-            background: #059669;
+    color: #166534;
 
-            color: white;
+    padding: 12px;
 
-            text-decoration: none;
+    border-radius: 8px;
 
-            border-radius: 7px;
+    margin-bottom: 18px;
 
-            font-weight: 600;
+    font-size: 14px;
 
-            font-size: 14px;
-        }
+    text-align: center;
+}
 
 
-        .setup-button:hover {
-            background: #047857;
-        }
+.first-time-box {
 
+    margin-top: 20px;
 
-        .footer {
-            text-align: center;
+    padding: 16px;
 
-            color: #9ca3af;
+    border-radius: 9px;
 
-            font-size: 12px;
+    background: #eff6ff;
 
-            margin-top: 22px;
-        }
+    border:
+        1px solid #bfdbfe;
 
-    </style>
+    text-align: center;
+}
+
+
+.first-time-box p {
+
+    margin: 0 0 12px;
+
+    color: #1e40af;
+
+    font-size: 14px;
+}
+
+
+.setup-button {
+
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    background: #059669;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 7px;
+
+    font-weight: 600;
+
+    font-size: 14px;
+}
+
+
+.setup-button:hover {
+
+    background: #047857;
+}
+
+
+.forgot-password {
+
+    display: block;
+
+    text-align: center;
+
+    margin-top: 17px;
+
+    color: #2563eb;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.forgot-password:hover {
+
+    text-decoration: underline;
+}
+
+
+.footer {
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+
+    margin-top: 22px;
+}
+
+</style>
 
 </head>
 
@@ -282,145 +344,181 @@
 
 <div class="login-container">
 
-    <div class="login-card">
+
+<div class="login-card">
 
 
-        <div class="logo-area">
-
-            <div class="logo">
-                AC
-            </div>
+<div class="logo-area">
 
 
-            <h1>
-                Access Compliance Portal
-            </h1>
+<div class="logo">
+    AC
+</div>
 
 
-            <div class="subtitle">
-                CMS BOA EV Access Verification
-            </div>
-
-        </div>
+<h1>
+    Access Compliance Portal
+</h1>
 
 
-        {% if error %}
-
-        <div class="error">
-
-            {{ error }}
-
-        </div>
-
-        {% endif %}
+<div class="subtitle">
+    CMS BOA EV Access Verification
+</div>
 
 
-        {% if first_time %}
-
-        <!-- =================================================
-             FIRST-TIME USER
-             ================================================= -->
-
-        <div class="first-time-box">
-
-            <h2>
-                Welcome {{ engineer_name }}
-            </h2>
-
-            <p>
-
-                This is your first login.
-
-                <br>
-
-                Please create your password
-                to continue to the portal.
-
-            </p>
+</div>
 
 
-            <a
-                class="setup-button"
-                href="/set-password?token={{ setup_token }}"
-            >
+<!-- ======================================================
+     RESET SUCCESS MESSAGE
+     ====================================================== -->
 
-                Set My Password
+{% if request.query_params.get("reset") == "success" %}
 
-            </a>
+<div class="success">
 
-        </div>
+    Your password has been reset successfully.
 
+    <br>
 
-        {% else %}
+    Please login using your new password.
 
-        <!-- =================================================
-             NORMAL LOGIN
-             ================================================= -->
+</div>
 
-        <form
-            method="post"
-            action="/login"
-        >
+{% endif %}
 
 
-            <label for="username">
+<!-- ======================================================
+     ERROR
+     ====================================================== -->
 
-                Username / Alias
+{% if error %}
 
-            </label>
+<div class="error">
 
+    {{ error }}
 
-            <input
-                type="text"
-                id="username"
-                name="username"
-                value="{{ username or '' }}"
-                placeholder="Enter your alias"
-                autocomplete="username"
-                required
-            >
+</div>
+
+{% endif %}
 
 
-            <label for="password">
+<!-- ======================================================
+     LOGIN FORM
+     ====================================================== -->
 
-                Password
-
-            </label>
-
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                autocomplete="current-password"
-                required
-            >
+<form
+    method="post"
+    action="/login"
+>
 
 
-            <button
-                type="submit"
-                class="login-button"
-            >
+<label for="username">
 
-                Login
+    Username / Alias
 
-            </button>
+</label>
 
 
-        </form>
+<input
+    type="text"
+    id="username"
+    name="username"
+    value="{{ username or '' }}"
+    placeholder="Enter your alias"
+    autocomplete="username"
+    required
+>
 
-        {% endif %}
+
+<label for="password">
+
+    Password
+
+</label>
 
 
-        <div class="footer">
+<input
+    type="password"
+    id="password"
+    name="password"
+    placeholder="Enter your password"
+    autocomplete="current-password"
+    required
+>
 
-            CMS BOA EV Access Compliance Portal
 
-        </div>
+<button
+    type="submit"
+    class="login-button"
+>
+
+    Login
+
+</button>
 
 
-    </div>
+</form>
+
+
+<!-- ======================================================
+     FORGOT PASSWORD
+     ====================================================== -->
+
+<a
+    class="forgot-password"
+    href="/forgot-password"
+>
+
+    Forgot Password?
+
+</a>
+
+
+<!-- ======================================================
+     FIRST TIME USER
+     ====================================================== -->
+
+{% if first_time and setup_token %}
+
+<div class="first-time-box">
+
+
+<p>
+
+    This is your first login.
+
+    <br>
+
+    Please set your password before
+    accessing the portal.
+
+</p>
+
+
+<a
+    class="setup-button"
+    href="/set-password?token={{ setup_token }}"
+>
+
+    Set My Password
+
+</a>
+
+
+</div>
+
+{% endif %}
+
+
+<div class="footer">
+
+    CMS BOA EV Access Compliance Portal
+
+</div>
+
+
+</div>
 
 </div>
 

@@ -8,21 +8,36 @@ from fastapi import (
     Response,
 )
 
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import (
+    HTMLResponse,
+    RedirectResponse,
+)
+
+from fastapi.templating import (
+    Jinja2Templates,
+)
+
 from sqlalchemy.orm import Session
 
 from app.auth import (
     clear_session,
+    create_password_reset_token,
     create_session,
-    refresh_session,
     get_current_engineer,
     hash_password,
+    password_reset_expiry,
+    refresh_session,
     verify_password,
 )
+
 from app.database import get_db
+
 from app.models.engineer import Engineer
 
+
+# ============================================================
+# ROUTER / TEMPLATES
+# ============================================================
 
 router = APIRouter()
 
@@ -42,28 +57,26 @@ templates = Jinja2Templates(
 def login_page(
     request: Request,
 ):
+
+    reset_success = (
+        request.query_params.get("reset")
+        == "success"
+    )
+
     return templates.TemplateResponse(
         request=request,
         name="login.html",
         context={
             "request": request,
-            "first_time": False,
+
+            "reset_success":
+                reset_success,
         },
     )
 
 
 # ============================================================
 # LOGIN
-#
-# EXISTING USER
-# ----------------
-# Alias + Password
-#
-# FIRST-TIME USER
-# ----------------
-# Alias only
-# System detects password_hash is NULL
-# User gets Set My Password option
 # ============================================================
 
 @router.post(
@@ -75,19 +88,14 @@ def login(
 
     username: str = Form(...),
 
-    # IMPORTANT:
-    # Password is optional because a first-time
-    # user does not have a password yet.
-    password: str = Form(""),
+    password: str = Form(...),
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 ):
 
     alias = username.strip().lower()
-
-    # --------------------------------------------------------
-    # FIND ENGINEER
-    # --------------------------------------------------------
 
     engineer = (
         db.query(Engineer)
@@ -98,9 +106,10 @@ def login(
         .first()
     )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # USER NOT FOUND
-    # --------------------------------------------------------
+    # ========================================================
 
     if engineer is None:
 
@@ -109,31 +118,33 @@ def login(
             name="login.html",
             context={
                 "request": request,
-                "error": "Invalid username or password.",
-                "username": username,
-                "first_time": False,
+
+                "error":
+                    "Invalid username or password.",
+
+                "username":
+                    username,
             },
+
             status_code=401,
         )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # FIRST-TIME USER
     #
-    # password_hash = NULL
-    # OR
-    # must_set_password = True
+    # Password has not been configured yet.
     #
-    # Do NOT ask them for a password.
-    # --------------------------------------------------------
+    # The existing verification_token is used for the
+    # initial password setup.
+    # ========================================================
 
     if (
         not engineer.password_hash
-        or bool(engineer.must_set_password)
+        or bool(
+            engineer.must_set_password
+        )
     ):
-
-        # ----------------------------------------------------
-        # Password setup requires a setup token.
-        # ----------------------------------------------------
 
         if not engineer.verification_token:
 
@@ -142,57 +153,49 @@ def login(
                 name="login.html",
                 context={
                     "request": request,
+
                     "error": (
-                        "Your account is ready for password "
-                        "setup, but the setup token is missing. "
-                        "Please contact the portal administrator."
+                        "Password setup is not available "
+                        "for this account. Please contact "
+                        "the portal administrator."
                     ),
-                    "username": username,
-                    "first_time": False,
+
+                    "username":
+                        username,
                 },
+
                 status_code=403,
             )
 
-        # ----------------------------------------------------
-        # SHOW FIRST-TIME SETUP OPTION
-        # ----------------------------------------------------
 
         return templates.TemplateResponse(
             request=request,
             name="login.html",
             context={
                 "request": request,
-                "username": username,
-                "engineer_name": engineer.name,
-                "first_time": True,
-                "setup_token": engineer.verification_token,
+
+                "error": (
+                    "This is your first login. "
+                    "Please set your password first."
+                ),
+
+                "username":
+                    username,
+
+                "first_time":
+                    True,
+
+                "setup_token":
+                    engineer.verification_token,
             },
+
             status_code=200,
         )
 
-    # --------------------------------------------------------
-    # EXISTING USER
-    #
-    # Password is required.
-    # --------------------------------------------------------
 
-    if not password:
-
-        return templates.TemplateResponse(
-            request=request,
-            name="login.html",
-            context={
-                "request": request,
-                "error": "Please enter your password.",
-                "username": username,
-                "first_time": False,
-            },
-            status_code=400,
-        )
-
-    # --------------------------------------------------------
-    # VERIFY PASSWORD
-    # --------------------------------------------------------
+    # ========================================================
+    # NORMAL PASSWORD AUTHENTICATION
+    # ========================================================
 
     if not verify_password(
         password,
@@ -204,24 +207,33 @@ def login(
             name="login.html",
             context={
                 "request": request,
-                "error": "Invalid username or password.",
-                "username": username,
-                "first_time": False,
+
+                "error":
+                    "Invalid username or password.",
+
+                "username":
+                    username,
             },
+
             status_code=401,
         )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # UPDATE LAST LOGIN
-    # --------------------------------------------------------
+    # ========================================================
 
     engineer.last_login_at = datetime.utcnow()
 
     db.commit()
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # CREATE SESSION
-    # --------------------------------------------------------
+    #
+    # Session is initially valid for 1 hour.
+    # Browser refreshes it every 5 minutes.
+    # ========================================================
 
     response = RedirectResponse(
         url=f"/{engineer.alias}",
@@ -242,6 +254,8 @@ def login(
 # URL:
 #
 # /set-password?token=<verification_token>
+#
+# This is only for first-time users.
 # ============================================================
 
 @router.get(
@@ -253,14 +267,17 @@ def set_password_page(
 
     token: str = "",
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 ):
 
     token = token.strip()
 
-    # --------------------------------------------------------
-    # TOKEN REQUIRED
-    # --------------------------------------------------------
+
+    # ========================================================
+    # TOKEN MISSING
+    # ========================================================
 
     if not token:
 
@@ -269,29 +286,31 @@ def set_password_page(
             name="set_password.html",
             context={
                 "request": request,
-                "error": (
-                    "Password setup link is missing."
-                ),
+
+                "error":
+                    "Password setup link is missing.",
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
-    # FIND ENGINEER USING TOKEN
-    # --------------------------------------------------------
+
+    # ========================================================
+    # FIND ENGINEER
+    # ========================================================
 
     engineer = (
         db.query(Engineer)
         .filter(
-            Engineer.verification_token == token,
-            Engineer.active == True,
+            Engineer.verification_token
+            == token,
+
+            Engineer.active
+            == True,
         )
         .first()
     )
 
-    # --------------------------------------------------------
-    # INVALID TOKEN
-    # --------------------------------------------------------
 
     if engineer is None:
 
@@ -300,17 +319,20 @@ def set_password_page(
             name="set_password.html",
             context={
                 "request": request,
+
                 "error": (
                     "This password setup link is "
                     "invalid or has already been used."
                 ),
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # PASSWORD ALREADY SET
-    # --------------------------------------------------------
+    # ========================================================
 
     if engineer.password_hash:
 
@@ -319,26 +341,33 @@ def set_password_page(
             name="set_password.html",
             context={
                 "request": request,
+
                 "error": (
-                    "A password has already been configured "
-                    "for this account. Please use the normal "
-                    "login page."
+                    "A password has already been "
+                    "configured for this account. "
+                    "Please use the normal login."
                 ),
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
-    # DISPLAY SET PASSWORD PAGE
-    # --------------------------------------------------------
+
+    # ========================================================
+    # DISPLAY PASSWORD SETUP PAGE
+    # ========================================================
 
     return templates.TemplateResponse(
         request=request,
         name="set_password.html",
         context={
             "request": request,
-            "engineer": engineer,
-            "token": token,
+
+            "engineer":
+                engineer,
+
+            "token":
+                token,
         },
     )
 
@@ -360,23 +389,30 @@ def set_password(
 
     confirm_password: str = Form(...),
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 ):
 
     token = token.strip()
 
-    # --------------------------------------------------------
-    # VALIDATE TOKEN
-    # --------------------------------------------------------
+
+    # ========================================================
+    # FIND ENGINEER
+    # ========================================================
 
     engineer = (
         db.query(Engineer)
         .filter(
-            Engineer.verification_token == token,
-            Engineer.active == True,
+            Engineer.verification_token
+            == token,
+
+            Engineer.active
+            == True,
         )
         .first()
     )
+
 
     if engineer is None:
 
@@ -385,17 +421,20 @@ def set_password(
             name="set_password.html",
             context={
                 "request": request,
+
                 "error": (
                     "This password setup link is "
                     "invalid or has already been used."
                 ),
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # PASSWORD ALREADY SET
-    # --------------------------------------------------------
+    # ========================================================
 
     if engineer.password_hash:
 
@@ -404,16 +443,18 @@ def set_password(
             name="set_password.html",
             context={
                 "request": request,
-                "error": (
-                    "Password has already been configured."
-                ),
+
+                "error":
+                    "Password has already been configured.",
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # PASSWORD LENGTH
-    # --------------------------------------------------------
+    # ========================================================
 
     if len(new_password) < 8:
 
@@ -422,18 +463,26 @@ def set_password(
             name="set_password.html",
             context={
                 "request": request,
-                "engineer": engineer,
-                "token": token,
+
+                "engineer":
+                    engineer,
+
+                "token":
+                    token,
+
                 "error": (
-                    "Password must be at least 8 characters."
+                    "Password must be at least "
+                    "8 characters."
                 ),
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # PASSWORD MATCH
-    # --------------------------------------------------------
+    # ========================================================
 
     if new_password != confirm_password:
 
@@ -442,38 +491,53 @@ def set_password(
             name="set_password.html",
             context={
                 "request": request,
-                "engineer": engineer,
-                "token": token,
-                "error": "Passwords do not match.",
+
+                "engineer":
+                    engineer,
+
+                "token":
+                    token,
+
+                "error":
+                    "Passwords do not match.",
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
-    # SAVE PASSWORD
-    # --------------------------------------------------------
 
-    engineer.password_hash = hash_password(
-        new_password
+    # ========================================================
+    # SAVE PASSWORD
+    # ========================================================
+
+    engineer.password_hash = (
+        hash_password(new_password)
     )
 
-    engineer.password_set_at = datetime.utcnow()
+    engineer.password_set_at = (
+        datetime.utcnow()
+    )
 
     engineer.must_set_password = False
 
-    # --------------------------------------------------------
-    # CONSUME ONE-TIME TOKEN
-    # --------------------------------------------------------
+
+    # ========================================================
+    # CONSUME INITIAL TOKEN
+    # ========================================================
 
     engineer.verification_token = None
 
-    engineer.last_login_at = datetime.utcnow()
+    engineer.last_login_at = (
+        datetime.utcnow()
+    )
+
 
     db.commit()
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # AUTOMATIC LOGIN
-    # --------------------------------------------------------
+    # ========================================================
 
     response = RedirectResponse(
         url=f"/{engineer.alias}",
@@ -490,6 +554,9 @@ def set_password(
 
 # ============================================================
 # CHANGE PASSWORD PAGE
+#
+# Authenticated users can change their password whenever
+# they want.
 # ============================================================
 
 @router.get(
@@ -509,7 +576,9 @@ def change_password_page(
         name="change_password.html",
         context={
             "request": request,
-            "engineer": current,
+
+            "engineer":
+                current,
         },
     )
 
@@ -535,12 +604,14 @@ def change_password(
         get_current_engineer
     ),
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 ):
 
-    # --------------------------------------------------------
+    # ========================================================
     # CURRENT PASSWORD
-    # --------------------------------------------------------
+    # ========================================================
 
     if not verify_password(
         current_password,
@@ -552,17 +623,21 @@ def change_password(
             name="change_password.html",
             context={
                 "request": request,
-                "engineer": current,
-                "error": (
-                    "Current password is incorrect."
-                ),
+
+                "engineer":
+                    current,
+
+                "error":
+                    "Current password is incorrect.",
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # NEW PASSWORD LENGTH
-    # --------------------------------------------------------
+    # ========================================================
 
     if len(new_password) < 8:
 
@@ -571,18 +646,23 @@ def change_password(
             name="change_password.html",
             context={
                 "request": request,
-                "engineer": current,
+
+                "engineer":
+                    current,
+
                 "error": (
                     "New password must be at least "
                     "8 characters."
                 ),
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
-    # NEW PASSWORD MATCH
-    # --------------------------------------------------------
+
+    # ========================================================
+    # PASSWORD MATCH
+    # ========================================================
 
     if new_password != confirm_password:
 
@@ -591,31 +671,48 @@ def change_password(
             name="change_password.html",
             context={
                 "request": request,
-                "engineer": current,
-                "error": (
-                    "New passwords do not match."
-                ),
+
+                "engineer":
+                    current,
+
+                "error":
+                    "New passwords do not match.",
             },
+
             status_code=400,
         )
 
-    # --------------------------------------------------------
-    # SAVE NEW PASSWORD
-    # --------------------------------------------------------
 
-    current.password_hash = hash_password(
-        new_password
+    # ========================================================
+    # SAVE NEW PASSWORD
+    # ========================================================
+
+    current.password_hash = (
+        hash_password(new_password)
     )
 
-    current.password_set_at = datetime.utcnow()
+    current.password_set_at = (
+        datetime.utcnow()
+    )
 
     current.must_set_password = False
 
+
+    # ========================================================
+    # INVALIDATE EXISTING RESET REQUEST
+    # ========================================================
+
+    current.password_reset_token = None
+
+    current.password_reset_expires_at = None
+
+
     db.commit()
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # CREATE FRESH SESSION
-    # --------------------------------------------------------
+    # ========================================================
 
     response = RedirectResponse(
         url=f"/{current.alias}",
@@ -631,9 +728,366 @@ def change_password(
 
 
 # ============================================================
+# FORGOT PASSWORD PAGE
+# ============================================================
+
+@router.get(
+    "/forgot-password",
+    response_class=HTMLResponse,
+)
+def forgot_password_page(
+    request: Request,
+):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="forgot_password.html",
+        context={
+            "request": request,
+        },
+    )
+
+
+# ============================================================
+# FORGOT PASSWORD
+#
+# LAB FLOW:
+#
+# 1. User enters alias.
+# 2. Internal reset token is generated.
+# 3. Token is NOT displayed.
+# 4. Same page displays the new-password form.
+#
+# No reset_password.html is required.
+# ============================================================
+
+@router.post(
+    "/forgot-password",
+    response_class=HTMLResponse,
+)
+def forgot_password(
+    request: Request,
+
+    username: str = Form(...),
+
+    db: Session = Depends(
+        get_db
+    ),
+):
+
+    alias = username.strip().lower()
+
+
+    # ========================================================
+    # FIND ENGINEER
+    # ========================================================
+
+    engineer = (
+        db.query(Engineer)
+        .filter(
+            Engineer.alias == alias,
+
+            Engineer.active
+            == True,
+        )
+        .first()
+    )
+
+
+    # ========================================================
+    # UNKNOWN ACCOUNT
+    #
+    # Don't reveal whether an account exists.
+    # ========================================================
+
+    if engineer is None:
+
+        return templates.TemplateResponse(
+            request=request,
+            name="forgot_password.html",
+            context={
+                "request": request,
+
+                "message": (
+                    "If the account exists, "
+                    "a password reset option "
+                    "will be available."
+                ),
+            },
+        )
+
+
+    # ========================================================
+    # GENERATE INTERNAL RESET TOKEN
+    # ========================================================
+
+    token = (
+        create_password_reset_token()
+    )
+
+    engineer.password_reset_token = token
+
+    engineer.password_reset_expires_at = (
+        password_reset_expiry()
+    )
+
+
+    db.commit()
+
+
+    # ========================================================
+    # SHOW PASSWORD FORM DIRECTLY
+    #
+    # IMPORTANT:
+    #
+    # The token is passed internally to the template.
+    # It is NOT displayed to the user.
+    # ========================================================
+
+    return templates.TemplateResponse(
+        request=request,
+        name="forgot_password.html",
+        context={
+            "request": request,
+
+            "engineer":
+                engineer,
+
+            "username":
+                engineer.alias,
+
+            "reset_ready":
+                True,
+
+            "reset_token":
+                token,
+
+            "expires_minutes":
+                15,
+        },
+    )
+
+
+# ============================================================
+# RESET PASSWORD
+#
+# IMPORTANT:
+#
+# There is NO GET /reset-password page anymore.
+#
+# The user sets the password directly on the
+# forgot_password.html page.
+# ============================================================
+
+@router.post(
+    "/reset-password",
+    response_class=HTMLResponse,
+)
+def reset_password(
+    request: Request,
+
+    token: str = Form(...),
+
+    new_password: str = Form(...),
+
+    confirm_password: str = Form(...),
+
+    db: Session = Depends(
+        get_db
+    ),
+):
+
+    token = token.strip()
+
+
+    # ========================================================
+    # FIND ENGINEER USING RESET TOKEN
+    # ========================================================
+
+    engineer = (
+        db.query(Engineer)
+        .filter(
+            Engineer.password_reset_token
+            == token,
+
+            Engineer.active
+            == True,
+        )
+        .first()
+    )
+
+
+    # ========================================================
+    # INVALID TOKEN
+    # ========================================================
+
+    if engineer is None:
+
+        return templates.TemplateResponse(
+            request=request,
+            name="forgot_password.html",
+            context={
+                "request": request,
+
+                "error": (
+                    "This password reset request "
+                    "is invalid or has already been used."
+                ),
+            },
+
+            status_code=400,
+        )
+
+
+    # ========================================================
+    # CHECK TOKEN EXPIRY
+    # ========================================================
+
+    if (
+        not engineer.password_reset_expires_at
+        or
+        engineer.password_reset_expires_at
+        < datetime.utcnow()
+    ):
+
+        return templates.TemplateResponse(
+            request=request,
+            name="forgot_password.html",
+            context={
+                "request": request,
+
+                "error": (
+                    "This password reset request "
+                    "has expired. Please start again."
+                ),
+            },
+
+            status_code=400,
+        )
+
+
+    # ========================================================
+    # PASSWORD LENGTH
+    # ========================================================
+
+    if len(new_password) < 8:
+
+        return templates.TemplateResponse(
+            request=request,
+            name="forgot_password.html",
+            context={
+                "request": request,
+
+                "engineer":
+                    engineer,
+
+                "username":
+                    engineer.alias,
+
+                "reset_ready":
+                    True,
+
+                "reset_token":
+                    token,
+
+                "expires_minutes":
+                    15,
+
+                "error": (
+                    "Password must be at least "
+                    "8 characters."
+                ),
+            },
+
+            status_code=400,
+        )
+
+
+    # ========================================================
+    # PASSWORD MATCH
+    # ========================================================
+
+    if new_password != confirm_password:
+
+        return templates.TemplateResponse(
+            request=request,
+            name="forgot_password.html",
+            context={
+                "request": request,
+
+                "engineer":
+                    engineer,
+
+                "username":
+                    engineer.alias,
+
+                "reset_ready":
+                    True,
+
+                "reset_token":
+                    token,
+
+                "expires_minutes":
+                    15,
+
+                "error":
+                    "Passwords do not match.",
+            },
+
+            status_code=400,
+        )
+
+
+    # ========================================================
+    # SAVE NEW PASSWORD
+    # ========================================================
+
+    engineer.password_hash = (
+        hash_password(new_password)
+    )
+
+    engineer.password_set_at = (
+        datetime.utcnow()
+    )
+
+    engineer.must_set_password = False
+
+
+    # ========================================================
+    # CONSUME RESET TOKEN
+    #
+    # This makes the reset request one-time use.
+    # ========================================================
+
+    engineer.password_reset_token = None
+
+    engineer.password_reset_expires_at = None
+
+
+    engineer.last_login_at = (
+        datetime.utcnow()
+    )
+
+
+    db.commit()
+
+
+    # ========================================================
+    # RETURN TO LOGIN
+    # ========================================================
+
+    return RedirectResponse(
+        url="/login?reset=success",
+        status_code=303,
+    )
+
+
+# ============================================================
 # SESSION REFRESH
 #
 # Browser calls this every 5 minutes.
+#
+# refresh_session() extends the session by another hour.
 # ============================================================
 
 @router.post(
@@ -653,8 +1107,11 @@ def session_refresh(
     )
 
     return {
-        "status": "ok",
-        "message": "Session refreshed",
+        "status":
+            "ok",
+
+        "message":
+            "Session refreshed",
     }
 
 
@@ -662,7 +1119,9 @@ def session_refresh(
 # LOGOUT
 # ============================================================
 
-@router.post("/logout")
+@router.post(
+    "/logout"
+)
 def logout():
 
     response = RedirectResponse(
@@ -670,6 +1129,8 @@ def logout():
         status_code=303,
     )
 
-    clear_session(response)
+    clear_session(
+        response
+    )
 
     return response

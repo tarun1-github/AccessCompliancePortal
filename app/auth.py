@@ -5,6 +5,8 @@ import json
 import os
 import secrets
 import time
+
+from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import Depends, HTTPException, Request
@@ -21,13 +23,23 @@ from app.models.engineer import Engineer
 
 SESSION_COOKIE = "ac_session"
 
-# Maximum idle period
+# User should remain logged in for 1 hour.
 SESSION_MAX_AGE = 60 * 60
 
-# Browser refresh interval
-SESSION_REFRESH_INTERVAL = 5 * 60
+
+# ============================================================
+# PASSWORD CONFIGURATION
+# ============================================================
 
 PBKDF2_ITERATIONS = 310_000
+
+
+# ============================================================
+# PASSWORD RESET CONFIGURATION
+# ============================================================
+
+# Forgot-password reset links remain valid for 15 minutes.
+PASSWORD_RESET_MINUTES = 15
 
 
 # ============================================================
@@ -36,9 +48,12 @@ PBKDF2_ITERATIONS = 310_000
 
 def _secret() -> bytes:
 
-    value = os.getenv("AUTH_SECRET_KEY")
+    value = os.getenv(
+        "AUTH_SECRET_KEY"
+    )
 
     if not value:
+
         raise RuntimeError(
             "AUTH_SECRET_KEY is not configured. "
             "Add a long random secret to .env."
@@ -48,12 +63,15 @@ def _secret() -> bytes:
 
 
 # ============================================================
-# PASSWORD HASHING
+# PASSWORD HASH
 # ============================================================
 
-def hash_password(password: str) -> str:
+def hash_password(
+    password: str,
+) -> str:
 
     if len(password) < 8:
+
         raise ValueError(
             "Password must be at least 8 characters."
         )
@@ -75,7 +93,7 @@ def hash_password(password: str) -> str:
 
 
 # ============================================================
-# PASSWORD VERIFICATION
+# PASSWORD VERIFY
 # ============================================================
 
 def verify_password(
@@ -84,6 +102,7 @@ def verify_password(
 ) -> bool:
 
     if not encoded:
+
         return False
 
     try:
@@ -93,6 +112,7 @@ def verify_password(
         )
 
         if scheme != "pbkdf2_sha256":
+
             return False
 
         salt = base64.urlsafe_b64decode(
@@ -116,6 +136,7 @@ def verify_password(
         )
 
     except Exception:
+
         return False
 
 
@@ -123,7 +144,9 @@ def verify_password(
 # SESSION SIGNING
 # ============================================================
 
-def _sign(payload: str) -> str:
+def _sign(
+    payload: str,
+) -> str:
 
     signature = hmac.new(
         _secret(),
@@ -131,18 +154,25 @@ def _sign(payload: str) -> str:
         hashlib.sha256,
     ).hexdigest()
 
-    return f"{payload}.{signature}"
+    return (
+        f"{payload}.{signature}"
+    )
 
 
 # ============================================================
-# SESSION VERIFICATION
+# SESSION VERIFY
 # ============================================================
 
-def _verify(value: str) -> Optional[dict]:
+def _verify(
+    value: str,
+) -> Optional[dict]:
 
     try:
 
-        payload, signature = value.rsplit(".", 1)
+        payload, signature = value.rsplit(
+            ".",
+            1,
+        )
 
         expected = hmac.new(
             _secret(),
@@ -154,70 +184,34 @@ def _verify(value: str) -> Optional[dict]:
             signature,
             expected,
         ):
+
             return None
 
-        raw = base64.urlsafe_b64decode(
-            payload.encode()
-        ).decode()
+        raw = (
+            base64.urlsafe_b64decode(
+                payload.encode()
+            )
+            .decode()
+        )
 
         data = json.loads(raw)
 
-        if data.get("exp", 0) < time.time():
+        if data.get(
+            "exp",
+            0,
+        ) < time.time():
+
             return None
 
         return data
 
     except Exception:
+
         return None
 
 
 # ============================================================
-# INTERNAL SESSION COOKIE CREATION
-# ============================================================
-
-def _set_session_cookie(
-    response,
-    engineer: Engineer,
-):
-
-    data = {
-        "engineer_id": engineer.id,
-
-        "role": str(
-            engineer.role or "ENGINEER"
-        ).upper(),
-
-        "exp": int(
-            time.time()
-        ) + SESSION_MAX_AGE,
-
-        "nonce": secrets.token_hex(16),
-    }
-
-    payload = base64.urlsafe_b64encode(
-        json.dumps(
-            data,
-            separators=(",", ":"),
-        ).encode()
-    ).decode()
-
-    response.set_cookie(
-        key=SESSION_COOKIE,
-        value=_sign(payload),
-        max_age=SESSION_MAX_AGE,
-        httponly=True,
-
-        # LAB is HTTP.
-        # Change to True after HTTPS is enabled.
-        secure=False,
-
-        samesite="lax",
-        path="/",
-    )
-
-
-# ============================================================
-# CREATE LOGIN SESSION
+# CREATE SESSION
 # ============================================================
 
 def create_session(
@@ -225,14 +219,66 @@ def create_session(
     engineer: Engineer,
 ):
 
-    _set_session_cookie(
-        response,
-        engineer,
+    data = {
+
+        "engineer_id":
+            engineer.id,
+
+        "role":
+            str(
+                engineer.role
+                or "ENGINEER"
+            ).upper(),
+
+        "exp":
+            int(
+                time.time()
+            )
+            + SESSION_MAX_AGE,
+
+        "nonce":
+            secrets.token_hex(8),
+    }
+
+    payload = (
+        base64.urlsafe_b64encode(
+            json.dumps(
+                data,
+                separators=(
+                    ",",
+                    ":",
+                ),
+            ).encode()
+        )
+        .decode()
+    )
+
+    response.set_cookie(
+
+        SESSION_COOKIE,
+
+        _sign(payload),
+
+        max_age=SESSION_MAX_AGE,
+
+        httponly=True,
+
+        # Current LAB is HTTP.
+        # Change to True when deployed on HTTPS.
+        secure=False,
+
+        samesite="lax",
+
+        path="/",
     )
 
 
 # ============================================================
-# REFRESH LOGIN SESSION
+# REFRESH SESSION
+#
+# Called by browser every 5 minutes.
+#
+# This gives an active user another 1 hour.
 # ============================================================
 
 def refresh_session(
@@ -240,7 +286,7 @@ def refresh_session(
     engineer: Engineer,
 ):
 
-    _set_session_cookie(
+    create_session(
         response,
         engineer,
     )
@@ -250,10 +296,12 @@ def refresh_session(
 # CLEAR SESSION
 # ============================================================
 
-def clear_session(response):
+def clear_session(
+    response,
+):
 
     response.delete_cookie(
-        key=SESSION_COOKIE,
+        SESSION_COOKIE,
         path="/",
     )
 
@@ -264,7 +312,10 @@ def clear_session(response):
 
 def get_current_engineer(
     request: Request,
-    db: Session = Depends(get_db),
+
+    db: Session = Depends(
+        get_db
+    ),
 ) -> Engineer:
 
     raw = request.cookies.get(
@@ -278,7 +329,9 @@ def get_current_engineer(
             detail="Authentication required",
         )
 
-    session = _verify(raw)
+    session = _verify(
+        raw
+    )
 
     if not session:
 
@@ -287,11 +340,19 @@ def get_current_engineer(
             detail="Session expired or invalid",
         )
 
-    engineer_id = session.get(
-        "engineer_id"
-    )
+    try:
 
-    if not engineer_id:
+        engineer_id = int(
+            session[
+                "engineer_id"
+            ]
+        )
+
+    except (
+        KeyError,
+        ValueError,
+        TypeError,
+    ):
 
         raise HTTPException(
             status_code=401,
@@ -301,8 +362,11 @@ def get_current_engineer(
     engineer = (
         db.query(Engineer)
         .filter(
-            Engineer.id == int(engineer_id),
-            Engineer.active == True,
+            Engineer.id
+            == engineer_id,
+
+            Engineer.active
+            == True,
         )
         .first()
     )
@@ -329,7 +393,8 @@ def require_supervisor(
 
     if (
         str(
-            current.role or ""
+            current.role
+            or ""
         ).upper()
         != "SUPERVISOR"
     ):
@@ -354,7 +419,9 @@ def require_own_engineer(
     ),
 ) -> Engineer:
 
-    if int(current.id) != int(
+    if int(
+        current.id
+    ) != int(
         engineer_id
     ):
 
@@ -380,4 +447,37 @@ def login_redirect(
     return RedirectResponse(
         url="/login",
         status_code=303,
+    )
+
+
+# ============================================================
+# PASSWORD RESET TOKEN
+# ============================================================
+
+def create_password_reset_token() -> str:
+
+    """
+    Generate a cryptographically secure
+    password reset token.
+    """
+
+    return secrets.token_urlsafe(48)
+
+
+# ============================================================
+# PASSWORD RESET EXPIRY
+# ============================================================
+
+def password_reset_expiry() -> datetime:
+
+    """
+    Return password reset token expiry time.
+    Default: 15 minutes.
+    """
+
+    return (
+        datetime.utcnow()
+        + timedelta(
+            minutes=PASSWORD_RESET_MINUTES
+        )
     )
