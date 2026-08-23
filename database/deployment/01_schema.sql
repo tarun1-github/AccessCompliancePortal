@@ -114,3 +114,18 @@ GO
 IF NOT EXISTS(SELECT 1 FROM sys.indexes WHERE name=N'UX_ac_engineers_verification_token' AND object_id=OBJECT_ID(N'dbo.ac_engineers'))
  CREATE UNIQUE INDEX UX_ac_engineers_verification_token ON dbo.ac_engineers(verification_token) WHERE verification_token IS NOT NULL;
 GO
+
+
+ALTER TABLE dbo.ac_engineers
+ADD password_hash VARCHAR(255) NULL;
+
+ALTER TABLE dbo.ac_engineers
+ADD password_set_at DATETIME2 NULL;
+
+ALTER TABLE dbo.ac_engineers
+ADD must_set_password BIT NOT NULL
+    CONSTRAINT DF_ac_engineers_must_set_password
+    DEFAULT 1;
+
+ALTER TABLE dbo.ac_engineers
+ADD last_login_at DATETIME2 NULL;
