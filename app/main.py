@@ -11,6 +11,7 @@ from app.models.audit import AuditLog
 # Import routers
 from app.routers import portal
 from app.routers import verification
+from app.routers import auth
 
 
 # ============================================================
@@ -45,6 +46,10 @@ app.include_router(
 
 app.include_router(
     verification.router
+)
+
+app.include_router(
+    auth.router
 )
 
 
