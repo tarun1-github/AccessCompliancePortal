@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>CMS BOA EV Access Compliance Portal - Access Verification</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Segoe UI,Arial,sans-serif;
+    background:linear-gradient(135deg,#eef4ff,#f8fbff,#eefbf4);
+    color:#1f2937;
+}
+
+.header{
+    background:linear-gradient(135deg,#0f172a,#1d4ed8,#0891b2);
+    color:#fff;
+    padding:25px 32px;
+}
+
+.header h1{
+    margin:0;
+}
+
+.header p{
+    margin:7px 0 0;
+    opacity:.9;
+}
+
+.container{
+    max-width:1500px;
+    margin:28px auto;
+    padding:0 22px;
+}
+
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:24px;
+    margin-bottom:22px;
+    box-shadow:0 10px 30px #0f172a12;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:16px;
+}
+
+.stat{
+    padding:20px;
+    border-radius:18px;
+    color:#fff;
+}
+
+.blue{
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+}
+
+.green{
+    background:linear-gradient(135deg,#059669,#34d399);
+}
+
+.amber{
+    background:linear-gradient(135deg,#d97706,#fbbf24);
+}
+
+.red{
+    background:linear-gradient(135deg,#dc2626,#fb7185);
+}
+
+.purple{
+    background:linear-gradient(135deg,#7c3aed,#c084fc);
+}
+
+.stat-value{
+    font-size:30px;
+    font-weight:800;
+    margin-top:7px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1250px;
+}
+
+th{
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
+    color:#fff;
+    padding:13px;
+    text-align:left;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #e2e8f0;
+    vertical-align:middle;
+}
+
+.table-wrap{
+    overflow:auto;
+}
+
+.badge{
+    display:inline-block;
+    padding:7px 11px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:800;
+}
+
+.verified{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.issue{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.readonly{
+    background:#e0e7ff;
+    color:#3730a3;
+}
+
+.btn{
+    border:0;
+    border-radius:9px;
+    padding:9px 13px;
+    color:#fff;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+.verify{
+    background:#16a34a;
+}
+
+.problem{
+    background:#dc2626;
+}
+
+.message{
+    font-size:12px;
+    margin-top:5px;
+}
+
+.success{
+    color:#15803d;
+}
+
+.error{
+    color:#b91c1c;
+}
+
+.date{
+    white-space:nowrap;
+}
+
+@media(max-width:800px){
+
+    .header{
+        padding:20px;
+    }
+
+    .container{
+        padding:0 12px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <h1>CMS BOA EV Access Compliance Portal</h1>
+
+    <p>
+        Access Verification System | Engineer Dashboard
+    </p>
+
+</header>
+
+
+<main class="container">
+
+
+<section class="card">
+
+    <h2>Welcome, {{ engineer.name }}</h2>
+
+    <p>
+        Review application access and submit verification status.
+        ARM details are supervisor-managed and read-only here.
+    </p>
+
+</section>
+
+
+<section class="stats">
+
+    <div class="stat blue">
+
+        <div>Total Access Records</div>
+
+        <div class="stat-value" id="total">
+            {{ applications|length }}
+        </div>
+
+    </div>
+
+
+    <div class="stat green">
+
+        <div>Verified</div>
+
+        <div class="stat-value" id="verified">
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat amber">
+
+        <div>Pending</div>
+
+        <div class="stat-value" id="pending">
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat red">
+
+        <div>Issues</div>
+
+        <div class="stat-value" id="issues">
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat purple">
+
+        <div>ARM Completed</div>
+
+        <div class="stat-value" id="armCompleted">
+            -
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="card">
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Application</th>
+
+                    <th>Access</th>
+
+                    <th>Verification</th>
+
+                    <th>Verification Action</th>
+
+                    <th>ARM Request Number</th>
+
+                    <th>ARM Request Status</th>
+
+                    <th>Remarks</th>
+
+                    <th>Last Verified (IST)</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="rows"></tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<script>
+
+const ENGINEER_ID = {{ engineer.id }};
+
+const initialApps = {{ applications|tojson }};
+
+
+const esc = v =>
+    String(v ?? '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+
+
+function formatIST(v){
+
+    if(!v){
+        return '-';
+    }
+
+    const d = new Date(v);
+
+    if(isNaN(d)){
+        return '-';
+    }
+
+    return new Intl.DateTimeFormat(
+        'en-IN',
+        {
+            timeZone:'Asia/Kolkata',
+            day:'2-digit',
+            month:'short',
+            year:'numeric',
+            hour:'2-digit',
+            minute:'2-digit',
+            second:'2-digit',
+            hour12:true,
+            timeZoneName:'short'
+        }
+    ).format(d);
+
+}
+
+
+function badge(s){
+
+    if(s === 'Verified'){
+        return '<span class="badge verified">✓ Verified</span>';
+    }
+
+    if(s === 'Issue'){
+        return '<span class="badge issue">⚠ Issue</span>';
+    }
+
+    return '<span class="badge pending">● Pending</span>';
+
+}
+
+
+function armBadge(s){
+
+    return `
+        <span class="badge readonly">
+            ${esc(s || 'Not Required')}
+        </span>
+    `;
+
+}
+
+
+function render(apps){
+
+    const body = document.getElementById('rows');
+
+    body.innerHTML = '';
+
+    let verified = 0;
+    let pending = 0;
+    let issues = 0;
+    let completed = 0;
+
+
+    apps.forEach(a => {
+
+        if(a.verification_status === 'Verified'){
+            verified++;
+        }
+        else if(a.verification_status === 'Issue'){
+            issues++;
+        }
+        else{
+            pending++;
+        }
+
+
+        if(a.ticket_status === 'Completed'){
+            completed++;
+        }
+
+
+        const tr = document.createElement('tr');
+
+
+        tr.innerHTML = `
+
+            <td>
+                ${esc(a.application_name)}
+            </td>
+
+
+            <td>
+                ${esc(a.access_status || '-')}
+            </td>
+
+
+            <td>
+                ${badge(a.verification_status)}
+            </td>
+
+
+            <td>
+
+                <button
+                    class="btn verify"
+                    onclick="update(${a.application_id},'Verified')"
+                >
+                    ✓ Verify
+                </button>
+
+
+                <button
+                    class="btn problem"
+                    onclick="update(${a.application_id},'Issue')"
+                >
+                    ✕ Issue
+                </button>
+
+
+                <div
+                    class="message"
+                    id="m-${a.application_id}"
+                ></div>
+
+            </td>
+
+
+            <td>
+                ${esc(a.arm_ticket || '-')}
+            </td>
+
+
+            <td>
+                ${armBadge(a.ticket_status)}
+            </td>
+
+
+            <td>
+                ${esc(a.remarks || '-')}
+            </td>
+
+
+            <td class="date">
+                ${formatIST(a.last_verified_date)}
+            </td>
+
+        `;
+
+
+        body.appendChild(tr);
+
+    });
+
+
+    document.getElementById('verified').textContent = verified;
+
+    document.getElementById('pending').textContent = pending;
+
+    document.getElementById('issues').textContent = issues;
+
+    document.getElementById('armCompleted').textContent = completed;
+
+}
+
+
+/*
+============================================================
+
+VERIFY / ISSUE UPDATE
+
+Verified:
+- No remarks asked
+- Remarks sent as null
+
+Issue:
+- Remarks mandatory
+- User must enter remarks
+- Maximum 200 characters
+
+============================================================
+*/
+
+async function update(appId, status){
+
+    let remarks = null;
+
+
+    /*
+    --------------------------------------------------------
+    ONLY ASK FOR REMARKS WHEN STATUS IS ISSUE
+    --------------------------------------------------------
+    */
+
+    if(status === 'Issue'){
+
+        remarks = prompt(
+            'Please enter remarks for this issue (maximum 200 characters):',
+            ''
+        );
+
+
+        /*
+        User clicked Cancel
+        */
+
+        if(remarks === null){
+            return;
+        }
+
+
+        remarks = remarks.trim();
+
+
+        /*
+        Remarks are mandatory for Issue
+        */
+
+        if(!remarks){
+
+            alert(
+                'Remarks are required when reporting an Issue.'
+            );
+
+            return;
+
+        }
+
+
+        /*
+        Maximum length validation
+        */
+
+        if(remarks.length > 200){
+
+            alert(
+                'Remarks cannot exceed 200 characters.'
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const m = document.getElementById(
+        `m-${appId}`
+    );
+
+
+    if(status === 'Verified'){
+
+        m.innerHTML =
+            'Saving verification...';
+
+    }
+    else{
+
+        m.innerHTML =
+            'Saving issue...';
+
+    }
+
+
+    try{
+
+        const r = await fetch(
+
+            `/verification/${ENGINEER_ID}/${appId}`,
+
+            {
+                method:'PATCH',
+
+                headers:{
+                    'Content-Type':'application/json'
+                },
+
+                body:JSON.stringify({
+
+                    status:status,
+
+                    remarks:remarks,
+
+                    performed_by:
+                        '{{ engineer.alias or engineer.email or engineer.name }}'
+
+                })
+
+            }
+
+        );
+
+
+        const d = await r.json();
+
+
+        if(!r.ok){
+
+            throw new Error(
+                d.detail ||
+                'Unable to update verification'
+            );
+
+        }
+
+
+        m.innerHTML =
+            '<span class="success">✓ Saved successfully</span>';
+
+
+        await reload();
+
+
+    }
+    catch(e){
+
+        m.innerHTML = `
+
+            <span class="error">
+                ✕ ${esc(e.message)}
+            </span>
+
+        `;
+
+    }
+
+}
+
+
+/*
+============================================================
+RELOAD ENGINEER ACCESS DATA
+============================================================
+*/
+
+async function reload(){
+
+    try{
+
+        const r = await fetch(
+            `/engineers/${ENGINEER_ID}/access`
+        );
+
+
+        if(r.ok){
+
+            const d = await r.json();
+
+            render(
+                d.applications || []
+            );
+
+        }
+
+    }
+    catch(e){
+
+        console.error(
+            'Unable to reload access data:',
+            e
+        );
+
+    }
+
+}
+
+
+/*
+============================================================
+INITIAL LOAD
+============================================================
+*/
+
+render(initialApps);
+
+</script>
+
+</body>
+</html>
