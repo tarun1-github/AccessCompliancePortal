@@ -9,9 +9,9 @@ from app.models.verification import EngineerApplicationAccess
 from app.models.audit import AuditLog
 
 # Import routers
-from app.routers import portal
-from app.routers import verification
 from app.routers import auth
+from app.routers import verification
+from app.routers import portal
 
 
 # ============================================================
@@ -38,10 +38,20 @@ def startup_event():
 
 # ============================================================
 # INCLUDE ROUTERS
+#
+# IMPORTANT:
+# auth.router MUST come before portal.router.
+#
+# portal.py contains:
+#
+#     /{alias}
+#
+# which is a catch-all route and would otherwise capture
+# /login before auth.router gets a chance to handle it.
 # ============================================================
 
 app.include_router(
-    portal.router
+    auth.router
 )
 
 app.include_router(
@@ -49,7 +59,7 @@ app.include_router(
 )
 
 app.include_router(
-    auth.router
+    portal.router
 )
 
 

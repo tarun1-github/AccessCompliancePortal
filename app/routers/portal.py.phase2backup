@@ -428,32 +428,13 @@ def page_for(
 # HOME
 # ============================================================
 
-# ============================================================
-# HOME
-# ============================================================
-
 @router.get(
     "/",
     response_class=HTMLResponse,
 )
-def home():
-
-    return HTMLResponse(
-        """
-        <html>
-        <head>
-            <title>Access Compliance Portal</title>
-            <meta http-equiv="refresh" content="0; url=/login">
-        </head>
-        <body>
-            <p>Redirecting to login...</p>
-            <p>
-                <a href="/login">Click here to login</a>
-            </p>
-        </body>
-        </html>
-        """
-    )
+def home(
+    current_user: Engineer = Depends(get_current_engineer),
+):
 
     return HTMLResponse(
         f"""

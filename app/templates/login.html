@@ -1,34 +1,430 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Access Compliance Portal - Login</title>
-<style>
-body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#eef4ff,#f8fbff,#eefbf4);min-height:100vh;display:flex;align-items:center;justify-content:center;color:#1f2937}
-.card{width:390px;background:#fff;padding:34px;border-radius:20px;box-shadow:0 15px 45px #0f172a20}
-h1{margin:0 0 8px;color:#1d4ed8;font-size:25px}
-.sub{color:#64748b;margin-bottom:28px}
-label{display:block;font-weight:700;margin:14px 0 7px}
-input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px}
-button{width:100%;margin-top:22px;padding:13px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:800;font-size:15px;cursor:pointer}
-.error{background:#fee2e2;color:#991b1b;padding:11px;border-radius:9px;margin-bottom:15px}
-.note{font-size:12px;color:#64748b;margin-top:18px;line-height:1.5}
-</style>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Access Compliance Portal - Login
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e3a8a
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .login-container {
+            width: 100%;
+
+            max-width: 430px;
+
+            padding: 20px;
+        }
+
+
+        .login-card {
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 20px 50px
+                rgba(0, 0, 0, 0.25);
+        }
+
+
+        .logo-area {
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+
+        .logo {
+            width: 70px;
+
+            height: 70px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 28px;
+
+            font-weight: bold;
+        }
+
+
+        h1 {
+            margin: 15px 0 5px;
+
+            font-size: 24px;
+
+            color: #111827;
+
+            text-align: center;
+        }
+
+
+        .subtitle {
+            text-align: center;
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+
+        label {
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: #374151;
+
+            margin-bottom: 7px;
+        }
+
+
+        input {
+            width: 100%;
+
+            padding: 12px 14px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            margin-bottom: 18px;
+        }
+
+
+        input:focus {
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.12);
+        }
+
+
+        .login-button {
+            width: 100%;
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 13px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+
+        .login-button:hover {
+            background: #1d4ed8;
+        }
+
+
+        .error {
+            background: #fee2e2;
+
+            border: 1px solid #fecaca;
+
+            color: #b91c1c;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+        }
+
+
+        .first-time-box {
+            margin-top: 10px;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+
+            text-align: center;
+        }
+
+
+        .first-time-box h2 {
+            margin: 0 0 10px;
+
+            color: #1e3a8a;
+
+            font-size: 20px;
+        }
+
+
+        .first-time-box p {
+            margin: 0 0 16px;
+
+            color: #1e40af;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+
+        .setup-button {
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            background: #059669;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 7px;
+
+            font-weight: 600;
+
+            font-size: 14px;
+        }
+
+
+        .setup-button:hover {
+            background: #047857;
+        }
+
+
+        .footer {
+            text-align: center;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+
+            margin-top: 22px;
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-<div class="card">
-<h1>CMS BOA EV Access Compliance Portal</h1>
-<div class="sub">Engineer / Supervisor Login</div>
-{% if error %}<div class="error">{{ error }}</div>{% endif %}
-<form method="post" action="/login">
-<label for="username">Username</label>
-<input id="username" name="username" autocomplete="username" placeholder="Enter your alias" required>
-<label for="password">Password</label>
-<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
-<button type="submit">Login</button>
-</form>
-<div class="note">Username is your assigned engineer alias. This portal uses local authentication and does not use AD.</div>
+
+
+<div class="login-container">
+
+    <div class="login-card">
+
+
+        <div class="logo-area">
+
+            <div class="logo">
+                AC
+            </div>
+
+
+            <h1>
+                Access Compliance Portal
+            </h1>
+
+
+            <div class="subtitle">
+                CMS BOA EV Access Verification
+            </div>
+
+        </div>
+
+
+        {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+
+        {% if first_time %}
+
+        <!-- =================================================
+             FIRST-TIME USER
+             ================================================= -->
+
+        <div class="first-time-box">
+
+            <h2>
+                Welcome {{ engineer_name }}
+            </h2>
+
+            <p>
+
+                This is your first login.
+
+                <br>
+
+                Please create your password
+                to continue to the portal.
+
+            </p>
+
+
+            <a
+                class="setup-button"
+                href="/set-password?token={{ setup_token }}"
+            >
+
+                Set My Password
+
+            </a>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- =================================================
+             NORMAL LOGIN
+             ================================================= -->
+
+        <form
+            method="post"
+            action="/login"
+        >
+
+
+            <label for="username">
+
+                Username / Alias
+
+            </label>
+
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value="{{ username or '' }}"
+                placeholder="Enter your alias"
+                autocomplete="username"
+                required
+            >
+
+
+            <label for="password">
+
+                Password
+
+            </label>
+
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="login-button"
+            >
+
+                Login
+
+            </button>
+
+
+        </form>
+
+        {% endif %}
+
+
+        <div class="footer">
+
+            CMS BOA EV Access Compliance Portal
+
+        </div>
+
+
+    </div>
+
 </div>
+
+
 </body>
+
 </html>

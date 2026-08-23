@@ -1,47 +1,2480 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>CMS BOA EV Access Compliance Portal - Supervisor</title>
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0"
+>
+
+<title>
+    CMS BOA EV Access Compliance Portal - Supervisor
+</title>
+
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#eef2ff,#f8fafc,#ecfeff);color:#1e293b}.header{padding:24px 32px;color:#fff;background:linear-gradient(135deg,#172554,#2563eb,#0891b2);box-shadow:0 8px 25px #0002}.header-row{display:flex;justify-content:space-between;gap:20px;align-items:center}.header h1{margin:0;font-size:30px}.header p{margin:7px 0 0;opacity:.9}.analytics-btn{background:#fff;color:#1d4ed8;text-decoration:none;padding:12px 18px;border-radius:12px;font-weight:800;white-space:nowrap}.container{max-width:1550px;margin:28px auto;padding:0 24px}.card{background:#fff;border-radius:18px;padding:24px;margin-bottom:22px;box-shadow:0 10px 30px #0f172a12}.stats,.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:22px}.stat{color:#fff;padding:20px;border-radius:18px;box-shadow:0 8px 20px #0002}.blue{background:linear-gradient(135deg,#2563eb,#60a5fa)}.green{background:linear-gradient(135deg,#059669,#34d399)}.amber{background:linear-gradient(135deg,#d97706,#fbbf24)}.red{background:linear-gradient(135deg,#dc2626,#fb7185)}.purple{background:linear-gradient(135deg,#7c3aed,#c084fc)}.cyan{background:linear-gradient(135deg,#0891b2,#22d3ee)}.stat-label{font-size:14px;opacity:.9}.stat-value{font-size:32px;font-weight:800;margin-top:7px}.search-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}label{font-weight:700;display:block;margin-bottom:7px}input,select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;background:#fff}input:focus,select:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px #2563eb20}.hint{font-size:12px;color:#64748b;margin-top:6px}.engineer-name{font-size:27px;font-weight:800;color:#1d4ed8}.engineer-details{color:#64748b;margin-top:6px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1450px}th{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:13px;text-align:left}td{padding:12px;border-bottom:1px solid #e2e8f0;vertical-align:middle}tr:hover{background:#f8fafc}.badge{display:inline-block;padding:7px 11px;border-radius:20px;font-size:12px;font-weight:800}.verified{background:#dcfce7;color:#166534}.pending{background:#fef3c7;color:#92400e}.issue{background:#fee2e2;color:#991b1b}.not-init{background:#e0e7ff;color:#3730a3}.not-required{background:#f1f5f9;color:#475569}.approval{background:#ffedd5;color:#9a3412}.completed{background:#dcfce7;color:#166534}.arm-input{min-width:190px}.btn{border:0;border-radius:9px;padding:9px 13px;color:#fff;font-weight:800;cursor:pointer}.save{background:#2563eb}.reset{background:#dc2626}.message{font-size:12px;margin-top:6px}.success{color:#15803d}.error{color:#b91c1c}.empty{text-align:center;color:#64748b;padding:35px}.summary-title{font-weight:800}.last-time{white-space:nowrap}@media(max-width:800px){.search-grid{grid-template-columns:1fr}.header-row{align-items:flex-start;flex-direction:column}.analytics-btn{align-self:flex-start}}
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc,
+            #ecfeff
+        );
+
+    color: #1e293b;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.header {
+
+    padding: 22px 32px;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #172554,
+            #2563eb,
+            #0891b2
+        );
+
+    box-shadow:
+        0 8px 25px #0002;
+}
+
+
+.header-row {
+
+    max-width: 1550px;
+
+    margin: auto;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 28px;
+}
+
+
+.header p {
+
+    margin: 7px 0 0;
+
+    opacity: .9;
+}
+
+
+/* ============================================================
+   HEADER ACTIONS
+   ============================================================ */
+
+.header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+
+.header-user {
+
+    background:
+        rgba(255,255,255,.12);
+
+    padding: 9px 12px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+
+.header-btn {
+
+    border: 1px solid
+        rgba(255,255,255,.35);
+
+    background:
+        rgba(255,255,255,.12);
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 9px 13px;
+
+    border-radius: 8px;
+
+    font-weight: 700;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+
+.header-btn:hover {
+
+    background:
+        rgba(255,255,255,.22);
+}
+
+
+.analytics-btn {
+
+    background: white;
+
+    color: #1d4ed8;
+
+    text-decoration: none;
+
+    padding: 10px 15px;
+
+    border-radius: 9px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.logout-btn {
+
+    background:
+        rgba(220,38,38,.85);
+}
+
+
+.logout-btn:hover {
+
+    background: #b91c1c;
+}
+
+
+/* ============================================================
+   CONTAINER
+   ============================================================ */
+
+.container {
+
+    max-width: 1550px;
+
+    margin: 28px auto;
+
+    padding: 0 24px;
+}
+
+
+/* ============================================================
+   CARD
+   ============================================================ */
+
+.card {
+
+    background: #fff;
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15,23,42,.07);
+}
+
+
+/* ============================================================
+   STATS
+   ============================================================ */
+
+.stats,
+.summary-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(170px,1fr)
+        );
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+.stat {
+
+    color: #fff;
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 20px #0002;
+}
+
+
+.blue {
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #60a5fa
+        );
+}
+
+
+.green {
+
+    background:
+        linear-gradient(
+            135deg,
+            #059669,
+            #34d399
+        );
+}
+
+
+.amber {
+
+    background:
+        linear-gradient(
+            135deg,
+            #d97706,
+            #fbbf24
+        );
+}
+
+
+.red {
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #fb7185
+        );
+}
+
+
+.purple {
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #c084fc
+        );
+}
+
+
+.cyan {
+
+    background:
+        linear-gradient(
+            135deg,
+            #0891b2,
+            #22d3ee
+        );
+}
+
+
+.stat-label {
+
+    font-size: 14px;
+
+    opacity: .9;
+}
+
+
+.stat-value {
+
+    font-size: 32px;
+
+    font-weight: 800;
+
+    margin-top: 7px;
+}
+
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+.search-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1.2fr .8fr;
+
+    gap: 18px;
+}
+
+
+label {
+
+    font-weight: 700;
+
+    display: block;
+
+    margin-bottom: 7px;
+}
+
+
+input,
+select {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    background: white;
+}
+
+
+input:focus,
+select:focus {
+
+    outline: none;
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.12);
+}
+
+
+.hint {
+
+    font-size: 12px;
+
+    color: #64748b;
+
+    margin-top: 6px;
+}
+
+
+/* ============================================================
+   ENGINEER
+   ============================================================ */
+
+.engineer-name {
+
+    font-size: 27px;
+
+    font-weight: 800;
+
+    color: #1d4ed8;
+}
+
+
+.engineer-details {
+
+    color: #64748b;
+
+    margin-top: 6px;
+}
+
+
+.summary-title {
+
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+.table-wrap {
+
+    overflow: auto;
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 1450px;
+}
+
+
+th {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #2563eb
+        );
+
+    color: #fff;
+
+    padding: 13px;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+
+td {
+
+    padding: 12px;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+    vertical-align: middle;
+}
+
+
+tr:hover {
+
+    background: #f8fafc;
+}
+
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.badge {
+
+    display: inline-block;
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.verified {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+
+.pending {
+
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+
+.issue {
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+
+.not-init {
+
+    background: #e0e7ff;
+
+    color: #3730a3;
+}
+
+
+.not-required {
+
+    background: #f1f5f9;
+
+    color: #475569;
+}
+
+
+.approval {
+
+    background: #ffedd5;
+
+    color: #9a3412;
+}
+
+
+.completed {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn {
+
+    border: 0;
+
+    border-radius: 9px;
+
+    padding: 9px 13px;
+
+    color: #fff;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.btn:hover {
+
+    opacity: .9;
+}
+
+
+.btn:disabled {
+
+    opacity: .5;
+
+    cursor: not-allowed;
+}
+
+
+.save {
+
+    background: #2563eb;
+}
+
+
+.reset {
+
+    background: #dc2626;
+}
+
+
+.arm-input {
+
+    min-width: 190px;
+}
+
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+
+.message {
+
+    font-size: 12px;
+
+    margin-top: 6px;
+}
+
+
+.success {
+
+    color: #15803d;
+}
+
+
+.error {
+
+    color: #b91c1c;
+}
+
+
+.info {
+
+    color: #1d4ed8;
+}
+
+
+.empty {
+
+    text-align: center;
+
+    color: #64748b;
+
+    padding: 35px;
+}
+
+
+.last-time {
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   SESSION STATUS
+   ============================================================ */
+
+.session-status {
+
+    position: fixed;
+
+    right: 18px;
+
+    bottom: 18px;
+
+    background: #111827;
+
+    color: white;
+
+    padding: 9px 13px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    opacity: 0;
+
+    transition: opacity .25s ease;
+
+    z-index: 9999;
+}
+
+
+.session-status.show {
+
+    opacity: 1;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media(max-width:800px) {
+
+    .search-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .header-row {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .header-actions {
+
+        width: 100%;
+    }
+
+
+    .container {
+
+        padding: 0 12px;
+    }
+
+}
+
 </style>
+
 </head>
+
+
 <body>
-<header class="header"><div class="header-row"><div><h1>CMS BOA EV Access Compliance Portal</h1><p>Supervisor Dashboard | Access Verification System</p></div><a class="analytics-btn" href="/analytics/{{ engineer.id }}">📊 Analytics</a></div></header>
+
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+
+<header class="header">
+
+<div class="header-row">
+
+
+    <div>
+
+        <h1>
+            CMS BOA EV Access Compliance Portal
+        </h1>
+
+        <p>
+            Supervisor Dashboard |
+            Access Verification System
+        </p>
+
+    </div>
+
+
+    <div class="header-actions">
+
+
+        <div class="header-user">
+
+            Logged in as:
+
+            <strong>
+                {{ engineer.alias }}
+            </strong>
+
+        </div>
+
+
+        <a
+            class="analytics-btn"
+            href="/analytics/{{ engineer.id }}"
+        >
+            📊 Analytics
+        </a>
+
+
+        <a
+            class="header-btn"
+            href="/change-password"
+        >
+            Change Password
+        </a>
+
+
+        <form
+            method="post"
+            action="/logout"
+            style="margin:0;"
+        >
+
+            <button
+                type="submit"
+                class="header-btn logout-btn"
+            >
+                Logout
+            </button>
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+</header>
+
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+
 <main class="container">
-<section class="card"><h2>Welcome, {{ engineer.name }}</h2><p>Search an engineer and manage verification, ARM request details and application reset.</p></section>
-<section class="stats">
-<div class="stat blue"><div class="stat-label">Total Access Records</div><div class="stat-value" id="dashboardTotal">-</div></div>
-<div class="stat green"><div class="stat-label">Verified</div><div class="stat-value" id="dashboardVerified">-</div></div>
-<div class="stat amber"><div class="stat-label">Pending</div><div class="stat-value" id="dashboardPending">-</div></div>
-<div class="stat red"><div class="stat-label">Issues</div><div class="stat-value" id="dashboardIssues">-</div></div>
-<div class="stat purple"><div class="stat-label">ARM Approval Pending</div><div class="stat-value" id="dashboardApproval">-</div></div>
-<div class="stat cyan"><div class="stat-label">ARM Completed</div><div class="stat-value" id="dashboardTickets">-</div></div>
+
+
+<section class="card">
+
+    <h2>
+        Welcome, {{ engineer.name }}
+    </h2>
+
+    <p>
+        Search an engineer and manage verification,
+        ARM request details and application reset.
+    </p>
+
 </section>
-<section class="card"><h2>🔎 Search and Select Engineer</h2><div class="search-grid"><div><label for="engineerSearch">Search Engineer</label><input id="engineerSearch" autocomplete="off" placeholder="Type at least 3 letters of name, alias or email"><div class="hint">After 3 matching characters, the first matching engineer is selected and access details load automatically.</div></div><div><label for="engineerSelect">Select Engineer</label><select id="engineerSelect"><option value="">-- Select Engineer --</option></select></div></div></section>
-<section class="card" id="engineerInfo" style="display:none"><div class="engineer-name" id="selectedEngineerName"></div><div class="engineer-details" id="selectedEngineerDetails"></div><div class="summary-grid"><div class="stat blue"><div class="summary-title">Total</div><strong id="engineerTotal">0</strong></div><div class="stat green"><div class="summary-title">Verified</div><strong id="engineerVerified">0</strong></div><div class="stat amber"><div class="summary-title">Pending</div><strong id="engineerPending">0</strong></div><div class="stat red"><div class="summary-title">Issues</div><strong id="engineerIssues">0</strong></div><div class="stat purple"><div class="summary-title">ARM Completed</div><strong id="engineerTickets">0</strong></div></div></section>
-<section class="card"><h2>📋 Engineer Application Access</h2><div id="tableContent" class="empty">Search/select an engineer to view application-wise access status.</div><div class="table-wrap"><table id="applicationTable" style="display:none"><thead><tr><th>Application</th><th>Access</th><th>Verification</th><th>ARM Request Number</th><th>ARM Request Status</th><th>Action</th><th>Remarks</th><th>Last Verified (IST)</th><th>Reset</th></tr></thead><tbody id="applicationTableBody"></tbody></table></div></section>
+
+
+<!-- ============================================================
+     DASHBOARD STATS
+     ============================================================ -->
+
+<section class="stats">
+
+
+    <div class="stat blue">
+
+        <div class="stat-label">
+            Total Access Records
+        </div>
+
+        <div
+            class="stat-value"
+            id="dashboardTotal"
+        >
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat green">
+
+        <div class="stat-label">
+            Verified
+        </div>
+
+        <div
+            class="stat-value"
+            id="dashboardVerified"
+        >
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat amber">
+
+        <div class="stat-label">
+            Pending
+        </div>
+
+        <div
+            class="stat-value"
+            id="dashboardPending"
+        >
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat red">
+
+        <div class="stat-label">
+            Issues
+        </div>
+
+        <div
+            class="stat-value"
+            id="dashboardIssues"
+        >
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat purple">
+
+        <div class="stat-label">
+            ARM Approval Pending
+        </div>
+
+        <div
+            class="stat-value"
+            id="dashboardApproval"
+        >
+            -
+        </div>
+
+    </div>
+
+
+    <div class="stat cyan">
+
+        <div class="stat-label">
+            ARM Completed
+        </div>
+
+        <div
+            class="stat-value"
+            id="dashboardTickets"
+        >
+            -
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- ============================================================
+     SEARCH ENGINEER
+     ============================================================ -->
+
+<section class="card">
+
+
+    <h2>
+        🔎 Search and Select Engineer
+    </h2>
+
+
+    <div class="search-grid">
+
+
+        <div>
+
+            <label for="engineerSearch">
+                Search Engineer
+            </label>
+
+
+            <input
+                id="engineerSearch"
+                autocomplete="off"
+                placeholder="Type at least 3 letters of name, alias or email"
+            >
+
+
+            <div class="hint">
+
+                Matching engineers will appear
+                automatically.
+
+            </div>
+
+        </div>
+
+
+        <div>
+
+            <label for="engineerSelect">
+                Select Engineer
+            </label>
+
+
+            <select id="engineerSelect">
+
+                <option value="">
+                    -- Select Engineer --
+                </option>
+
+            </select>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- ============================================================
+     SELECTED ENGINEER
+     ============================================================ -->
+
+<section
+    class="card"
+    id="engineerInfo"
+    style="display:none;"
+>
+
+
+    <div
+        class="engineer-name"
+        id="selectedEngineerName"
+    ></div>
+
+
+    <div
+        class="engineer-details"
+        id="selectedEngineerDetails"
+    ></div>
+
+
+    <div class="summary-grid">
+
+
+        <div class="stat blue">
+
+            <div class="summary-title">
+                Total
+            </div>
+
+            <strong id="engineerTotal">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat green">
+
+            <div class="summary-title">
+                Verified
+            </div>
+
+            <strong id="engineerVerified">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat amber">
+
+            <div class="summary-title">
+                Pending
+            </div>
+
+            <strong id="engineerPending">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat red">
+
+            <div class="summary-title">
+                Issues
+            </div>
+
+            <strong id="engineerIssues">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat purple">
+
+            <div class="summary-title">
+                ARM Completed
+            </div>
+
+            <strong id="engineerTickets">
+                0
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- ============================================================
+     APPLICATION TABLE
+     ============================================================ -->
+
+<section class="card">
+
+
+    <h2>
+        📋 Engineer Application Access
+    </h2>
+
+
+    <div
+        id="tableContent"
+        class="empty"
+    >
+
+        Search/select an engineer
+        to view application-wise access status.
+
+    </div>
+
+
+    <div class="table-wrap">
+
+
+        <table
+            id="applicationTable"
+            style="display:none;"
+        >
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Application
+                    </th>
+
+                    <th>
+                        Access
+                    </th>
+
+                    <th>
+                        Verification
+                    </th>
+
+                    <th>
+                        ARM Request Number
+                    </th>
+
+                    <th>
+                        ARM Request Status
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                    <th>
+                        Remarks
+                    </th>
+
+                    <th>
+                        Last Verified (IST)
+                    </th>
+
+                    <th>
+                        Reset
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="applicationTableBody"
+            ></tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</section>
+
+
 </main>
+
+
+<!-- ============================================================
+     SESSION STATUS
+     ============================================================ -->
+
+<div
+    id="sessionStatus"
+    class="session-status"
+>
+    Session refreshed
+</div>
+
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+
 <script>
-const SUPERVISOR_ID={{ engineer.id }};let allEngineers=[],selectedEngineerId=null;
-const $=id=>document.getElementById(id);
-async function loadDashboard(){try{const r=await fetch('/api/dashboard');const d=await r.json();$('dashboardTotal').textContent=d.total??0;$('dashboardVerified').textContent=d.verified??0;$('dashboardPending').textContent=d.pending??0;$('dashboardIssues').textContent=d.issues??0;$('dashboardApproval').textContent=d.ticket_approval_pending??0;$('dashboardTickets').textContent=d.ticket_completed??0}catch(e){console.error(e)}}
-async function loadEngineers(){try{const r=await fetch('/api/supervisor/engineers');allEngineers=await r.json();renderOptions(allEngineers)}catch(e){console.error(e)}}
-function renderOptions(list){$('engineerSelect').innerHTML='<option value="">-- Select Engineer --</option>';list.forEach(e=>{const o=document.createElement('option');o.value=e.id;o.textContent=`${e.name} - ${e.level||''} (${e.alias||''})`;$('engineerSelect').appendChild(o)})}
-function selectEngineer(id){if(!id)return;selectedEngineerId=Number(id);$('engineerSelect').value=String(id);loadEngineerDetails(id)}
-$('engineerSearch').addEventListener('input',function(){const v=this.value.trim().toLowerCase();if(v.length<3){renderOptions(allEngineers);selectedEngineerId=null;return}const matches=allEngineers.filter(e=>[e.name,e.alias,e.email,e.level].filter(Boolean).join(' ').toLowerCase().includes(v));renderOptions(matches);if(matches.length===1)selectEngineer(matches[0].id);else if(matches.length>0)selectEngineer(matches[0].id)});
-$('engineerSelect').addEventListener('change',e=>selectEngineer(e.target.value));
-async function loadEngineerDetails(id){$('tableContent').style.display='block';$('tableContent').textContent='Loading engineer details...';$('applicationTable').style.display='none';try{const r=await fetch(`/api/supervisor/engineer/${id}`);const d=await r.json();if(!r.ok)throw new Error(d.detail||'Unable to load engineer');displayEngineer(d)}catch(e){$('tableContent').textContent=e.message}}
-function displayEngineer(d){$('engineerInfo').style.display='block';$('selectedEngineerName').textContent=`${d.engineer_name} - ${d.level||''}`;$('selectedEngineerDetails').textContent=`Email: ${d.email||'-'} | Alias: ${d.alias||'-'}`;$('engineerTotal').textContent=d.summary.total??0;$('engineerVerified').textContent=d.summary.verified??0;$('engineerPending').textContent=d.summary.pending??0;$('engineerIssues').textContent=d.summary.issues??0;$('engineerTickets').textContent=d.summary.tickets_completed??0;renderApplications(d.applications||[])}
-function verificationBadge(s){if(s==='Verified')return '<span class="badge verified">✓ Verified</span>';if(s==='Issue')return '<span class="badge issue">⚠ Issue</span>';return '<span class="badge pending">● Pending</span>'}
-function armBadge(s){if(s==='Completed')return '<span class="badge completed">✓ Completed</span>';if(s==='Approval Pending')return '<span class="badge approval">● Approval Pending</span>';if(s==='Not Required')return '<span class="badge not-required">Not Required</span>';return '<span class="badge not-init">● Request Not Initiated</span>'}
-function formatIST(v){if(!v)return '-';const d=new Date(v);if(isNaN(d))return '-';return new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true,timeZoneName:'short'}).format(d)}
-function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
-function renderApplications(apps){$('applicationTableBody').innerHTML='';if(!apps.length){$('tableContent').style.display='block';$('tableContent').textContent='No application records found.';return}apps.forEach(a=>{const tr=document.createElement('tr');const status=a.ticket_status||'Request Not Initiated';tr.innerHTML=`<td>${esc(a.application_name)}</td><td>${esc(a.access_status||'-')}</td><td>${verificationBadge(a.verification_status)}</td><td><input class="arm-input" id="arm-${a.application_id}" value="${esc(a.arm_ticket||'')}" placeholder="Enter ARM request number"></td><td><select id="arm-status-${a.application_id}"><option value="Request Not Initiated" ${status==='Request Not Initiated'?'selected':''}>Request Not Initiated</option><option value="Not Required" ${status==='Not Required'?'selected':''}>Not Required</option><option value="Approval Pending" ${status==='Approval Pending'?'selected':''}>Approval Pending</option><option value="Completed" ${status==='Completed'?'selected':''}>Completed</option></select><div style="margin-top:7px">${armBadge(status)}</div></td><td><button class="btn save" onclick="saveArm(${a.application_id})">💾 Save ARM</button><div class="message" id="message-${a.application_id}"></div></td><td>${esc(a.remarks||'-')}</td><td class="last-time">${formatIST(a.last_verified_date)}</td><td><button class="btn reset" onclick="resetApplication(${a.application_id})">↻ Reset</button></td>`;$('applicationTableBody').appendChild(tr)});$('tableContent').style.display='none';$('applicationTable').style.display='table'}
-async function saveArm(appId){const ticket=$(`arm-${appId}`).value.trim();const status=$(`arm-status-${appId}`).value;const msg=$(`message-${appId}`);msg.textContent='Saving...';try{const r=await fetch(`/supervisor/${SUPERVISOR_ID}/engineer/${selectedEngineerId}/application/${appId}/arm`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({arm_ticket:ticket,ticket_status:status})});const d=await r.json();if(!r.ok)throw new Error(d.detail||'Unable to save ARM');msg.innerHTML='<span class="success">✓ ARM details saved</span>';await loadEngineerDetails(selectedEngineerId);loadDashboard()}catch(e){msg.innerHTML=`<span class="error">✕ ${esc(e.message)}</span>`}}
-async function resetApplication(appId){if(!confirm('Reset verification status, remarks, ARM request number and ARM request status for this application?'))return;try{const r=await fetch(`/supervisor/${SUPERVISOR_ID}/engineer/${selectedEngineerId}/application/${appId}/reset`,{method:'PATCH'});const d=await r.json();if(!r.ok)throw new Error(d.detail||'Unable to reset application');alert('Application status reset successfully.');await loadEngineerDetails(selectedEngineerId);loadDashboard()}catch(e){alert(e.message)}}
-loadDashboard();loadEngineers();
+
+
+/* ============================================================
+   CURRENT SUPERVISOR
+   ============================================================ */
+
+const SUPERVISOR_ID =
+    {{ engineer.id }};
+
+
+let allEngineers = [];
+
+let selectedEngineerId = null;
+
+
+const $ = id =>
+    document.getElementById(id);
+
+
+/* ============================================================
+   SESSION EXPIRED HANDLER
+   ============================================================ */
+
+function handleUnauthorized() {
+
+    window.location.href =
+        "/login";
+
+}
+
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+
+async function loadDashboard() {
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/api/dashboard",
+                {
+                    credentials:
+                        "same-origin"
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        $("dashboardTotal")
+            .textContent =
+                data.total ?? 0;
+
+
+        $("dashboardVerified")
+            .textContent =
+                data.verified ?? 0;
+
+
+        $("dashboardPending")
+            .textContent =
+                data.pending ?? 0;
+
+
+        $("dashboardIssues")
+            .textContent =
+                data.issues ?? 0;
+
+
+        $("dashboardApproval")
+            .textContent =
+                data.ticket_approval_pending ?? 0;
+
+
+        $("dashboardTickets")
+            .textContent =
+                data.ticket_completed ?? 0;
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Dashboard loading failed:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   LOAD ENGINEERS
+   ============================================================ */
+
+async function loadEngineers() {
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/api/supervisor/engineers",
+                {
+                    credentials:
+                        "same-origin"
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
+
+
+        if (
+            response.status === 403
+        ) {
+
+            throw new Error(
+                "Supervisor authorization required."
+            );
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load engineers."
+            );
+
+        }
+
+
+        allEngineers =
+            await response.json();
+
+
+        renderOptions(
+            allEngineers
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Engineer loading failed:",
+            error
+        );
+
+
+        $("tableContent")
+            .textContent =
+                error.message;
+
+    }
+
+}
+
+
+/* ============================================================
+   RENDER ENGINEER OPTIONS
+   ============================================================ */
+
+function renderOptions(list) {
+
+
+    $("engineerSelect").innerHTML = `
+
+        <option value="">
+            -- Select Engineer --
+        </option>
+
+    `;
+
+
+    list.forEach(
+        engineer => {
+
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            engineer.id;
+
+
+        option.textContent =
+            `${engineer.name} - ${
+                engineer.level || ""
+            } (${
+                engineer.alias || ""
+            })`;
+
+
+        $("engineerSelect")
+            .appendChild(option);
+
+    });
+
+}
+
+
+/* ============================================================
+   SELECT ENGINEER
+   ============================================================ */
+
+function selectEngineer(id) {
+
+
+    if (!id) {
+
+        return;
+
+    }
+
+
+    selectedEngineerId =
+        Number(id);
+
+
+    $("engineerSelect").value =
+        String(id);
+
+
+    loadEngineerDetails(
+        selectedEngineerId
+    );
+
+}
+
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+$("engineerSearch")
+    .addEventListener(
+        "input",
+        function () {
+
+
+        const value =
+            this.value
+                .trim()
+                .toLowerCase();
+
+
+        if (
+            value.length < 3
+        ) {
+
+            renderOptions(
+                allEngineers
+            );
+
+            selectedEngineerId =
+                null;
+
+            return;
+
+        }
+
+
+        const matches =
+            allEngineers.filter(
+                engineer => {
+
+
+                const searchable = [
+
+                    engineer.name,
+
+                    engineer.alias,
+
+                    engineer.email,
+
+                    engineer.level
+
+                ]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase();
+
+
+                return searchable
+                    .includes(value);
+
+            }
+        );
+
+
+        renderOptions(
+            matches
+        );
+
+
+        if (
+            matches.length > 0
+        ) {
+
+            selectEngineer(
+                matches[0].id
+            );
+
+        }
+
+    });
+
+
+/* ============================================================
+   DROPDOWN
+   ============================================================ */
+
+$("engineerSelect")
+    .addEventListener(
+        "change",
+        function (event) {
+
+            selectEngineer(
+                event.target.value
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   LOAD SELECTED ENGINEER
+   ============================================================ */
+
+async function loadEngineerDetails(id) {
+
+
+    $("tableContent")
+        .style.display =
+            "block";
+
+
+    $("tableContent")
+        .textContent =
+            "Loading engineer details...";
+
+
+    $("applicationTable")
+        .style.display =
+            "none";
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                `/api/supervisor/engineer/${id}`,
+                {
+                    credentials:
+                        "same-origin"
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Unable to load engineer."
+            );
+
+        }
+
+
+        displayEngineer(
+            data
+        );
+
+
+    }
+    catch (error) {
+
+
+        $("tableContent")
+            .textContent =
+                error.message;
+
+
+        $("engineerInfo")
+            .style.display =
+                "none";
+
+    }
+
+}
+
+
+/* ============================================================
+   DISPLAY ENGINEER
+   ============================================================ */
+
+function displayEngineer(data) {
+
+
+    $("engineerInfo")
+        .style.display =
+            "block";
+
+
+    $("selectedEngineerName")
+        .textContent =
+            `${data.engineer_name} - ${
+                data.level || ""
+            }`;
+
+
+    $("selectedEngineerDetails")
+        .textContent =
+            `Email: ${
+                data.email || "-"
+            } | Alias: ${
+                data.alias || "-"
+            }`;
+
+
+    const summary =
+        data.summary || {};
+
+
+    $("engineerTotal")
+        .textContent =
+            summary.total ?? 0;
+
+
+    $("engineerVerified")
+        .textContent =
+            summary.verified ?? 0;
+
+
+    $("engineerPending")
+        .textContent =
+            summary.pending ?? 0;
+
+
+    $("engineerIssues")
+        .textContent =
+            summary.issues ?? 0;
+
+
+    $("engineerTickets")
+        .textContent =
+            summary.tickets_completed ?? 0;
+
+
+    renderApplications(
+        data.applications || []
+    );
+
+}
+
+
+/* ============================================================
+   VERIFICATION BADGE
+   ============================================================ */
+
+function verificationBadge(status) {
+
+
+    if (
+        status === "Verified"
+    ) {
+
+        return `
+            <span class="badge verified">
+                ✓ Verified
+            </span>
+        `;
+
+    }
+
+
+    if (
+        status === "Issue"
+    ) {
+
+        return `
+            <span class="badge issue">
+                ⚠ Issue
+            </span>
+        `;
+
+    }
+
+
+    return `
+        <span class="badge pending">
+            ● Pending
+        </span>
+    `;
+
+}
+
+
+/* ============================================================
+   ARM BADGE
+   ============================================================ */
+
+function armBadge(status) {
+
+
+    if (
+        status === "Completed"
+    ) {
+
+        return `
+            <span class="badge completed">
+                ✓ Completed
+            </span>
+        `;
+
+    }
+
+
+    if (
+        status === "Approval Pending"
+    ) {
+
+        return `
+            <span class="badge approval">
+                ● Approval Pending
+            </span>
+        `;
+
+    }
+
+
+    if (
+        status === "Not Required"
+    ) {
+
+        return `
+            <span class="badge not-required">
+                Not Required
+            </span>
+        `;
+
+    }
+
+
+    return `
+        <span class="badge not-init">
+            ● Request Not Initiated
+        </span>
+    `;
+
+}
+
+
+/* ============================================================
+   DATE
+   ============================================================ */
+
+function formatIST(value) {
+
+
+    if (!value) {
+
+        return "-";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        isNaN(date)
+    ) {
+
+        return "-";
+
+    }
+
+
+    return new Intl.DateTimeFormat(
+        "en-IN",
+        {
+
+            timeZone:
+                "Asia/Kolkata",
+
+            day:
+                "2-digit",
+
+            month:
+                "short",
+
+            year:
+                "numeric",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit",
+
+            second:
+                "2-digit",
+
+            hour12:
+                true,
+
+            timeZoneName:
+                "short"
+
+        }
+    ).format(date);
+
+}
+
+
+/* ============================================================
+   HTML ESCAPE
+   ============================================================ */
+
+function esc(value) {
+
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* ============================================================
+   RENDER APPLICATIONS
+   ============================================================ */
+
+function renderApplications(
+    applications
+) {
+
+
+    $("applicationTableBody")
+        .innerHTML =
+            "";
+
+
+    if (
+        !applications.length
+    ) {
+
+        $("tableContent")
+            .style.display =
+                "block";
+
+
+        $("tableContent")
+            .textContent =
+                "No application records found.";
+
+
+        return;
+
+    }
+
+
+    applications.forEach(
+        application => {
+
+
+        const row =
+            document.createElement(
+                "tr"
+            );
+
+
+        const status =
+            application.ticket_status ||
+            "Request Not Initiated";
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${esc(
+                        application.application_name
+                    )}
+                </strong>
+            </td>
+
+
+            <td>
+                ${esc(
+                    application.access_status ||
+                    "-"
+                )}
+            </td>
+
+
+            <td>
+                ${verificationBadge(
+                    application.verification_status
+                )}
+            </td>
+
+
+            <td>
+
+                <input
+                    class="arm-input"
+                    id="arm-${application.application_id}"
+                    value="${esc(
+                        application.arm_ticket || ""
+                    )}"
+                    placeholder="Enter ARM request number"
+                >
+
+            </td>
+
+
+            <td>
+
+                <select
+                    id="arm-status-${application.application_id}"
+                >
+
+                    <option
+                        value="Request Not Initiated"
+                        ${status === "Request Not Initiated" ? "selected" : ""}
+                    >
+                        Request Not Initiated
+                    </option>
+
+                    <option
+                        value="Not Required"
+                        ${status === "Not Required" ? "selected" : ""}
+                    >
+                        Not Required
+                    </option>
+
+                    <option
+                        value="Approval Pending"
+                        ${status === "Approval Pending" ? "selected" : ""}
+                    >
+                        Approval Pending
+                    </option>
+
+                    <option
+                        value="Completed"
+                        ${status === "Completed" ? "selected" : ""}
+                    >
+                        Completed
+                    </option>
+
+                </select>
+
+
+                <div style="margin-top:7px">
+
+                    ${armBadge(status)}
+
+                </div>
+
+            </td>
+
+
+            <td>
+
+                <button
+                    class="btn save"
+                    onclick="
+                        saveArm(
+                            ${application.application_id}
+                        )
+                    "
+                >
+                    💾 Save ARM
+                </button>
+
+
+                <div
+                    class="message"
+                    id="message-${application.application_id}"
+                ></div>
+
+            </td>
+
+
+            <td>
+
+                ${esc(
+                    application.remarks ||
+                    "-"
+                )}
+
+            </td>
+
+
+            <td class="last-time">
+
+                ${formatIST(
+                    application.last_verified_date
+                )}
+
+            </td>
+
+
+            <td>
+
+                <button
+                    class="btn reset"
+                    onclick="
+                        resetApplication(
+                            ${application.application_id}
+                        )
+                    "
+                >
+                    ↻ Reset
+                </button>
+
+            </td>
+
+        `;
+
+
+        $("applicationTableBody")
+            .appendChild(row);
+
+    });
+
+
+    $("tableContent")
+        .style.display =
+            "none";
+
+
+    $("applicationTable")
+        .style.display =
+            "table";
+
+}
+
+
+/* ============================================================
+   SAVE ARM
+   ============================================================ */
+
+async function saveArm(
+    applicationId
+) {
+
+
+    if (
+        !selectedEngineerId
+    ) {
+
+        alert(
+            "Please select an engineer first."
+        );
+
+        return;
+
+    }
+
+
+    const ticket =
+        $(
+            `arm-${applicationId}`
+        )
+        .value
+        .trim();
+
+
+    const status =
+        $(
+            `arm-status-${applicationId}`
+        )
+        .value;
+
+
+    const message =
+        $(
+            `message-${applicationId}`
+        );
+
+
+    message.innerHTML =
+        '<span class="info">Saving...</span>';
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                `/supervisor/${SUPERVISOR_ID}/engineer/${selectedEngineerId}/application/${applicationId}/arm`,
+                {
+
+                    method:
+                        "PATCH",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    credentials:
+                        "same-origin",
+
+                    body:
+                        JSON.stringify({
+
+                            arm_ticket:
+                                ticket,
+
+                            ticket_status:
+                                status
+
+                        })
+
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Unable to save ARM."
+            );
+
+        }
+
+
+        message.innerHTML =
+            '<span class="success">✓ ARM details saved</span>';
+
+
+        await loadEngineerDetails(
+            selectedEngineerId
+        );
+
+
+        await loadDashboard();
+
+
+    }
+    catch (error) {
+
+
+        message.innerHTML = `
+
+            <span class="error">
+                ✕ ${esc(
+                    error.message
+                )}
+            </span>
+
+        `;
+
+    }
+
+}
+
+
+/* ============================================================
+   RESET APPLICATION
+   ============================================================ */
+
+async function resetApplication(
+    applicationId
+) {
+
+
+    if (
+        !selectedEngineerId
+    ) {
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Reset verification status, remarks, ARM request number and ARM request status for this application?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                `/supervisor/${SUPERVISOR_ID}/engineer/${selectedEngineerId}/application/${applicationId}/reset`,
+                {
+
+                    method:
+                        "PATCH",
+
+                    credentials:
+                        "same-origin"
+
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Unable to reset application."
+            );
+
+        }
+
+
+        alert(
+            "Application status reset successfully."
+        );
+
+
+        await loadEngineerDetails(
+            selectedEngineerId
+        );
+
+
+        await loadDashboard();
+
+
+    }
+    catch (error) {
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   SESSION REFRESH
+   ============================================================ */
+
+(function () {
+
+
+    const REFRESH_INTERVAL =
+        5 * 60 * 1000;
+
+
+    async function refreshSession() {
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "/session/refresh",
+                    {
+
+                        method:
+                            "POST",
+
+                        credentials:
+                            "same-origin",
+
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        }
+
+                    }
+                );
+
+
+            if (
+                response.status === 401
+            ) {
+
+                handleUnauthorized();
+
+                return;
+
+            }
+
+
+            if (
+                response.ok
+            ) {
+
+                const status =
+                    $("sessionStatus");
+
+
+                status.textContent =
+                    "Session refreshed";
+
+
+                status.classList.add(
+                    "show"
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        status.classList.remove(
+                            "show"
+                        );
+
+                    },
+                    2500
+                );
+
+            }
+
+        }
+        catch (error) {
+
+            console.warn(
+                "Session refresh failed:",
+                error
+            );
+
+        }
+
+    }
+
+
+    setInterval(
+        refreshSession,
+        REFRESH_INTERVAL
+    );
+
+
+})();
+
+
+/* ============================================================
+   INITIAL LOAD
+   ============================================================ */
+
+loadDashboard();
+
+loadEngineers();
+
+
 </script>
-</body></html>
+
+
+</body>
+
+</html>

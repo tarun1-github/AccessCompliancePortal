@@ -1,487 +1,1343 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>CMS BOA EV Access Compliance Portal - Access Verification</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    CMS BOA EV Access Compliance Portal
+</title>
+
 
 <style>
-*{
-    box-sizing:border-box;
+
+* {
+    box-sizing: border-box;
 }
 
-body{
-    margin:0;
-    font-family:Segoe UI,Arial,sans-serif;
-    background:linear-gradient(135deg,#eef4ff,#f8fbff,#eefbf4);
-    color:#1f2937;
+
+body {
+
+    margin: 0;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef4ff,
+            #f8fbff,
+            #eefbf4
+        );
+
+    color: #1f2937;
 }
 
-.header{
-    background:linear-gradient(135deg,#0f172a,#1d4ed8,#0891b2);
-    color:#fff;
-    padding:25px 32px;
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1d4ed8,
+            #0891b2
+        );
+
+    color: #fff;
+
+    padding: 22px 32px;
 }
 
-.header h1{
-    margin:0;
+
+.header-content {
+
+    max-width: 1500px;
+
+    margin: auto;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
 }
 
-.header p{
-    margin:7px 0 0;
-    opacity:.9;
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 25px;
 }
 
-.container{
-    max-width:1500px;
-    margin:28px auto;
-    padding:0 22px;
+
+.header p {
+
+    margin: 7px 0 0;
+
+    opacity: .9;
+
+    font-size: 14px;
 }
 
-.card{
-    background:#fff;
-    border-radius:18px;
-    padding:24px;
-    margin-bottom:22px;
-    box-shadow:0 10px 30px #0f172a12;
+
+/* ============================================================
+   HEADER ACTIONS
+   ============================================================ */
+
+.header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
 }
 
-.stats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:16px;
+
+.header-user {
+
+    font-size: 13px;
+
+    background:
+        rgba(255,255,255,.12);
+
+    padding: 9px 13px;
+
+    border-radius: 8px;
+
+    white-space: nowrap;
 }
 
-.stat{
-    padding:20px;
-    border-radius:18px;
-    color:#fff;
+
+.header-btn {
+
+    border: 1px solid
+        rgba(255,255,255,.35);
+
+    border-radius: 8px;
+
+    padding: 9px 13px;
+
+    color: white;
+
+    background:
+        rgba(255,255,255,.12);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    text-decoration: none;
 }
 
-.blue{
-    background:linear-gradient(135deg,#2563eb,#60a5fa);
+
+.header-btn:hover {
+
+    background:
+        rgba(255,255,255,.22);
 }
 
-.green{
-    background:linear-gradient(135deg,#059669,#34d399);
+
+.logout-btn {
+
+    background:
+        rgba(220,38,38,.85);
+
+    border-color:
+        rgba(255,255,255,.25);
 }
 
-.amber{
-    background:linear-gradient(135deg,#d97706,#fbbf24);
+
+.logout-btn:hover {
+
+    background:
+        #b91c1c;
 }
 
-.red{
-    background:linear-gradient(135deg,#dc2626,#fb7185);
+
+/* ============================================================
+   CONTAINER
+   ============================================================ */
+
+.container {
+
+    max-width: 1500px;
+
+    margin: 28px auto;
+
+    padding: 0 22px;
 }
 
-.purple{
-    background:linear-gradient(135deg,#7c3aed,#c084fc);
+
+/* ============================================================
+   CARD
+   ============================================================ */
+
+.card {
+
+    background: #fff;
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15,23,42,.07);
 }
 
-.stat-value{
-    font-size:30px;
-    font-weight:800;
-    margin-top:7px;
+
+/* ============================================================
+   WELCOME
+   ============================================================ */
+
+.welcome-card {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:1250px;
+
+.welcome-title {
+
+    margin: 0 0 7px;
+
+    color: #111827;
 }
 
-th{
-    background:linear-gradient(135deg,#1e3a8a,#2563eb);
-    color:#fff;
-    padding:13px;
-    text-align:left;
+
+.welcome-text {
+
+    margin: 0;
+
+    color: #6b7280;
+
+    line-height: 1.6;
 }
 
-td{
-    padding:12px;
-    border-bottom:1px solid #e2e8f0;
-    vertical-align:middle;
+
+.engineer-details {
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
 }
 
-.table-wrap{
-    overflow:auto;
+
+.detail-badge {
+
+    background: #f1f5f9;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 9px;
+
+    padding: 9px 12px;
+
+    font-size: 13px;
+
+    color: #475569;
 }
 
-.badge{
-    display:inline-block;
-    padding:7px 11px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:800;
+
+.detail-badge strong {
+
+    color: #111827;
 }
 
-.verified{
-    background:#dcfce7;
-    color:#166534;
+
+/* ============================================================
+   STATS
+   ============================================================ */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(180px,1fr)
+        );
+
+    gap: 16px;
+
+    margin-bottom: 22px;
 }
 
-.pending{
-    background:#fef3c7;
-    color:#92400e;
+
+.stat {
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    color: #fff;
 }
 
-.issue{
-    background:#fee2e2;
-    color:#991b1b;
+
+.blue {
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #60a5fa
+        );
 }
 
-.readonly{
-    background:#e0e7ff;
-    color:#3730a3;
+
+.green {
+
+    background:
+        linear-gradient(
+            135deg,
+            #059669,
+            #34d399
+        );
 }
 
-.btn{
-    border:0;
-    border-radius:9px;
-    padding:9px 13px;
-    color:#fff;
-    font-weight:800;
-    cursor:pointer;
+
+.amber {
+
+    background:
+        linear-gradient(
+            135deg,
+            #d97706,
+            #fbbf24
+        );
 }
 
-.btn:hover{
-    opacity:.9;
+
+.red {
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #fb7185
+        );
 }
 
-.verify{
-    background:#16a34a;
+
+.purple {
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #c084fc
+        );
 }
 
-.problem{
-    background:#dc2626;
+
+.stat-value {
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+    margin-top: 7px;
 }
 
-.message{
-    font-size:12px;
-    margin-top:5px;
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+.table-wrap {
+
+    overflow-x: auto;
 }
 
-.success{
-    color:#15803d;
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 1250px;
 }
 
-.error{
-    color:#b91c1c;
+
+th {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #2563eb
+        );
+
+    color: #fff;
+
+    padding: 13px;
+
+    text-align: left;
+
+    font-size: 13px;
+
+    white-space: nowrap;
 }
 
-.date{
-    white-space:nowrap;
+
+td {
+
+    padding: 12px;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+    vertical-align: middle;
+
+    font-size: 13px;
 }
 
-@media(max-width:800px){
 
-    .header{
-        padding:20px;
+tbody tr:hover {
+
+    background: #f8fafc;
+}
+
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.badge {
+
+    display: inline-block;
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.verified {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+
+.pending {
+
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+
+.issue {
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+
+.readonly {
+
+    background: #e0e7ff;
+
+    color: #3730a3;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn {
+
+    border: 0;
+
+    border-radius: 9px;
+
+    padding: 9px 13px;
+
+    color: #fff;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    margin-right: 5px;
+
+    margin-bottom: 4px;
+}
+
+
+.btn:hover {
+
+    opacity: .9;
+}
+
+
+.btn:disabled {
+
+    opacity: .5;
+
+    cursor: not-allowed;
+}
+
+
+.verify {
+
+    background: #16a34a;
+}
+
+
+.problem {
+
+    background: #dc2626;
+}
+
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+
+.message {
+
+    font-size: 12px;
+
+    margin-top: 5px;
+
+    min-height: 17px;
+}
+
+
+.success {
+
+    color: #15803d;
+
+    font-weight: 600;
+}
+
+
+.error {
+
+    color: #b91c1c;
+
+    font-weight: 600;
+}
+
+
+.info {
+
+    color: #1d4ed8;
+
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   DATE
+   ============================================================ */
+
+.date {
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   SESSION MESSAGE
+   ============================================================ */
+
+.session-status {
+
+    position: fixed;
+
+    right: 18px;
+
+    bottom: 18px;
+
+    background: #111827;
+
+    color: white;
+
+    padding: 9px 13px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    opacity: 0;
+
+    transition:
+        opacity .25s ease;
+
+    z-index: 9999;
+}
+
+
+.session-status.show {
+
+    opacity: 1;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media(max-width:800px) {
+
+    .header {
+
+        padding: 20px;
     }
 
-    .container{
-        padding:0 12px;
+
+    .header-content {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .header-actions {
+
+        width: 100%;
+    }
+
+
+    .container {
+
+        padding: 0 12px;
+    }
+
+
+    .welcome-card {
+
+        align-items: flex-start;
+
+        flex-direction: column;
     }
 
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+
 <header class="header">
 
-    <h1>CMS BOA EV Access Compliance Portal</h1>
+    <div class="header-content">
 
-    <p>
-        Access Verification System | Engineer Dashboard
-    </p>
+
+        <div>
+
+            <h1>
+                CMS BOA EV Access Compliance Portal
+            </h1>
+
+            <p>
+                Access Verification System | Engineer Dashboard
+            </p>
+
+        </div>
+
+
+        <div class="header-actions">
+
+
+            <div class="header-user">
+
+                Logged in as:
+
+                <strong>
+                    {{ engineer.alias }}
+                </strong>
+
+            </div>
+
+
+            <a
+                href="/change-password"
+                class="header-btn"
+            >
+                Change Password
+            </a>
+
+
+            <form
+                method="post"
+                action="/logout"
+                style="margin:0;"
+            >
+
+                <button
+                    type="submit"
+                    class="header-btn logout-btn"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+
+        </div>
+
+    </div>
 
 </header>
 
 
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+
 <main class="container">
 
 
-<section class="card">
+    <!-- ========================================================
+         WELCOME CARD
+         ======================================================== -->
 
-    <h2>Welcome, {{ engineer.name }}</h2>
-
-    <p>
-        Review application access and submit verification status.
-        ARM details are supervisor-managed and read-only here.
-    </p>
-
-</section>
+    <section class="card welcome-card">
 
 
-<section class="stats">
+        <div>
 
-    <div class="stat blue">
+            <h2 class="welcome-title">
 
-        <div>Total Access Records</div>
+                Welcome,
+                {{ engineer.name }}
 
-        <div class="stat-value" id="total">
-            {{ applications|length }}
+            </h2>
+
+
+            <p class="welcome-text">
+
+                Review your application access and
+                submit the verification status.
+
+                <br>
+
+                ARM details are supervisor-managed
+                and read-only here.
+
+            </p>
+
         </div>
 
-    </div>
+
+        <div class="engineer-details">
 
 
-    <div class="stat green">
+            <div class="detail-badge">
 
-        <div>Verified</div>
+                Alias:
 
-        <div class="stat-value" id="verified">
-            -
+                <strong>
+                    {{ engineer.alias }}
+                </strong>
+
+            </div>
+
+
+            {% if engineer.level %}
+
+            <div class="detail-badge">
+
+                Level:
+
+                <strong>
+                    {{ engineer.level }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if engineer.email %}
+
+            <div class="detail-badge">
+
+                Email:
+
+                <strong>
+                    {{ engineer.email }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
         </div>
 
-    </div>
+
+    </section>
 
 
-    <div class="stat amber">
+    <!-- ========================================================
+         STATS
+         ======================================================== -->
 
-        <div>Pending</div>
+    <section class="stats">
 
-        <div class="stat-value" id="pending">
-            -
+
+        <div class="stat blue">
+
+            <div>
+                Total Access Records
+            </div>
+
+            <div
+                class="stat-value"
+                id="total"
+            >
+                {{ applications|length }}
+            </div>
+
         </div>
 
-    </div>
 
+        <div class="stat green">
 
-    <div class="stat red">
+            <div>
+                Verified
+            </div>
 
-        <div>Issues</div>
+            <div
+                class="stat-value"
+                id="verified"
+            >
+                -
+            </div>
 
-        <div class="stat-value" id="issues">
-            -
         </div>
 
-    </div>
 
+        <div class="stat amber">
 
-    <div class="stat purple">
+            <div>
+                Pending
+            </div>
 
-        <div>ARM Completed</div>
+            <div
+                class="stat-value"
+                id="pending"
+            >
+                -
+            </div>
 
-        <div class="stat-value" id="armCompleted">
-            -
         </div>
 
-    </div>
 
-</section>
+        <div class="stat red">
+
+            <div>
+                Issues
+            </div>
+
+            <div
+                class="stat-value"
+                id="issues"
+            >
+                -
+            </div>
+
+        </div>
 
 
-<section class="card">
+        <div class="stat purple">
 
-    <div class="table-wrap">
+            <div>
+                ARM Completed
+            </div>
 
-        <table>
+            <div
+                class="stat-value"
+                id="armCompleted"
+            >
+                -
+            </div>
 
-            <thead>
+        </div>
 
-                <tr>
 
-                    <th>Application</th>
+    </section>
 
-                    <th>Access</th>
 
-                    <th>Verification</th>
+    <!-- ========================================================
+         APPLICATION TABLE
+         ======================================================== -->
 
-                    <th>Verification Action</th>
+    <section class="card">
 
-                    <th>ARM Request Number</th>
 
-                    <th>ARM Request Status</th>
+        <h2>
+            Application Access Verification
+        </h2>
 
-                    <th>Remarks</th>
 
-                    <th>Last Verified (IST)</th>
+        <p style="color:#6b7280;font-size:14px;">
 
-                </tr>
+            Verify each application when access has been
+            confirmed. Select <strong>Issue</strong> when
+            access is not correct and provide remarks.
 
-            </thead>
+        </p>
 
-            <tbody id="rows"></tbody>
 
-        </table>
+        <div class="table-wrap">
 
-    </div>
 
-</section>
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Application
+                        </th>
+
+                        <th>
+                            Access
+                        </th>
+
+                        <th>
+                            Verification
+                        </th>
+
+                        <th>
+                            Verification Action
+                        </th>
+
+                        <th>
+                            ARM Request Number
+                        </th>
+
+                        <th>
+                            ARM Request Status
+                        </th>
+
+                        <th>
+                            Remarks
+                        </th>
+
+                        <th>
+                            Last Verified (IST)
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="rows"></tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </section>
 
 
 </main>
 
 
+<!-- ============================================================
+     SESSION STATUS
+     ============================================================ -->
+
+<div
+    id="sessionStatus"
+    class="session-status"
+>
+    Session active
+</div>
+
+
 <script>
 
-const ENGINEER_ID = {{ engineer.id }};
+/* ============================================================
+   ENGINEER INFORMATION
+   ============================================================ */
 
-const initialApps = {{ applications|tojson }};
+const ENGINEER_ID =
+    {{ engineer.id }};
 
-
-const esc = v =>
-    String(v ?? '')
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#039;');
+const ENGINEER_ALIAS =
+    "{{ engineer.alias }}";
 
 
-function formatIST(v){
+const initialApps =
+    {{ applications | tojson }};
 
-    if(!v){
+
+/* ============================================================
+   HTML ESCAPE
+   ============================================================ */
+
+function esc(value) {
+
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+
+/* ============================================================
+   IST DATE FORMAT
+   ============================================================ */
+
+function formatIST(value) {
+
+    if (!value) {
+
         return '-';
+
     }
 
-    const d = new Date(v);
 
-    if(isNaN(d)){
+    const date =
+        new Date(value);
+
+
+    if (isNaN(date)) {
+
         return '-';
+
     }
+
 
     return new Intl.DateTimeFormat(
         'en-IN',
         {
-            timeZone:'Asia/Kolkata',
-            day:'2-digit',
-            month:'short',
-            year:'numeric',
-            hour:'2-digit',
-            minute:'2-digit',
-            second:'2-digit',
-            hour12:true,
-            timeZoneName:'short'
+            timeZone: 'Asia/Kolkata',
+
+            day: '2-digit',
+
+            month: 'short',
+
+            year: 'numeric',
+
+            hour: '2-digit',
+
+            minute: '2-digit',
+
+            second: '2-digit',
+
+            hour12: true,
+
+            timeZoneName: 'short'
         }
-    ).format(d);
+    ).format(date);
 
 }
 
 
-function badge(s){
+/* ============================================================
+   VERIFICATION BADGE
+   ============================================================ */
 
-    if(s === 'Verified'){
-        return '<span class="badge verified">✓ Verified</span>';
+function badge(status) {
+
+    if (status === 'Verified') {
+
+        return `
+            <span class="badge verified">
+                ✓ Verified
+            </span>
+        `;
+
     }
 
-    if(s === 'Issue'){
-        return '<span class="badge issue">⚠ Issue</span>';
+
+    if (status === 'Issue') {
+
+        return `
+            <span class="badge issue">
+                ⚠ Issue
+            </span>
+        `;
+
     }
 
-    return '<span class="badge pending">● Pending</span>';
-
-}
-
-
-function armBadge(s){
 
     return `
-        <span class="badge readonly">
-            ${esc(s || 'Not Required')}
+        <span class="badge pending">
+            ● Pending
         </span>
     `;
 
 }
 
 
-function render(apps){
+/* ============================================================
+   ARM BADGE
+   ============================================================ */
 
-    const body = document.getElementById('rows');
+function armBadge(status) {
+
+    return `
+        <span class="badge readonly">
+
+            ${esc(
+                status ||
+                'Not Required'
+            )}
+
+        </span>
+    `;
+
+}
+
+
+/* ============================================================
+   RENDER APPLICATIONS
+   ============================================================ */
+
+function render(apps) {
+
+    const body =
+        document.getElementById('rows');
+
 
     body.innerHTML = '';
 
+
     let verified = 0;
+
     let pending = 0;
+
     let issues = 0;
+
     let completed = 0;
 
 
-    apps.forEach(a => {
+    apps.forEach(
+        application => {
 
-        if(a.verification_status === 'Verified'){
+
+        /* ----------------------------------------------------
+           COUNTS
+           ---------------------------------------------------- */
+
+        if (
+            application.verification_status
+            === 'Verified'
+        ) {
+
             verified++;
+
         }
-        else if(a.verification_status === 'Issue'){
+        else if (
+            application.verification_status
+            === 'Issue'
+        ) {
+
             issues++;
+
         }
-        else{
+        else {
+
             pending++;
+
         }
 
 
-        if(a.ticket_status === 'Completed'){
+        if (
+            application.ticket_status
+            === 'Completed'
+        ) {
+
             completed++;
+
         }
 
 
-        const tr = document.createElement('tr');
+        /* ----------------------------------------------------
+           TABLE ROW
+           ---------------------------------------------------- */
+
+        const tr =
+            document.createElement('tr');
 
 
         tr.innerHTML = `
 
             <td>
-                ${esc(a.application_name)}
+
+                <strong>
+                    ${esc(
+                        application.application_name
+                    )}
+                </strong>
+
             </td>
 
 
             <td>
-                ${esc(a.access_status || '-')}
+
+                ${esc(
+                    application.access_status ||
+                    '-'
+                )}
+
             </td>
 
 
             <td>
-                ${badge(a.verification_status)}
+
+                ${badge(
+                    application.verification_status
+                )}
+
             </td>
 
 
             <td>
+
 
                 <button
+
                     class="btn verify"
-                    onclick="update(${a.application_id},'Verified')"
+
+                    onclick="
+                        update(
+                            ${application.application_id},
+                            'Verified'
+                        )
+                    "
+
                 >
+
                     ✓ Verify
+
                 </button>
 
 
                 <button
+
                     class="btn problem"
-                    onclick="update(${a.application_id},'Issue')"
+
+                    onclick="
+                        update(
+                            ${application.application_id},
+                            'Issue'
+                        )
+                    "
+
                 >
+
                     ✕ Issue
+
                 </button>
 
 
                 <div
+
                     class="message"
-                    id="m-${a.application_id}"
+
+                    id="m-${application.application_id}"
+
                 ></div>
 
+
             </td>
 
 
             <td>
-                ${esc(a.arm_ticket || '-')}
+
+                ${esc(
+                    application.arm_ticket ||
+                    '-'
+                )}
+
             </td>
 
 
             <td>
-                ${armBadge(a.ticket_status)}
+
+                ${armBadge(
+                    application.ticket_status
+                )}
+
             </td>
 
 
             <td>
-                ${esc(a.remarks || '-')}
+
+                ${esc(
+                    application.remarks ||
+                    '-'
+                )}
+
             </td>
 
 
             <td class="date">
-                ${formatIST(a.last_verified_date)}
+
+                ${formatIST(
+                    application.last_verified_date
+                )}
+
             </td>
 
         `;
@@ -492,46 +1348,56 @@ function render(apps){
     });
 
 
-    document.getElementById('verified').textContent = verified;
+    /* --------------------------------------------------------
+       UPDATE STATISTICS
+       -------------------------------------------------------- */
 
-    document.getElementById('pending').textContent = pending;
+    document
+        .getElementById('total')
+        .textContent = apps.length;
 
-    document.getElementById('issues').textContent = issues;
 
-    document.getElementById('armCompleted').textContent = completed;
+    document
+        .getElementById('verified')
+        .textContent = verified;
+
+
+    document
+        .getElementById('pending')
+        .textContent = pending;
+
+
+    document
+        .getElementById('issues')
+        .textContent = issues;
+
+
+    document
+        .getElementById('armCompleted')
+        .textContent = completed;
 
 }
 
 
-/*
-============================================================
+/* ============================================================
+   VERIFY / ISSUE UPDATE
+   ============================================================ */
 
-VERIFY / ISSUE UPDATE
+async function update(
+    applicationId,
+    status
+) {
 
-Verified:
-- No remarks asked
-- Remarks sent as null
-
-Issue:
-- Remarks mandatory
-- User must enter remarks
-- Maximum 200 characters
-
-============================================================
-*/
-
-async function update(appId, status){
 
     let remarks = null;
 
 
-    /*
-    --------------------------------------------------------
-    ONLY ASK FOR REMARKS WHEN STATUS IS ISSUE
-    --------------------------------------------------------
-    */
+    /* --------------------------------------------------------
+       ISSUE REQUIRES REMARKS
+       -------------------------------------------------------- */
 
-    if(status === 'Issue'){
+    if (status === 'Issue') {
+
 
         remarks = prompt(
             'Please enter remarks for this issue (maximum 200 characters):',
@@ -539,23 +1405,18 @@ async function update(appId, status){
         );
 
 
-        /*
-        User clicked Cancel
-        */
+        if (remarks === null) {
 
-        if(remarks === null){
             return;
+
         }
 
 
-        remarks = remarks.trim();
+        remarks =
+            remarks.trim();
 
 
-        /*
-        Remarks are mandatory for Issue
-        */
-
-        if(!remarks){
+        if (!remarks) {
 
             alert(
                 'Remarks are required when reporting an Issue.'
@@ -566,11 +1427,7 @@ async function update(appId, status){
         }
 
 
-        /*
-        Maximum length validation
-        */
-
-        if(remarks.length > 200){
+        if (remarks.length > 200) {
 
             alert(
                 'Remarks cannot exceed 200 characters.'
@@ -583,68 +1440,89 @@ async function update(appId, status){
     }
 
 
-    const m = document.getElementById(
-        `m-${appId}`
-    );
-
-
-    if(status === 'Verified'){
-
-        m.innerHTML =
-            'Saving verification...';
-
-    }
-    else{
-
-        m.innerHTML =
-            'Saving issue...';
-
-    }
-
-
-    try{
-
-        const r = await fetch(
-
-            `/verification/${ENGINEER_ID}/${appId}`,
-
-            {
-                method:'PATCH',
-
-                headers:{
-                    'Content-Type':'application/json'
-                },
-
-                body:JSON.stringify({
-
-                    status:status,
-
-                    remarks:remarks,
-
-                    performed_by:
-                        '{{ engineer.alias or engineer.email or engineer.name }}'
-
-                })
-
-            }
-
+    const message =
+        document.getElementById(
+            `m-${applicationId}`
         );
 
 
-        const d = await r.json();
+    message.innerHTML =
+        '<span class="info">Saving...</span>';
 
 
-        if(!r.ok){
+    try {
+
+
+        const response =
+            await fetch(
+                `/verification/${ENGINEER_ID}/${applicationId}`,
+                {
+                    method: 'PATCH',
+
+                    headers: {
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    credentials:
+                        'same-origin',
+
+                    body: JSON.stringify({
+
+                        status: status,
+
+                        remarks: remarks,
+
+                        performed_by:
+                            ENGINEER_ALIAS
+
+                    })
+                }
+            );
+
+
+        /* ----------------------------------------------------
+           SESSION EXPIRED
+           ---------------------------------------------------- */
+
+        if (
+            response.status === 401
+        ) {
+
+            window.location.href =
+                '/login';
+
+            return;
+
+        }
+
+
+        let data = {};
+
+        try {
+
+            data =
+                await response.json();
+
+        }
+        catch {
+
+            data = {};
+
+        }
+
+
+        if (!response.ok) {
 
             throw new Error(
-                d.detail ||
-                'Unable to update verification'
+                data.detail ||
+                'Unable to update verification.'
             );
 
         }
 
 
-        m.innerHTML =
+        message.innerHTML =
             '<span class="success">✓ Saved successfully</span>';
 
 
@@ -652,12 +1530,17 @@ async function update(appId, status){
 
 
     }
-    catch(e){
+    catch (error) {
 
-        m.innerHTML = `
+
+        message.innerHTML = `
 
             <span class="error">
-                ✕ ${esc(e.message)}
+
+                ✕ ${esc(
+                    error.message
+                )}
+
             </span>
 
         `;
@@ -667,37 +1550,63 @@ async function update(appId, status){
 }
 
 
-/*
-============================================================
-RELOAD ENGINEER ACCESS DATA
-============================================================
-*/
+/* ============================================================
+   RELOAD ENGINEER ACCESS DATA
+   ============================================================ */
 
-async function reload(){
+async function reload() {
 
-    try{
-
-        const r = await fetch(
-            `/engineers/${ENGINEER_ID}/access`
-        );
+    try {
 
 
-        if(r.ok){
-
-            const d = await r.json();
-
-            render(
-                d.applications || []
+        const response =
+            await fetch(
+                `/engineers/${ENGINEER_ID}/access`,
+                {
+                    credentials:
+                        'same-origin'
+                }
             );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            window.location.href =
+                '/login';
+
+            return;
 
         }
 
+
+        if (!response.ok) {
+
+            console.error(
+                'Unable to reload access data'
+            );
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        render(
+            data.applications || []
+        );
+
+
     }
-    catch(e){
+    catch (error) {
 
         console.error(
             'Unable to reload access data:',
-            e
+            error
         );
 
     }
@@ -705,15 +1614,146 @@ async function reload(){
 }
 
 
-/*
-============================================================
-INITIAL LOAD
-============================================================
-*/
+/* ============================================================
+   SESSION REFRESH
+   ============================================================
 
-render(initialApps);
+   The session is refreshed every 5 minutes.
+
+   This allows the engineer to remain logged in
+   while actively using the portal.
+
+   ============================================================ */
+
+(function () {
+
+
+    const REFRESH_INTERVAL =
+        5 * 60 * 1000;
+
+
+    async function refreshSession() {
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    '/session/refresh',
+                    {
+                        method: 'POST',
+
+                        credentials:
+                            'same-origin',
+
+                        headers: {
+                            'X-Requested-With':
+                                'XMLHttpRequest'
+                        }
+                    }
+                );
+
+
+            if (
+                response.status === 401
+            ) {
+
+                window.location.href =
+                    '/login';
+
+                return;
+
+            }
+
+
+            if (response.ok) {
+
+                showSessionMessage(
+                    'Session refreshed'
+                );
+
+            }
+
+
+        }
+        catch (error) {
+
+            console.warn(
+                'Session refresh failed:',
+                error
+            );
+
+        }
+
+    }
+
+
+    function showSessionMessage(
+        message
+    ) {
+
+
+        const element =
+            document.getElementById(
+                'sessionStatus'
+            );
+
+
+        if (!element) {
+
+            return;
+
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.classList.add(
+            'show'
+        );
+
+
+        setTimeout(
+            function () {
+
+                element.classList.remove(
+                    'show'
+                );
+
+            },
+            2500
+        );
+
+    }
+
+
+    /*
+     * First refresh after 5 minutes.
+     */
+
+    setInterval(
+        refreshSession,
+        REFRESH_INTERVAL
+    );
+
+
+})();
+
+
+/* ============================================================
+   INITIAL RENDER
+   ============================================================ */
+
+render(
+    initialApps
+);
 
 </script>
 
+
 </body>
+
 </html>
