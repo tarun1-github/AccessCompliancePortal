@@ -1,1794 +1,705 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>
-    CMS BOA EV Access Compliance Portal
-</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMS BOA EV Access Compliance Portal - Access Verification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --success: #059669;
+    --success-dark: #047857;
+    --danger: #dc2626;
+    --danger-dark: #b91c1c;
+    --warning: #d97706;
+    --purple: #7c3aed;
+    --bg-gradient: linear-gradient(135deg, #eef4ff 0%, #f8fbff 50%, #eefbf4 100%);
+    --card-bg: rgba(255, 255, 255, 0.96);
+    --card-border: 1px solid rgba(226, 232, 240, 0.95);
+    --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
 
 * {
     box-sizing: border-box;
 }
 
-
 body {
-
     margin: 0;
-
-    font-family:
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    background:
-        linear-gradient(
-            135deg,
-            #eef4ff,
-            #f8fbff,
-            #eefbf4
-        );
-
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: var(--bg-gradient);
     color: #1f2937;
+    min-height: 100vh;
 }
 
+h1, h2, h3, .stat-value, .welcome-title {
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+}
 
 /* ============================================================
    HEADER
    ============================================================ */
-
 .header {
-
-    background:
-        linear-gradient(
-            135deg,
-            #0f172a,
-            #1d4ed8,
-            #0891b2
-        );
-
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #0891b2 100%);
     color: #fff;
-
-    padding: 22px 32px;
+    padding: 20px 32px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.22);
 }
 
-
 .header-content {
-
     max-width: 1500px;
-
     margin: auto;
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     gap: 20px;
 }
 
-
 .header h1 {
-
     margin: 0;
-
-    font-size: 25px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-
 
 .header p {
-
-    margin: 7px 0 0;
-
-    opacity: .9;
-
-    font-size: 14px;
+    margin: 4px 0 0;
+    opacity: 0.9;
+    font-size: 13.5px;
 }
 
-
-/* ============================================================
-   HEADER ACTIONS
-   ============================================================ */
-
 .header-actions {
-
     display: flex;
-
     align-items: center;
-
     gap: 10px;
-
     flex-wrap: wrap;
 }
 
-
 .header-user {
-
     font-size: 13px;
-
-    background:
-        rgba(255,255,255,.12);
-
-    padding: 9px 13px;
-
-    border-radius: 8px;
-
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    padding: 8px 14px;
+    border-radius: 10px;
     white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.25);
 }
-
 
 .header-btn {
-
-    border: 1px solid
-        rgba(255,255,255,.35);
-
-    border-radius: 8px;
-
-    padding: 9px 13px;
-
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    padding: 8px 14px;
     color: white;
-
-    background:
-        rgba(255,255,255,.12);
-
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(8px);
     font-size: 13px;
-
     font-weight: 700;
-
     cursor: pointer;
-
     text-decoration: none;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
-
 
 .header-btn:hover {
-
-    background:
-        rgba(255,255,255,.22);
+    background: rgba(255, 255, 255, 0.26);
+    transform: translateY(-1px);
 }
-
 
 .logout-btn {
-
-    background:
-        rgba(220,38,38,.85);
-
-    border-color:
-        rgba(255,255,255,.25);
+    background: rgba(220, 38, 38, 0.85);
+    border-color: rgba(255, 255, 255, 0.25);
 }
-
-
 .logout-btn:hover {
-
-    background:
-        #b91c1c;
+    background: #b91c1c;
 }
-
 
 /* ============================================================
-   CONTAINER
+   CONTAINER & CARDS
    ============================================================ */
-
 .container {
-
     max-width: 1500px;
-
-    margin: 28px auto;
-
+    margin: 24px auto;
     padding: 0 22px;
 }
 
-
-/* ============================================================
-   CARD
-   ============================================================ */
-
 .card {
-
-    background: #fff;
-
+    background: var(--card-bg);
     border-radius: 18px;
-
     padding: 24px;
-
     margin-bottom: 22px;
-
-    box-shadow:
-        0 10px 30px
-        rgba(15,23,42,.07);
+    box-shadow: var(--shadow-soft);
+    border: var(--card-border);
+    backdrop-filter: blur(10px);
 }
-
-
-/* ============================================================
-   WELCOME
-   ============================================================ */
 
 .welcome-card {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     gap: 20px;
-
     flex-wrap: wrap;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+    border: 1px solid #bfdbfe;
 }
-
 
 .welcome-title {
-
-    margin: 0 0 7px;
-
-    color: #111827;
+    margin: 0 0 6px;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 800;
 }
-
 
 .welcome-text {
-
     margin: 0;
-
-    color: #6b7280;
-
-    line-height: 1.6;
+    color: #64748b;
+    line-height: 1.5;
+    font-size: 14px;
 }
 
-
 .engineer-details {
-
     display: flex;
-
     gap: 10px;
-
     flex-wrap: wrap;
 }
 
-
 .detail-badge {
-
-    background: #f1f5f9;
-
+    background: #f8fafc;
     border: 1px solid #e2e8f0;
-
-    border-radius: 9px;
-
-    padding: 9px 12px;
-
+    border-radius: 10px;
+    padding: 8px 14px;
     font-size: 13px;
-
     color: #475569;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
-
 
 .detail-badge strong {
-
-    color: #111827;
+    color: #0f172a;
 }
-
 
 /* ============================================================
    STATS
    ============================================================ */
-
 .stats {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(180px,1fr)
-        );
-
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 16px;
-
     margin-bottom: 22px;
 }
 
-
 .stat {
-
-    padding: 20px;
-
-    border-radius: 18px;
-
     color: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease;
 }
 
-
-.blue {
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #60a5fa
-        );
+.stat:hover {
+    transform: translateY(-2px);
 }
 
-
-.green {
-
-    background:
-        linear-gradient(
-            135deg,
-            #059669,
-            #34d399
-        );
+.stat-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    opacity: 0.92;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
-
-
-.amber {
-
-    background:
-        linear-gradient(
-            135deg,
-            #d97706,
-            #fbbf24
-        );
-}
-
-
-.red {
-
-    background:
-        linear-gradient(
-            135deg,
-            #dc2626,
-            #fb7185
-        );
-}
-
-
-.purple {
-
-    background:
-        linear-gradient(
-            135deg,
-            #7c3aed,
-            #c084fc
-        );
-}
-
 
 .stat-value {
-
-    font-size: 30px;
-
+    font-size: 32px;
     font-weight: 800;
-
-    margin-top: 7px;
+    margin-top: 6px;
+    letter-spacing: -0.5px;
 }
 
+.blue { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+.green { background: linear-gradient(135deg, #059669, #34d399); }
+.amber { background: linear-gradient(135deg, #d97706, #fbbf24); }
+.red { background: linear-gradient(135deg, #dc2626, #fb7185); }
+.purple { background: linear-gradient(135deg, #7c3aed, #c084fc); }
+
+/* ============================================================
+   3D TACTILE BUTTONS
+   ============================================================ */
+.btn-3d {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 0;
+    border-radius: 9px;
+    padding: 8px 15px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    user-select: none;
+    text-decoration: none;
+}
+
+.btn-3d-verify {
+    background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 3.5px 0 #047857, 0 6px 12px rgba(16, 185, 129, 0.3);
+}
+.btn-3d-verify:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1.5px);
+    box-shadow: 0 5px 0 #047857, 0 8px 16px rgba(16, 185, 129, 0.35);
+}
+.btn-3d-verify:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #047857;
+}
+
+.btn-3d-issue {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    box-shadow: 0 3.5px 0 #b91c1c, 0 6px 12px rgba(239, 68, 68, 0.3);
+}
+.btn-3d-issue:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1.5px);
+    box-shadow: 0 5px 0 #b91c1c, 0 8px 16px rgba(239, 68, 68, 0.35);
+}
+.btn-3d-issue:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #b91c1c;
+}
+
+.btn-3d-primary {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 3.5px 0 #1d4ed8, 0 6px 12px rgba(37, 99, 235, 0.3);
+}
+.btn-3d-primary:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1.5px);
+    box-shadow: 0 5px 0 #1d4ed8, 0 8px 16px rgba(37, 99, 235, 0.35);
+}
+.btn-3d-primary:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #1d4ed8;
+}
+
+/* ============================================================
+   ADD APPLICATION CARD
+   ============================================================ */
+.add-app-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    margin: 16px 0 20px;
+    border: 1px solid #bfdbfe;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+    box-shadow: inset 0 1px 3px rgba(255,255,255,0.8), 0 4px 12px rgba(37, 99, 235, 0.06);
+}
+
+.add-app-box input, .add-app-box select {
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 13.5px;
+    background: #fff;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.add-app-box input:focus, .add-app-box select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
 
 /* ============================================================
    TABLE
    ============================================================ */
-
 .table-wrap {
-
     overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
 }
-
 
 table {
-
     width: 100%;
-
     border-collapse: collapse;
-
-    min-width: 1250px;
+    min-width: 1100px;
+    background: #fff;
 }
 
-
 th {
-
-    background:
-        linear-gradient(
-            135deg,
-            #1e3a8a,
-            #2563eb
-        );
-
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
     color: #fff;
-
-    padding: 13px;
-
-    text-align: left;
-
+    padding: 14px 16px;
     font-size: 13px;
-
+    font-weight: 700;
+    text-align: left;
     white-space: nowrap;
 }
 
-
 td {
-
-    padding: 12px;
-
-    border-bottom:
-        1px solid #e2e8f0;
-
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
     vertical-align: middle;
-
-    font-size: 13px;
+    font-size: 13.5px;
 }
 
-
-tbody tr:hover {
-
+tr:hover {
     background: #f8fafc;
 }
-
 
 /* ============================================================
    BADGES
    ============================================================ */
-
 .badge {
-
-    display: inline-block;
-
-    padding: 7px 11px;
-
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 11px;
     border-radius: 20px;
-
     font-size: 12px;
-
-    font-weight: 800;
-
+    font-weight: 700;
     white-space: nowrap;
 }
 
-
-.verified {
-
-    background: #dcfce7;
-
-    color: #166534;
-}
-
-
-.pending {
-
-    background: #fef3c7;
-
-    color: #92400e;
-}
-
-
-.issue {
-
-    background: #fee2e2;
-
-    color: #991b1b;
-}
-
-
-.readonly {
-
-    background: #e0e7ff;
-
-    color: #3730a3;
-}
-
-
-/* ============================================================
-   BUTTONS
-   ============================================================ */
-
-.btn {
-
-    border: 0;
-
-    border-radius: 9px;
-
-    padding: 9px 13px;
-
-    color: #fff;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    margin-right: 5px;
-
-    margin-bottom: 4px;
-}
-
-
-.btn:hover {
-
-    opacity: .9;
-}
-
-
-.btn:disabled {
-
-    opacity: .5;
-
-    cursor: not-allowed;
-}
-
-
-.verify {
-
-    background: #16a34a;
-}
-
-
-.problem {
-
-    background: #dc2626;
-}
-
-
-/* ============================================================
-   MESSAGES
-   ============================================================ */
+.verified { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.issue { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.not-init { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
+.in-prog { background: #fef08a; color: #854d0e; border: 1px solid #fde047; }
+.approval { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+.completed { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
 
 .message {
-
     font-size: 12px;
-
     margin-top: 5px;
-
-    min-height: 17px;
-}
-
-
-.success {
-
-    color: #15803d;
-
+    min-height: 16px;
     font-weight: 600;
 }
-
-
-.error {
-
-    color: #b91c1c;
-
-    font-weight: 600;
-}
-
-
-.info {
-
-    color: #1d4ed8;
-
-    font-weight: 600;
-}
-
-
-/* ============================================================
-   DATE
-   ============================================================ */
-
-.date {
-
-    white-space: nowrap;
-}
-
-
-/* ============================================================
-   SESSION MESSAGE
-   ============================================================ */
+.success { color: #15803d; }
+.error { color: #b91c1c; }
+.info { color: #1d4ed8; }
 
 .session-status {
-
     position: fixed;
-
     right: 18px;
-
     bottom: 18px;
-
     background: #111827;
-
     color: white;
-
-    padding: 9px 13px;
-
-    border-radius: 8px;
-
+    padding: 9px 15px;
+    border-radius: 10px;
     font-size: 12px;
-
+    font-weight: 600;
     opacity: 0;
-
-    transition:
-        opacity .25s ease;
-
+    transition: opacity 0.25s ease;
     z-index: 9999;
 }
-
-
-.session-status.show {
-
-    opacity: 1;
-}
-
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+.session-status.show { opacity: 1; }
 
 @media(max-width:800px) {
-
-    .header {
-
-        padding: 20px;
-    }
-
-
-    .header-content {
-
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-
-    .header-actions {
-
-        width: 100%;
-    }
-
-
-    .container {
-
-        padding: 0 12px;
-    }
-
-
-    .welcome-card {
-
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
+    .header-content { align-items: flex-start; flex-direction: column; }
+    .header-actions { width: 100%; }
+    .container { padding: 0 12px; }
+    .welcome-card { flex-direction: column; align-items: flex-start; }
 }
-
 </style>
-
 </head>
-
-
 <body>
 
-
-<!-- ============================================================
-     HEADER
-     ============================================================ -->
-
 <header class="header">
-
     <div class="header-content">
-
-
         <div>
-
-            <h1>
-                CMS BOA EV Access Compliance Portal
-            </h1>
-
-            <p>
-                Access Verification System | Engineer Dashboard
-            </p>
-
+            <h1>🛡️ CMS BOA EV Access Compliance Portal</h1>
+            <p>Access Verification System | Engineer Self-Service Portal</p>
         </div>
-
-
         <div class="header-actions">
-
-
             <div class="header-user">
-
-                Logged in as:
-
-                <strong>
-                    {{ engineer.alias }}
-                </strong>
-
+                👤 Logged in: <strong>{{ engineer.alias }}</strong>
             </div>
-
-
-            <a
-                href="/change-password"
-                class="header-btn"
-            >
-                Change Password
+            <a href="/change-password" class="header-btn">
+                🔑 Change Password
             </a>
-
-
-            <form
-                method="post"
-                action="/logout"
-                style="margin:0;"
-            >
-
-                <button
-                    type="submit"
-                    class="header-btn logout-btn"
-                >
-                    Logout
+            <form method="post" action="/logout" style="margin:0;">
+                <button type="submit" class="header-btn logout-btn">
+                    🚪 Logout
                 </button>
-
             </form>
-
-
         </div>
-
     </div>
-
 </header>
-
-
-<!-- ============================================================
-     MAIN
-     ============================================================ -->
 
 <main class="container">
 
-
-    <!-- ========================================================
-         WELCOME CARD
-         ======================================================== -->
-
-    <section class="card welcome-card">
-
-
-        <div>
-
-            <h2 class="welcome-title">
-
-                Welcome,
-                {{ engineer.name }}
-
-            </h2>
-
-
-            <p class="welcome-text">
-
-                Review your application access and
-                submit the verification status.
-
-                <br>
-
-                ARM details are supervisor-managed
-                and read-only here.
-
-            </p>
-
-        </div>
-
-
-        <div class="engineer-details">
-
-
-            <div class="detail-badge">
-
-                Alias:
-
-                <strong>
-                    {{ engineer.alias }}
-                </strong>
-
-            </div>
-
-
-            {% if engineer.level %}
-
-            <div class="detail-badge">
-
-                Level:
-
-                <strong>
-                    {{ engineer.level }}
-                </strong>
-
-            </div>
-
-            {% endif %}
-
-
-            {% if engineer.email %}
-
-            <div class="detail-badge">
-
-                Email:
-
-                <strong>
-                    {{ engineer.email }}
-                </strong>
-
-            </div>
-
-            {% endif %}
-
-        </div>
-
-
-    </section>
-
-
-    <!-- ========================================================
-         STATS
-         ======================================================== -->
-
-    <section class="stats">
-
-
-        <div class="stat blue">
-
-            <div>
-                Total Access Records
-            </div>
-
-            <div
-                class="stat-value"
-                id="total"
-            >
-                {{ applications|length }}
-            </div>
-
-        </div>
-
-
-        <div class="stat green">
-
-            <div>
-                Verified
-            </div>
-
-            <div
-                class="stat-value"
-                id="verified"
-            >
-                -
-            </div>
-
-        </div>
-
-
-        <div class="stat amber">
-
-            <div>
-                Pending
-            </div>
-
-            <div
-                class="stat-value"
-                id="pending"
-            >
-                -
-            </div>
-
-        </div>
-
-
-        <div class="stat red">
-
-            <div>
-                Issues
-            </div>
-
-            <div
-                class="stat-value"
-                id="issues"
-            >
-                -
-            </div>
-
-        </div>
-
-
-        <div class="stat purple">
-
-            <div>
-                ARM Completed
-            </div>
-
-            <div
-                class="stat-value"
-                id="armCompleted"
-            >
-                -
-            </div>
-
-        </div>
-
-
-    </section>
-
-
-    <!-- ========================================================
-         APPLICATION TABLE
-         ======================================================== -->
-
-    <section class="card">
-
-
-        <h2>
-            Application Access Verification
-        </h2>
-
-
-        <p style="color:#6b7280;font-size:14px;">
-
-            Verify each application when access has been
-            confirmed. Select <strong>Issue</strong> when
-            access is not correct and provide remarks.
-
+<!-- WELCOME CARD -->
+<section class="card welcome-card">
+    <div>
+        <h2 class="welcome-title">Welcome, {{ engineer.name }}</h2>
+        <p class="welcome-text">
+            Review your application access list below and submit your verification status.<br>
+            Request numbers and statuses are supervisor-managed and read-only here.
         </p>
-
-
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px;margin:16px 0;border:1px solid #bfdbfe;border-radius:12px;background:linear-gradient(135deg,#eff6ff,#ecfeff)">
-            <strong>➕ Add application</strong>
-            <input id="newApplicationName" maxlength="200" placeholder="Application name" style="flex:1;min-width:180px">
-            <input id="newApplicationAccess" maxlength="50" value="Required" placeholder="Access status" style="flex:1;min-width:150px">
-            <button class="btn verify" onclick="addApplication()">Add application</button>
-            <span id="addApplicationMessage"></span>
+    </div>
+    <div class="engineer-details">
+        <div class="detail-badge">
+            Alias: <strong>{{ engineer.alias }}</strong>
         </div>
-
-        <div class="table-wrap">
-
-
-            <table>
-
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Application
-                        </th>
-
-                        <th>
-                            Access
-                        </th>
-
-                        <th>
-                            Verification
-                        </th>
-
-                        <th>
-                            Verification Action
-                        </th>
-
-                        <th>
-                            Request Number
-                        </th>
-
-                        <th>
-                            ARM Request Status
-                        </th>
-
-                        <th>
-                            Remarks
-                        </th>
-
-                        <th>
-                            Last Verified (IST)
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="rows"></tbody>
-
-
-            </table>
-
-
+        {% if engineer.level %}
+        <div class="detail-badge">
+            Level: <strong>{{ engineer.level }}</strong>
         </div>
+        {% endif %}
+        {% if engineer.email %}
+        <div class="detail-badge">
+            Email: <strong>{{ engineer.email }}</strong>
+        </div>
+        {% endif %}
+    </div>
+</section>
 
+<!-- STATS -->
+<section class="stats">
+    <div class="stat blue">
+        <div class="stat-label">Total Applications</div>
+        <div class="stat-value" id="total">{{ applications|length }}</div>
+    </div>
+    <div class="stat green">
+        <div class="stat-label">Verified</div>
+        <div class="stat-value" id="verified">-</div>
+    </div>
+    <div class="stat amber">
+        <div class="stat-label">Pending Verification</div>
+        <div class="stat-value" id="pending">-</div>
+    </div>
+    <div class="stat red">
+        <div class="stat-label">Issues Reported</div>
+        <div class="stat-value" id="issues">-</div>
+    </div>
+    <div class="stat purple">
+        <div class="stat-label">Requests Completed</div>
+        <div class="stat-value" id="armCompleted">-</div>
+    </div>
+</section>
 
-    </section>
+<!-- APPLICATION ACCESS & VERIFICATION TABLE -->
+<section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <div>
+            <h2>📋 Application Access Verification</h2>
+            <p class="welcome-text">Verify each application when your access has been confirmed. Select <strong>Issue</strong> if access is missing or incorrect.</p>
+        </div>
+    </div>
 
+    <!-- ADD APPLICATION BAR -->
+    <div class="add-app-box">
+        <strong style="color:#1e3a8a;font-size:14px;display:flex;align-items:center;gap:6px;">
+            ➕ Add Application to My List:
+        </strong>
+        <input id="newApplicationName" maxlength="200" placeholder="e.g. Citrix, ServiceNow, Slack" style="flex:1;min-width:180px;">
+        <select id="newApplicationAccess" style="width:140px;">
+            <option value="Required" selected>Required</option>
+            <option value="Optional">Optional</option>
+            <option value="Standard">Standard</option>
+        </select>
+        <button class="btn-3d btn-3d-primary" onclick="addApplication()">
+            ➕ Add Application
+        </button>
+        <div id="addApplicationMessage" class="message" style="width:100%;"></div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Application</th>
+                    <th>Access Status</th>
+                    <th>Verification</th>
+                    <th>Verification Action</th>
+                    <th>Request Number</th>
+                    <th>Request Status</th>
+                    <th>Remarks</th>
+                    <th>Last Verified (IST)</th>
+                </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+        </table>
+    </div>
+</section>
 
 </main>
 
-
-<!-- ============================================================
-     SESSION STATUS
-     ============================================================ -->
-
-<div
-    id="sessionStatus"
-    class="session-status"
->
+<div id="sessionStatus" class="session-status">
     Session active
 </div>
 
-
 <script>
-
-/* ============================================================
-   ENGINEER INFORMATION
-   ============================================================ */
-
-const ENGINEER_ID =
-    {{ engineer.id }};
-
-const ENGINEER_ALIAS =
-    "{{ engineer.alias }}";
-
-
-const initialApps =
-    {{ applications | tojson }};
-
-
-async function addApplication() {
-    const name = document.getElementById('newApplicationName').value.trim();
-    const accessStatus = document.getElementById('newApplicationAccess').value.trim();
-    const message = document.getElementById('addApplicationMessage');
-    if (!name || !accessStatus) {
-        message.textContent = 'Application name and access status are required.';
-        return;
-    }
-    message.textContent = 'Adding application...';
-    try {
-        const response = await fetch(`/api/engineers/${ENGINEER_ID}/applications`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'same-origin',
-            body: JSON.stringify({name, access_status: accessStatus})
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.detail || 'Unable to add application.');
-        message.textContent = data.message;
-        document.getElementById('newApplicationName').value = '';
-        await reload();
-    } catch (error) {
-        message.textContent = error.message;
-    }
-}
-
-
-/* ============================================================
-   HTML ESCAPE
-   ============================================================ */
+const ENGINEER_ID = {{ engineer.id }};
+const ENGINEER_ALIAS = "{{ engineer.alias }}";
+const initialApps = {{ applications | tojson }};
 
 function esc(value) {
-
     return String(value ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
-
 }
-
-
-/* ============================================================
-   IST DATE FORMAT
-   ============================================================ */
 
 function formatIST(value) {
-
-    if (!value) {
-
-        return '-';
-
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (isNaN(date)) {
-
-        return '-';
-
-    }
-
-
-    return new Intl.DateTimeFormat(
-        'en-IN',
-        {
-            timeZone: 'Asia/Kolkata',
-
-            day: '2-digit',
-
-            month: 'short',
-
-            year: 'numeric',
-
-            hour: '2-digit',
-
-            minute: '2-digit',
-
-            second: '2-digit',
-
-            hour12: true,
-
-            timeZoneName: 'short'
-        }
-    ).format(date);
-
+    if (!value) return '-';
+    const date = new Date(value);
+    if (isNaN(date)) return '-';
+    return new Intl.DateTimeFormat('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true, timeZoneName: 'short'
+    }).format(date);
 }
-
-
-/* ============================================================
-   VERIFICATION BADGE
-   ============================================================ */
 
 function badge(status) {
-
-    if (status === 'Verified') {
-
-        return `
-            <span class="badge verified">
-                ✓ Verified
-            </span>
-        `;
-
-    }
-
-
-    if (status === 'Issue') {
-
-        return `
-            <span class="badge issue">
-                ⚠ Issue
-            </span>
-        `;
-
-    }
-
-
-    return `
-        <span class="badge pending">
-            ● Pending
-        </span>
-    `;
-
+    if (status === 'Verified') return '<span class="badge verified">✓ Verified</span>';
+    if (status === 'Issue') return '<span class="badge issue">⚠ Issue</span>';
+    return '<span class="badge pending">⏳ Pending</span>';
 }
-
-
-/* ============================================================
-   ARM BADGE
-   ============================================================ */
 
 function armBadge(status) {
-
-    return `
-        <span class="badge readonly">
-
-            ${esc(
-                status ||
-                'Not Started'
-            )}
-
-        </span>
-    `;
-
+    if (status === 'Completed') return '<span class="badge completed">✓ Completed</span>';
+    if (status === 'Pending Approval') return '<span class="badge approval">⏳ Approval Pending</span>';
+    if (status === 'In Progress') return '<span class="badge in-prog">⚡ In Progress</span>';
+    return '<span class="badge not-init">● Not Started</span>';
 }
-
-
-/* ============================================================
-   RENDER APPLICATIONS
-   ============================================================ */
 
 function render(apps) {
-
-    const body =
-        document.getElementById('rows');
-
-
+    const body = document.getElementById('rows');
     body.innerHTML = '';
 
+    let verified = 0, pending = 0, issues = 0, completed = 0;
 
-    let verified = 0;
+    apps.forEach(app => {
+        if (app.verification_status === 'Verified') verified++;
+        else if (app.verification_status === 'Issue') issues++;
+        else pending++;
 
-    let pending = 0;
+        if (app.ticket_status === 'Completed') completed++;
 
-    let issues = 0;
-
-    let completed = 0;
-
-
-    apps.forEach(
-        application => {
-
-
-        /* ----------------------------------------------------
-           COUNTS
-           ---------------------------------------------------- */
-
-        if (
-            application.verification_status
-            === 'Verified'
-        ) {
-
-            verified++;
-
-        }
-        else if (
-            application.verification_status
-            === 'Issue'
-        ) {
-
-            issues++;
-
-        }
-        else {
-
-            pending++;
-
-        }
-
-
-        if (
-            application.ticket_status
-            === 'Completed'
-        ) {
-
-            completed++;
-
-        }
-
-
-        /* ----------------------------------------------------
-           TABLE ROW
-           ---------------------------------------------------- */
-
-        const tr =
-            document.createElement('tr');
-
-
+        const tr = document.createElement('tr');
         tr.innerHTML = `
-
+            <td><strong>${esc(app.application_name)}</strong></td>
+            <td><span class="badge not-init">${esc(app.access_status || '-')}</span></td>
+            <td>${badge(app.verification_status)}</td>
             <td>
-
-                <strong>
-                    ${esc(
-                        application.application_name
-                    )}
-                </strong>
-
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                    <button class="btn-3d btn-3d-verify" onclick="update(${app.application_id}, 'Verified')">
+                        ✓ Verify
+                    </button>
+                    <button class="btn-3d btn-3d-issue" onclick="update(${app.application_id}, 'Issue')">
+                        ✕ Issue
+                    </button>
+                </div>
+                <div class="message" id="m-${app.application_id}"></div>
             </td>
-
-
-            <td>
-
-                ${esc(
-                    application.access_status ||
-                    '-'
-                )}
-
-            </td>
-
-
-            <td>
-
-                ${badge(
-                    application.verification_status
-                )}
-
-            </td>
-
-
-            <td>
-
-
-                <button
-
-                    class="btn verify"
-
-                    onclick="
-                        update(
-                            ${application.application_id},
-                            'Verified'
-                        )
-                    "
-
-                >
-
-                    ✓ Verify
-
-                </button>
-
-
-                <button
-
-                    class="btn problem"
-
-                    onclick="
-                        update(
-                            ${application.application_id},
-                            'Issue'
-                        )
-                    "
-
-                >
-
-                    ✕ Issue
-
-                </button>
-
-
-                <div
-
-                    class="message"
-
-                    id="m-${application.application_id}"
-
-                ></div>
-
-
-            </td>
-
-
-            <td>
-
-                ${esc(
-                    application.arm_ticket ||
-                    '-'
-                )}
-
-            </td>
-
-
-            <td>
-
-                ${armBadge(
-                    application.ticket_status
-                )}
-
-            </td>
-
-
-            <td>
-
-                ${esc(
-                    application.remarks ||
-                    '-'
-                )}
-
-            </td>
-
-
-            <td class="date">
-
-                ${formatIST(
-                    application.last_verified_date
-                )}
-
-            </td>
-
+            <td><code>${esc(app.arm_ticket || '-')}</code></td>
+            <td>${armBadge(app.ticket_status)}</td>
+            <td>${esc(app.remarks || '-')}</td>
+            <td style="white-space:nowrap;font-size:12.5px;">${formatIST(app.last_verified_date)}</td>
         `;
-
-
         body.appendChild(tr);
-
     });
 
-
-    /* --------------------------------------------------------
-       UPDATE STATISTICS
-       -------------------------------------------------------- */
-
-    document
-        .getElementById('total')
-        .textContent = apps.length;
-
-
-    document
-        .getElementById('verified')
-        .textContent = verified;
-
-
-    document
-        .getElementById('pending')
-        .textContent = pending;
-
-
-    document
-        .getElementById('issues')
-        .textContent = issues;
-
-
-    document
-        .getElementById('armCompleted')
-        .textContent = completed;
-
+    document.getElementById('total').textContent = apps.length;
+    document.getElementById('verified').textContent = verified;
+    document.getElementById('pending').textContent = pending;
+    document.getElementById('issues').textContent = issues;
+    document.getElementById('armCompleted').textContent = completed;
 }
 
+async function addApplication() {
+    const name = document.getElementById('newApplicationName').value.trim();
+    const accessStatus = document.getElementById('newApplicationAccess').value.trim();
+    const message = document.getElementById('addApplicationMessage');
 
-/* ============================================================
-   VERIFY / ISSUE UPDATE
-   ============================================================ */
-
-async function update(
-    applicationId,
-    status
-) {
-
-
-    let remarks = null;
-
-
-    /* --------------------------------------------------------
-       ISSUE REQUIRES REMARKS
-       -------------------------------------------------------- */
-
-    if (status === 'Issue') {
-
-
-        remarks = prompt(
-            'Please enter remarks for this issue (maximum 200 characters):',
-            ''
-        );
-
-
-        if (remarks === null) {
-
-            return;
-
-        }
-
-
-        remarks =
-            remarks.trim();
-
-
-        if (!remarks) {
-
-            alert(
-                'Remarks are required when reporting an Issue.'
-            );
-
-            return;
-
-        }
-
-
-        if (remarks.length > 200) {
-
-            alert(
-                'Remarks cannot exceed 200 characters.'
-            );
-
-            return;
-
-        }
-
+    if (!name) {
+        message.innerHTML = '<span class="error">⚠️ Application name is required.</span>';
+        return;
     }
 
+    message.innerHTML = '<span class="info">⏳ Adding application...</span>';
+    try {
+        const response = await fetch(`/api/engineers/${ENGINEER_ID}/applications`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ name, access_status: accessStatus })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Unable to add application.');
 
-    const message =
-        document.getElementById(
-            `m-${applicationId}`
-        );
+        message.innerHTML = `<span class="success">✓ ${esc(data.message)}</span>`;
+        document.getElementById('newApplicationName').value = '';
+        await reload();
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
 
+async function update(applicationId, status) {
+    let remarks = null;
+    if (status === 'Issue') {
+        remarks = prompt('Please explain what is wrong with your access (optional):');
+        if (remarks === null) return;
+    }
 
-    message.innerHTML =
-        '<span class="info">Saving...</span>';
-
+    const message = document.getElementById(`m-${applicationId}`);
+    message.innerHTML = '<span class="info">Saving...</span>';
 
     try {
+        const response = await fetch(`/verification/${ENGINEER_ID}/${applicationId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                status: status,
+                remarks: remarks,
+                performed_by: ENGINEER_ALIAS
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Update failed');
 
-
-        const response =
-            await fetch(
-                `/verification/${ENGINEER_ID}/${applicationId}`,
-                {
-                    method: 'PATCH',
-
-                    headers: {
-                        'Content-Type':
-                            'application/json'
-                    },
-
-                    credentials:
-                        'same-origin',
-
-                    body: JSON.stringify({
-
-                        status: status,
-
-                        remarks: remarks,
-
-                        performed_by:
-                            ENGINEER_ALIAS
-
-                    })
-                }
-            );
-
-
-        /* ----------------------------------------------------
-           SESSION EXPIRED
-           ---------------------------------------------------- */
-
-        if (
-            response.status === 401
-        ) {
-
-            window.location.href =
-                '/login';
-
-            return;
-
-        }
-
-
-        let data = {};
-
-        try {
-
-            data =
-                await response.json();
-
-        }
-        catch {
-
-            data = {};
-
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.detail ||
-                'Unable to update verification.'
-            );
-
-        }
-
-
-        message.innerHTML =
-            '<span class="success">✓ Saved successfully</span>';
-
-
+        message.innerHTML = '<span class="success">✓ Saved</span>';
         await reload();
-
-
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
     }
-    catch (error) {
-
-
-        message.innerHTML = `
-
-            <span class="error">
-
-                ✕ ${esc(
-                    error.message
-                )}
-
-            </span>
-
-        `;
-
-    }
-
 }
-
-
-/* ============================================================
-   RELOAD ENGINEER ACCESS DATA
-   ============================================================ */
 
 async function reload() {
-
     try {
-
-
-        const response =
-            await fetch(
-                `/engineers/${ENGINEER_ID}/access`,
-                {
-                    credentials:
-                        'same-origin'
-                }
-            );
-
-
-        if (
-            response.status === 401
-        ) {
-
-            window.location.href =
-                '/login';
-
-            return;
-
-        }
-
-
-        if (!response.ok) {
-
-            console.error(
-                'Unable to reload access data'
-            );
-
-            return;
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        render(
-            data.applications || []
-        );
-
-
+        const response = await fetch(`/api/engineer/${ENGINEER_ID}`, { credentials: 'same-origin' });
+        if (response.status === 401) { window.location.href = '/login'; return; }
+        if (!response.ok) throw new Error('Reload failed');
+        const data = await response.json();
+        render(data.applications || []);
+    } catch (error) {
+        console.error('Reload failed:', error);
     }
-    catch (error) {
-
-        console.error(
-            'Unable to reload access data:',
-            error
-        );
-
-    }
-
 }
 
-
-/* ============================================================
-   SESSION REFRESH
-   ============================================================
-
-   The session is refreshed every 5 minutes.
-
-   This allows the engineer to remain logged in
-   while actively using the portal.
-
-   ============================================================ */
-
-(function () {
-
-
-    const REFRESH_INTERVAL =
-        5 * 60 * 1000;
-
-
-    async function refreshSession() {
-
-
-        try {
-
-
-            const response =
-                await fetch(
-                    '/session/refresh',
-                    {
-                        method: 'POST',
-
-                        credentials:
-                            'same-origin',
-
-                        headers: {
-                            'X-Requested-With':
-                                'XMLHttpRequest'
-                        }
-                    }
-                );
-
-
-            if (
-                response.status === 401
-            ) {
-
-                window.location.href =
-                    '/login';
-
-                return;
-
-            }
-
-
-            if (response.ok) {
-
-                showSessionMessage(
-                    'Session refreshed'
-                );
-
-            }
-
-
-        }
-        catch (error) {
-
-            console.warn(
-                'Session refresh failed:',
-                error
-            );
-
-        }
-
-    }
-
-
-    function showSessionMessage(
-        message
-    ) {
-
-
-        const element =
-            document.getElementById(
-                'sessionStatus'
-            );
-
-
-        if (!element) {
-
-            return;
-
-        }
-
-
-        element.textContent =
-            message;
-
-
-        element.classList.add(
-            'show'
-        );
-
-
-        setTimeout(
-            function () {
-
-                element.classList.remove(
-                    'show'
-                );
-
-            },
-            2500
-        );
-
-    }
-
-
-    /*
-     * First refresh after 5 minutes.
-     */
-
-    setInterval(
-        refreshSession,
-        REFRESH_INTERVAL
-    );
-
-
-})();
-
-
-/* ============================================================
-   INITIAL RENDER
-   ============================================================ */
-
-render(
-    initialApps
-);
-
+// Initialize
+render(initialApps);
 </script>
-
-
 </body>
-
 </html>

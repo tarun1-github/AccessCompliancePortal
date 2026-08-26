@@ -130,28 +130,34 @@ def add_application_for_engineer(
     db: Session = Depends(get_db),
     current_user: Engineer = Depends(get_current_engineer),
 ):
-    if current_user.id != engineer_id:
+    if current_user.id != engineer_id and str(current_user.role or "").upper() != "SUPERVISOR":
         raise HTTPException(status_code=403, detail="You can add applications only to your own access page.")
 
     name = data.name.strip()
-    access_status = data.access_status.strip()
+    access_status = data.access_status.strip() if data.access_status else "Required"
     if not name or not access_status:
         raise HTTPException(status_code=400, detail="Application name and access status are required.")
 
-    application = db.query(Application).filter(Application.name == name).first()
+    application = db.query(Application).filter(Application.name.ilike(name)).first()
     if application is None:
-        application = Application(name=name, active=True)
+        application = Application(
+            name=name,
+            description=(data.description or "").strip() or None,
+            active=True,
+        )
         db.add(application)
         db.flush()
     elif not application.active:
         application.active = True
+        if data.description and data.description.strip():
+            application.description = data.description.strip()
 
     access = db.query(EngineerApplicationAccess).filter(
         EngineerApplicationAccess.engineer_id == engineer_id,
         EngineerApplicationAccess.application_id == application.id,
     ).first()
     if access is not None:
-        raise HTTPException(status_code=409, detail="This application is already assigned to you.")
+        raise HTTPException(status_code=409, detail="This application is already assigned to this engineer.")
 
     db.add(EngineerApplicationAccess(
         engineer_id=engineer_id,
@@ -161,8 +167,8 @@ def add_application_for_engineer(
         ticket_status=DEFAULT_ARM_STATUS,
     ))
     create_audit_entry(
-        db, engineer_id, application.id, "APPLICATION_ADDED_BY_ENGINEER",
-        None, name, "Added from the engineer access page.",
+        db, engineer_id, application.id, "APPLICATION_ADDED_FOR_ENGINEER",
+        None, application.name, f"Added application ({access_status}) for engineer.",
         current_user.alias or current_user.email or current_user.name,
     )
     try:
@@ -170,7 +176,8 @@ def add_application_for_engineer(
     except Exception as exc:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Unable to add application: {exc}")
-    return {"message": "Application added to your access list."}
+    return {"message": f"Application '{application.name}' added to access list.", "application_id": application.id}
+
 
 
 # ============================================================
@@ -713,57 +720,69 @@ def reset_application(
 # ============================================================
 
 def require_matching_supervisor(
-    supervisor_id: int,
+    supervisor_id: Optional[int],
     current_user: Engineer,
 ) -> Engineer:
-    if current_user.id != supervisor_id:
+    if str(current_user.role or "").upper() != "SUPERVISOR":
         raise HTTPException(
             status_code=403,
-            detail="You are not authorized to manage applications for this supervisor.",
+            detail="Supervisor authorization required.",
         )
     return current_user
 
 
+@router.get("/api/supervisor/applications")
 @router.get("/api/supervisor/{supervisor_id}/applications")
 def list_supervisor_applications(
-    supervisor_id: int,
+    supervisor_id: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: Engineer = Depends(require_supervisor),
 ):
     require_matching_supervisor(supervisor_id, current_user)
     applications = db.query(Application).filter(Application.active == True).order_by(Application.name).all()
-    return [{"id": application.id, "name": application.name} for application in applications]
+    return [
+        {
+            "id": application.id,
+            "name": application.name,
+            "description": application.description,
+            "active": application.active,
+        }
+        for application in applications
+    ]
 
 
+@router.post("/api/supervisor/applications")
 @router.post("/api/supervisor/{supervisor_id}/applications")
 def create_application_for_all_engineers(
-    supervisor_id: int,
     data: ApplicationCreate,
+    supervisor_id: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: Engineer = Depends(require_supervisor),
 ):
     supervisor = require_matching_supervisor(supervisor_id, current_user)
     name = data.name.strip()
-    access_status = data.access_status.strip()
+    access_status = data.access_status.strip() if data.access_status else "Required"
+    description = (data.description or "").strip() or None
 
     if not name or not access_status:
         raise HTTPException(status_code=400, detail="Application name and access status are required.")
 
-    application = db.query(Application).filter(Application.name == name).first()
-    if application and application.active:
-        raise HTTPException(status_code=409, detail="An active application with this name already exists.")
+    application = db.query(Application).filter(Application.name.ilike(name)).first()
+    is_new = False
 
     if application is None:
         application = Application(
             name=name,
-            description=(data.description or "").strip() or None,
+            description=description,
             active=True,
         )
         db.add(application)
         db.flush()
+        is_new = True
     else:
         application.active = True
-        application.description = (data.description or "").strip() or application.description
+        if description:
+            application.description = description
 
     engineers = (
         db.query(Engineer)
@@ -791,7 +810,7 @@ def create_application_for_all_engineers(
 
     create_audit_entry(
         db, None, application.id, "APPLICATION_CREATED_FOR_ALL_ENGINEERS",
-        None, name, f"Assigned to {assigned} engineers; access status: {access_status}",
+        None, application.name, f"Assigned to {assigned} engineers; access status: {access_status}",
         supervisor.alias or supervisor.email or supervisor.name,
     )
 
@@ -801,13 +820,18 @@ def create_application_for_all_engineers(
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Unable to add application: {exc}")
 
-    return {"message": "Application added for all engineers.", "application_id": application.id, "assigned": assigned}
+    return {
+        "message": f"Application '{application.name}' added for all engineers.",
+        "application_id": application.id,
+        "assigned": assigned,
+    }
 
 
+@router.delete("/api/supervisor/applications/{application_id}")
 @router.delete("/api/supervisor/{supervisor_id}/applications/{application_id}")
 def remove_application_for_all_engineers(
-    supervisor_id: int,
     application_id: int,
+    supervisor_id: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: Engineer = Depends(require_supervisor),
 ):
@@ -819,7 +843,7 @@ def remove_application_for_all_engineers(
     application.active = False
     create_audit_entry(
         db, None, application_id, "APPLICATION_REMOVED_FOR_ALL_ENGINEERS",
-        application.name, None, "Application was deactivated and is no longer shown to engineers.",
+        application.name, None, "Application was deactivated globally and removed from active view.",
         supervisor.alias or supervisor.email or supervisor.name,
     )
     try:
@@ -827,14 +851,15 @@ def remove_application_for_all_engineers(
     except Exception as exc:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Unable to remove application: {exc}")
-    return {"message": "Application removed for all engineers."}
+    return {"message": f"Application '{application.name}' removed for all engineers."}
 
 
+@router.delete("/api/supervisor/engineer/{engineer_id}/application/{application_id}")
 @router.delete("/api/supervisor/{supervisor_id}/engineer/{engineer_id}/application/{application_id}")
 def remove_application_for_engineer(
-    supervisor_id: int,
     engineer_id: int,
     application_id: int,
+    supervisor_id: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: Engineer = Depends(require_supervisor),
 ):
@@ -846,9 +871,12 @@ def remove_application_for_engineer(
     if access is None:
         raise HTTPException(status_code=404, detail="Application access record not found.")
 
+    app_rec = db.query(Application).filter(Application.id == application_id).first()
+    app_name = app_rec.name if app_rec else f"App #{application_id}"
+
     create_audit_entry(
         db, engineer_id, application_id, "APPLICATION_REMOVED_FROM_ENGINEER",
-        access.access_status, None, "Removed from this engineer only.",
+        access.access_status, None, f"Removed '{app_name}' from this engineer only.",
         supervisor.alias or supervisor.email or supervisor.name,
     )
     db.delete(access)
@@ -857,4 +885,59 @@ def remove_application_for_engineer(
     except Exception as exc:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Unable to remove application access: {exc}")
-    return {"message": "Application removed from the engineer."}
+    return {"message": f"Application '{app_name}' removed from the engineer."}
+
+
+@router.post("/api/supervisor/engineer/{engineer_id}/application")
+@router.post("/api/supervisor/{supervisor_id}/engineer/{engineer_id}/application")
+def assign_application_to_engineer_by_supervisor(
+    engineer_id: int,
+    data: ApplicationCreate,
+    supervisor_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Engineer = Depends(require_supervisor),
+):
+    supervisor = require_matching_supervisor(supervisor_id, current_user)
+    name = data.name.strip()
+    access_status = data.access_status.strip() if data.access_status else "Required"
+    if not name or not access_status:
+        raise HTTPException(status_code=400, detail="Application name and access status are required.")
+
+    application = db.query(Application).filter(Application.name.ilike(name)).first()
+    if application is None:
+        application = Application(
+            name=name,
+            description=(data.description or "").strip() or None,
+            active=True,
+        )
+        db.add(application)
+        db.flush()
+    elif not application.active:
+        application.active = True
+
+    access = db.query(EngineerApplicationAccess).filter(
+        EngineerApplicationAccess.engineer_id == engineer_id,
+        EngineerApplicationAccess.application_id == application.id,
+    ).first()
+    if access is not None:
+        raise HTTPException(status_code=409, detail="This application is already assigned to this engineer.")
+
+    db.add(EngineerApplicationAccess(
+        engineer_id=engineer_id,
+        application_id=application.id,
+        access_status=access_status,
+        verification_status="Pending",
+        ticket_status=DEFAULT_ARM_STATUS,
+    ))
+    create_audit_entry(
+        db, engineer_id, application.id, "APPLICATION_ASSIGNED_BY_SUPERVISOR",
+        None, application.name, f"Assigned to engineer ({access_status}) by supervisor.",
+        supervisor.alias or supervisor.email or supervisor.name,
+    )
+    try:
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Unable to assign application: {exc}")
+    return {"message": f"Application '{application.name}' assigned to engineer.", "application_id": application.id}
+
