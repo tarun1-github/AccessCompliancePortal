@@ -3,10 +3,10 @@ from datetime import datetime, timezone
 from email.message import EmailMessage
 from fastapi import HTTPException
 
-DEFAULT_FROM = "BOAaccessverification@cisco.com"
+DEFAULT_FROM = "evaccessverification@cisco.com"
 
 def base_url():
-    return os.getenv("PORTAL_BASE_URL", "http://10.106.44.24").rstrip("/")
+    return os.getenv("PORTAL_BASE_URL", "https://evaccesscheck.cisco.com").rstrip("/")
 
 def verification_url(engineer):
     return f"{base_url()}/{engineer.alias}"
