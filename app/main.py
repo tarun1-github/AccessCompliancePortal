@@ -12,21 +12,14 @@ from app.models.audit import AuditLog
 from app.routers import auth
 from app.routers import verification
 from app.routers import portal
+from app.routers import engineer_management
 
-
-# ============================================================
-# FASTAPI APPLICATION
-# ============================================================
 
 app = FastAPI(
     title="CMS BOA EV Access Compliance Portal",
     version="2.0.0",
 )
 
-
-# ============================================================
-# CREATE DATABASE TABLES
-# ============================================================
 
 @app.on_event("startup")
 def startup_event():
@@ -36,31 +29,21 @@ def startup_event():
     )
 
 
-# ============================================================
-# HEALTH CHECK
-# ============================================================
-
 @app.get("/health")
 def health_check():
+
     return {
         "status": "ok",
-        "application": "CMS BOA EV Access Compliance Portal",
+        "application": (
+            "CMS BOA EV Access Compliance Portal"
+        ),
     }
 
 
-# ============================================================
-# INCLUDE ROUTERS
-#
 # IMPORTANT:
-# auth.router and verification.router MUST come before portal.router.
-#
-# portal.py contains:
-#
-#     /{alias}
-#
-# which is a catch-all route and would otherwise capture
-# /login before auth.router gets a chance to handle it.
-# ============================================================
+# auth + verification + engineer_management
+# must be registered before portal because
+# portal contains /{alias} catch-all routing.
 
 app.include_router(
     auth.router
@@ -71,5 +54,9 @@ app.include_router(
 )
 
 app.include_router(
+    engineer_management.router
+)
+
+app.include_router(
     portal.router
-)
+)

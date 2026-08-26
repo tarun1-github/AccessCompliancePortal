@@ -10,9 +10,9 @@ $LogDirectory = "$ProjectPath\logs"
 $LogFile = "$LogDirectory\portal-startup.log"
 
 # HTTPS Certificate Files
-$SSLCertificate = "$ProjectPath\10.106.44.24+1.pem"
+$SSLCertificate = "$ProjectPath\evaccesscheck.cisco.com+2.pem"
 
-$SSLKey = "$ProjectPath\10.106.44.24+1-key.pem"
+$SSLKey = "$ProjectPath\evaccesscheck.cisco.com+2-key.pem"
 
 # ============================================================
 # CREATE LOG DIRECTORY
@@ -102,7 +102,7 @@ try {
     "Starting CMS BOA EV Access Compliance Portal..." |
         Out-File $LogFile -Append
 
-    "HTTPS URL: https://10.106.44.24:8000" |
+    "HTTPS URL: https://evaccesscheck.cisco.com:8000" |
         Out-File $LogFile -Append
 
     "============================================================" |
@@ -112,7 +112,6 @@ try {
     & $Python -m uvicorn app.main:app `
         --host 0.0.0.0 `
         --port 8000 `
-        --reload `
         --ssl-certfile $SSLCertificate `
         --ssl-keyfile $SSLKey `
         *>> $LogFile

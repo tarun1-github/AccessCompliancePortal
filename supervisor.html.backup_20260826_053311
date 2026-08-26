@@ -1001,7 +1001,7 @@ async function loadApplicationManagementList() {
         // Resilient fetch: try standard route
         let response = await fetch(`/api/supervisor/applications`, { credentials: "same-origin" });
         if (!response.ok && response.status === 404) {
-            response = await fetch(`/api/supervisor/applications`, { credentials: "same-origin" });
+            response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/applications`, { credentials: "same-origin" });
         }
         if (response.status === 401) { handleUnauthorized(); return; }
         if (!response.ok) throw new Error("Unable to load applications list.");
@@ -1049,7 +1049,7 @@ async function addApplicationForAll() {
             body: JSON.stringify({ name, description, access_status: accessStatus })
         });
         if (!response.ok && response.status === 404) {
-            response = await fetch(`/api/supervisor/applications`, {
+            response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/applications`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "same-origin",
@@ -1097,7 +1097,7 @@ async function removeApplicationForAll() {
             credentials: "same-origin"
         });
         if (!response.ok && response.status === 404) {
-            response = await fetch(`/api/supervisor/applications/${applicationId}`, {
+            response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/applications/${applicationId}`, {
                 method: "DELETE",
                 credentials: "same-origin"
             });
@@ -1269,7 +1269,7 @@ async function assignApplicationToSelectedEngineer() {
             body: JSON.stringify({ name, access_status: accessStatus })
         });
         if (!response.ok && response.status === 404) {
-            response = await fetch(`/api/supervisor/engineer/${engineerId}/application`, {
+            response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/engineer/${engineerId}/application`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "same-origin",
@@ -1310,7 +1310,7 @@ async function removeApplicationFromEngineer(applicationId, engineerId = selecte
             credentials: "same-origin"
         });
         if (!response.ok && response.status === 404) {
-            response = await fetch(`/api/supervisor/engineer/${engineerId}/application/${applicationId}`, {
+            response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/engineer/${engineerId}/application/${applicationId}`, {
                 method: "DELETE",
                 credentials: "same-origin"
             });
@@ -1524,228 +1524,6 @@ async function resetApplication(applicationId) {
 loadDashboard();
 loadEngineers();
 loadApplicationManagementList();
-</script>
-
-<script>
-/* ACCESS PORTAL ENGINEER MANAGEMENT - GENERATED UI */
-(function () {
-    "use strict";
-
-    function esc(value) {
-        if (value === null || value === undefined) return "";
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    async function loadEngineers() {
-        var body = document.getElementById("accessPortalEngineerTableBody");
-        if (!body) return;
-
-        body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;">Loading...</td></tr>';
-
-        try {
-            var response = await fetch("/api/supervisor/manage-engineers", { credentials: "same-origin" });
-            var data = await response.json().catch(function () { return {}; });
-            if (!response.ok) throw new Error(data.detail || "Unable to load engineers.");
-
-            if (!data.length) {
-                body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;">No engineers found.</td></tr>';
-                return;
-            }
-
-            body.innerHTML = data.map(function (engineer) {
-                var status = engineer.active
-                    ? '<span style="color:#15803d;font-weight:700;">● Active</span>'
-                    : '<span style="color:#b91c1c;font-weight:700;">● Inactive</span>';
-                var action = engineer.active
-                    ? '<button type="button" onclick="window.accessPortalDeactivateEngineer(' + engineer.id + ')">🔴 Deactivate</button>'
-                    : '<button type="button" onclick="window.accessPortalReactivateEngineer(' + engineer.id + ')">🟢 Reactivate</button>';
-
-                return '<tr>' +
-                    '<td>' + esc(engineer.alias) + '</td>' +
-                    '<td>' + esc(engineer.name) + '</td>' +
-                    '<td>' + esc(engineer.email || '') + '</td>' +
-                    '<td>' + esc(engineer.role || 'ENGINEER') + '</td>' +
-                    '<td>' + (engineer.application_count || 0) + '</td>' +
-                    '<td>' + status + '</td>' +
-                    '<td><button type="button" onclick="window.accessPortalEditEngineer(' + engineer.id + ')">✏️ Edit</button> ' + action + '</td>' +
-                    '</tr>';
-            }).join("");
-        } catch (error) {
-            body.innerHTML = '<tr><td colspan="7" style="color:#b91c1c;text-align:center;padding:20px;">' + esc(error.message) + '</td></tr>';
-        }
-    }
-
-    function openForm(engineer) {
-        document.getElementById("accessPortalEngineerForm").style.display = "block";
-        document.getElementById("accessPortalEngineerFormTitle").textContent = engineer ? "Edit Engineer" : "Add Engineer";
-        document.getElementById("accessPortalEngineerId").value = engineer ? engineer.id : "";
-        document.getElementById("accessPortalEngineerAlias").value = engineer ? engineer.alias : "";
-        document.getElementById("accessPortalEngineerName").value = engineer ? engineer.name : "";
-        document.getElementById("accessPortalEngineerEmail").value = engineer ? (engineer.email || "") : "";
-        document.getElementById("accessPortalEngineerLevel").value = engineer ? (engineer.level || "") : "";
-        document.getElementById("accessPortalEngineerRmEmail").value = engineer ? (engineer.rm_email || "") : "";
-        document.getElementById("accessPortalEngineerRole").value = engineer ? (engineer.role || "ENGINEER") : "ENGINEER";
-        document.getElementById("accessPortalEngineerAlias").disabled = !!engineer;
-    }
-
-    function closeForm() {
-        document.getElementById("accessPortalEngineerForm").style.display = "none";
-    }
-
-    async function editEngineer(id) {
-        try {
-            var response = await fetch("/api/supervisor/manage-engineers", { credentials: "same-origin" });
-            var data = await response.json();
-            var engineer = data.find(function (item) { return item.id === id; });
-            if (!engineer) throw new Error("Engineer not found.");
-            openForm(engineer);
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
-    async function saveEngineer() {
-        var id = document.getElementById("accessPortalEngineerId").value;
-        var payload = {
-            name: document.getElementById("accessPortalEngineerName").value.trim(),
-            email: document.getElementById("accessPortalEngineerEmail").value.trim(),
-            level: document.getElementById("accessPortalEngineerLevel").value.trim(),
-            rm_email: document.getElementById("accessPortalEngineerRmEmail").value.trim(),
-            role: document.getElementById("accessPortalEngineerRole").value
-        };
-
-        if (!payload.name) {
-            alert("Name is required.");
-            return;
-        }
-
-        var url = id ? "/api/supervisor/manage-engineers/" + id : "/api/supervisor/manage-engineers";
-        var method = id ? "PATCH" : "POST";
-
-        if (!id) {
-            payload.alias = document.getElementById("accessPortalEngineerAlias").value.trim();
-            if (!payload.alias) {
-                alert("Alias is required.");
-                return;
-            }
-        }
-
-        try {
-            var response = await fetch(url, {
-                method: method,
-                credentials: "same-origin",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            var data = await response.json().catch(function () { return {}; });
-            if (!response.ok) throw new Error(data.detail || "Unable to save engineer.");
-            alert(data.message);
-            closeForm();
-            await loadEngineers();
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
-    async function deactivateEngineer(id) {
-        if (!confirm("Deactivate this engineer? Historical access and audit data will be retained.")) return;
-        try {
-            var response = await fetch("/api/supervisor/manage-engineers/" + id, {
-                method: "DELETE",
-                credentials: "same-origin"
-            });
-            var data = await response.json().catch(function () { return {}; });
-            if (!response.ok) throw new Error(data.detail || "Unable to deactivate engineer.");
-            alert(data.message);
-            await loadEngineers();
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
-    async function reactivateEngineer(id) {
-        if (!confirm("Reactivate this engineer and restore missing active applications?")) return;
-        try {
-            var response = await fetch("/api/supervisor/manage-engineers/" + id + "/reactivate", {
-                method: "POST",
-                credentials: "same-origin"
-            });
-            var data = await response.json().catch(function () { return {}; });
-            if (!response.ok) throw new Error(data.detail || "Unable to reactivate engineer.");
-            alert(data.message + "\nApplications restored: " + (data.applications_restored || 0));
-            await loadEngineers();
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
-    function install() {
-        if (document.getElementById("accessPortalEngineerManagement")) {
-            loadEngineers();
-            return;
-        }
-
-        var container = document.createElement("div");
-        container.id = "accessPortalEngineerManagement";
-        container.style.cssText = "margin:24px 0;padding:20px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:12px;";
-        container.innerHTML =
-            '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">' +
-            '<div><h3 style="margin:0;color:#1e3a8a;">👥 Engineer Management</h3><div style="font-size:12px;color:#64748b;margin-top:4px;">Add, edit, deactivate and reactivate engineers and supervisors.</div></div>' +
-            '<button type="button" onclick="window.accessPortalOpenEngineerForm(null)">➕ Add Engineer</button>' +
-            '</div>' +
-            '<div id="accessPortalEngineerForm" style="display:none;margin:18px 0;padding:16px;background:white;border:1px solid #cbd5e1;border-radius:10px;">' +
-            '<h4 id="accessPortalEngineerFormTitle">Add Engineer</h4>' +
-            '<input type="hidden" id="accessPortalEngineerId">' +
-            '<div style="display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:12px;">' +
-            '<label>Alias *<input id="accessPortalEngineerAlias" style="width:100%;"></label>' +
-            '<label>Name *<input id="accessPortalEngineerName" style="width:100%;"></label>' +
-            '<label>Email<input id="accessPortalEngineerEmail" style="width:100%;"></label>' +
-            '<label>Level<input id="accessPortalEngineerLevel" style="width:100%;"></label>' +
-            '<label>RM Email<input id="accessPortalEngineerRmEmail" style="width:100%;"></label>' +
-            '<label>Role<select id="accessPortalEngineerRole" style="width:100%;"><option value="ENGINEER">ENGINEER</option><option value="SUPERVISOR">SUPERVISOR</option></select></label>' +
-            '</div>' +
-            '<div style="margin-top:14px;"><button type="button" onclick="window.accessPortalSaveEngineer()">💾 Save</button> <button type="button" onclick="window.accessPortalCloseEngineerForm()">Cancel</button></div>' +
-            '</div>' +
-            '<div style="overflow:auto;margin-top:18px;">' +
-            '<table style="width:100%;border-collapse:collapse;">' +
-            '<thead><tr><th>Alias</th><th>Name</th><th>Email</th><th>Role</th><th>Applications</th><th>Status</th><th>Actions</th></tr></thead>' +
-            '<tbody id="accessPortalEngineerTableBody"></tbody></table></div>';
-
-        var headings = document.querySelectorAll("h1,h2,h3");
-        var inserted = false;
-        for (var i = 0; i < headings.length; i += 1) {
-            var text = (headings[i].textContent || "").toLowerCase();
-            if (text.indexOf("application management") !== -1) {
-                headings[i].parentElement.insertAdjacentElement("afterend", container);
-                inserted = true;
-                break;
-            }
-        }
-        if (!inserted) {
-            (document.querySelector("main") || document.body).appendChild(container);
-        }
-        loadEngineers();
-    }
-
-    window.accessPortalOpenEngineerForm = openForm;
-    window.accessPortalCloseEngineerForm = closeForm;
-    window.accessPortalEditEngineer = editEngineer;
-    window.accessPortalSaveEngineer = saveEngineer;
-    window.accessPortalDeactivateEngineer = deactivateEngineer;
-    window.accessPortalReactivateEngineer = reactivateEngineer;
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", install);
-    } else {
-        install();
-    }
-}());
-/* END ACCESS PORTAL ENGINEER MANAGEMENT - GENERATED UI */
 </script>
 </body>
 </html>
