@@ -1040,7 +1040,7 @@ tr:hover{
 <div class="stat slate">
 
 <span>
-    Not Required
+    In Progress
 </span>
 
 <b id="notRequired">
@@ -1053,7 +1053,7 @@ tr:hover{
 <div class="stat purple">
 
 <span>
-    Approval Pending
+    Pending Approval
 </span>
 
 <b id="approval">
@@ -1190,11 +1190,11 @@ tr:hover{
 </th>
 
 <th>
-    Not Required
+    In Progress
 </th>
 
 <th>
-    Approval Pending
+    Pending Approval
 </th>
 
 <th>
@@ -1251,7 +1251,7 @@ tr:hover{
 </th>
 
 <th>
-    ARM Request Number
+    Request Number
 </th>
 
 <th>
@@ -1442,24 +1442,24 @@ function armBadge(status){
         `;
     }
 
-    if(status === "Approval Pending"){
+    if(status === "Pending Approval"){
 
         return `
             <span
                 class="badge badge-approval"
             >
-                ⏳ Approval Pending
+                ⏳ Pending Approval
             </span>
         `;
     }
 
-    if(status === "Request Not Initiated"){
+    if(status === "Not Started"){
 
         return `
             <span
                 class="badge badge-request"
             >
-                ○ Request Not Initiated
+                ○ Not Started
             </span>
         `;
     }
@@ -1468,7 +1468,7 @@ function armBadge(status){
         <span
             class="badge badge-not-required"
         >
-            — Not Required
+            ◌ In Progress
         </span>
     `;
 }
@@ -1797,7 +1797,7 @@ ${x.progress}%
 </td>
 
 <td>
-    ${armBadge("Approval Pending")}
+    ${armBadge("Pending Approval")}
     ${x.approval_pending}
 </td>
 
@@ -2038,9 +2038,9 @@ function renderAllCharts(){
 
                 data:{
                     labels:[
-                        "Request Not Initiated",
-                        "Not Required",
-                        "Approval Pending",
+                        "Not Started",
+                        "In Progress",
+                        "Pending Approval",
                         "Completed",
                     ],
 
@@ -2237,9 +2237,9 @@ function renderSelectedCharts(){
 
                 data:{
                     labels:[
-                        "Request Not Initiated",
-                        "Not Required",
-                        "Approval Pending",
+                        "Not Started",
+                        "In Progress",
+                        "Pending Approval",
                         "Completed",
                     ],
 

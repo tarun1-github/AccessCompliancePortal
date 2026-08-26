@@ -224,6 +224,33 @@ body {
         rgba(15,23,42,.07);
 }
 
+.application-management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.application-management-grid label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.application-management-grid input,
+.application-management-grid select {
+    width: 100%;
+}
+
+.application-management-panel {
+    padding: 18px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #f8fbff, #e0edff);
+    border: 1px solid #c7dcff;
+    box-shadow: inset 2px 2px 5px #ffffff, 6px 8px 16px rgba(37, 99, 235, .12);
+}
+
 
 /* ============================================================
    STATS
@@ -586,12 +613,22 @@ tr:hover {
     font-weight: 800;
 
     cursor: pointer;
+
+    box-shadow: 0 5px 0 rgba(15, 23, 42, .25), 0 9px 16px rgba(15, 23, 42, .18);
+
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
 
 
 .btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 rgba(15, 23, 42, .22), 0 12px 20px rgba(15, 23, 42, .2);
+}
 
-    opacity: .9;
+.btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 rgba(15, 23, 42, .25), 0 3px 7px rgba(15, 23, 42, .18);
 }
 
 
@@ -836,8 +873,65 @@ tr:hover {
 
     <p>
         Search an engineer and manage verification,
-        ARM request details and application reset.
+        request status, and application access.
     </p>
+
+</section>
+
+<section class="card">
+
+    <h2>Application Management</h2>
+    <p>Add a new application for every active engineer, or remove an application from every engineer.</p>
+
+    <div class="application-management-panel application-management-grid">
+        <div>
+            <label for="newApplicationName">New application name</label>
+            <input id="newApplicationName" maxlength="200" placeholder="Enter application name">
+        </div>
+        <div>
+            <label for="newApplicationAccess">Access status for all engineers</label>
+            <input id="newApplicationAccess" maxlength="50" value="Required" placeholder="For example: Required">
+        </div>
+        <div>
+            <label for="newApplicationDescription">Description (optional)</label>
+            <input id="newApplicationDescription" maxlength="500" placeholder="Enter description">
+        </div>
+        <div>
+            <button class="btn save" onclick="addApplicationForAll()">Add for all engineers</button>
+        </div>
+    </div>
+
+    <div class="application-management-panel application-management-grid" style="margin-top:18px">
+        <div>
+            <label for="globalApplicationDelete">Remove application for all engineers</label>
+            <select id="globalApplicationDelete">
+                <option value="">-- Select application --</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn reset" onclick="removeApplicationForAll()">Delete for all engineers</button>
+        </div>
+    </div>
+
+    <div class="application-management-panel application-management-grid" style="margin-top:18px">
+        <div>
+            <label for="specificEngineerDelete">Remove application for a specific engineer</label>
+            <select id="specificEngineerDelete" onchange="loadSpecificEngineerApplications()">
+                <option value="">-- Select engineer --</option>
+            </select>
+        </div>
+        <div>
+            <label for="specificApplicationDelete">Assigned application</label>
+            <select id="specificApplicationDelete" disabled>
+                <option value="">-- Select engineer first --</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn reset" onclick="removeSpecificEngineerApplication()">Delete for selected engineer</button>
+        </div>
+    </div>
+
+    <div id="applicationManagementMessage" class="message"></div>
 
 </section>
 
@@ -916,7 +1010,7 @@ tr:hover {
     <div class="stat purple">
 
         <div class="stat-label">
-            ARM Approval Pending
+            Pending Approval
         </div>
 
         <div
@@ -1157,11 +1251,11 @@ tr:hover {
                     </th>
 
                     <th>
-                        ARM Request Number
+                        Request Number
                     </th>
 
                     <th>
-                        ARM Request Status
+                        Request Status
                     </th>
 
                     <th>
@@ -1327,6 +1421,106 @@ async function loadDashboard() {
 }
 
 
+async function loadApplicationManagementList() {
+    const select = $("globalApplicationDelete");
+    try {
+        const response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/applications`, {
+            credentials: "same-origin"
+        });
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+        if (!response.ok) {
+            throw new Error("Unable to load applications.");
+        }
+        const applications = await response.json();
+        select.innerHTML = '<option value="">-- Select application --</option>';
+        applications.forEach(application => {
+            const option = document.createElement("option");
+            option.value = application.id;
+            option.textContent = application.name;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Application list loading failed:", error);
+        $("applicationManagementMessage").innerHTML =
+            `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+
+async function addApplicationForAll() {
+    const name = $("newApplicationName").value.trim();
+    const accessStatus = $("newApplicationAccess").value.trim();
+    const description = $("newApplicationDescription").value.trim();
+    const message = $("applicationManagementMessage");
+
+    if (!name || !accessStatus) {
+        message.innerHTML = '<span class="error">Application name and access status are required.</span>';
+        return;
+    }
+
+    message.innerHTML = '<span class="info">Adding application...</span>';
+    try {
+        const response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/applications`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            credentials: "same-origin",
+            body: JSON.stringify({name, description, access_status: accessStatus})
+        });
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || "Unable to add application.");
+        }
+        message.innerHTML = `<span class="success">✓ ${esc(data.message)} (${data.assigned} engineers assigned)</span>`;
+        $("newApplicationName").value = "";
+        $("newApplicationDescription").value = "";
+        await loadApplicationManagementList();
+        await loadEngineers();
+        if (selectedEngineerId) await loadEngineerDetails(selectedEngineerId);
+        await loadDashboard();
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+
+async function removeApplicationForAll() {
+    const applicationId = $("globalApplicationDelete").value;
+    const applicationName = $("globalApplicationDelete").selectedOptions[0]?.textContent;
+    const message = $("applicationManagementMessage");
+    if (!applicationId) {
+        message.innerHTML = '<span class="error">Select an application first.</span>';
+        return;
+    }
+    if (!confirm(`Remove ${applicationName} from all engineers? This hides the application for everyone.`)) return;
+
+    try {
+        const response = await fetch(`/api/supervisor/${SUPERVISOR_ID}/applications/${applicationId}`, {
+            method: "DELETE", credentials: "same-origin"
+        });
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Unable to remove application.");
+        message.innerHTML = `<span class="success">✓ ${esc(data.message)}</span>`;
+        await loadApplicationManagementList();
+        await loadEngineers();
+        if (selectedEngineerId) await loadEngineerDetails(selectedEngineerId);
+        await loadDashboard();
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+
 /* ============================================================
    LOAD ENGINEERS
    ============================================================ */
@@ -1384,6 +1578,8 @@ async function loadEngineers() {
         renderOptions(
             allEngineers
         );
+
+        renderSpecificEngineerOptions();
 
 
     }
@@ -1783,26 +1979,22 @@ function armBadge(status) {
     }
 
 
-    if (
-        status === "Approval Pending"
-    ) {
+    if (status === "Pending Approval") {
 
         return `
             <span class="badge approval">
-                ● Approval Pending
+                ● Pending Approval
             </span>
         `;
 
     }
 
 
-    if (
-        status === "Not Required"
-    ) {
+    if (status === "In Progress") {
 
         return `
             <span class="badge not-required">
-                Not Required
+                ◌ In Progress
             </span>
         `;
 
@@ -1811,7 +2003,7 @@ function armBadge(status) {
 
     return `
         <span class="badge not-init">
-            ● Request Not Initiated
+            ○ Not Started
         </span>
     `;
 
@@ -1961,7 +2153,7 @@ function renderApplications(
 
         const status =
             application.ticket_status ||
-            "Request Not Initiated";
+            "Not Started";
 
 
         row.innerHTML = `
@@ -2011,24 +2203,24 @@ function renderApplications(
                 >
 
                     <option
-                        value="Request Not Initiated"
-                        ${status === "Request Not Initiated" ? "selected" : ""}
+                        value="Not Started"
+                        ${status === "Not Started" ? "selected" : ""}
                     >
-                        Request Not Initiated
+                        Not Started
                     </option>
 
                     <option
-                        value="Not Required"
-                        ${status === "Not Required" ? "selected" : ""}
+                        value="In Progress"
+                        ${status === "In Progress" ? "selected" : ""}
                     >
-                        Not Required
+                        In Progress
                     </option>
 
                     <option
-                        value="Approval Pending"
-                        ${status === "Approval Pending" ? "selected" : ""}
+                        value="Pending Approval"
+                        ${status === "Pending Approval" ? "selected" : ""}
                     >
-                        Approval Pending
+                        Pending Approval
                     </option>
 
                     <option
@@ -2102,6 +2294,14 @@ function renderApplications(
                     "
                 >
                     ↻ Reset
+                </button>
+
+                <button
+                    class="btn reset"
+                    style="margin-top:8px"
+                    onclick="removeApplicationFromEngineer(${application.application_id})"
+                >
+                    Delete
                 </button>
 
             </td>
@@ -2363,6 +2563,85 @@ async function resetApplication(
 }
 
 
+function renderSpecificEngineerOptions() {
+    const select = $("specificEngineerDelete");
+    select.innerHTML = '<option value="">-- Select engineer --</option>';
+    allEngineers.forEach(engineer => {
+        const option = document.createElement("option");
+        option.value = engineer.id;
+        option.textContent = `${engineer.name} (${engineer.alias || engineer.level || ""})`;
+        select.appendChild(option);
+    });
+}
+
+
+async function loadSpecificEngineerApplications() {
+    const engineerId = $("specificEngineerDelete").value;
+    const applicationSelect = $("specificApplicationDelete");
+    applicationSelect.innerHTML = '<option value="">-- Select engineer first --</option>';
+    applicationSelect.disabled = true;
+    if (!engineerId) return;
+
+    try {
+        const response = await fetch(`/api/supervisor/engineer/${engineerId}`, {
+            credentials: "same-origin"
+        });
+        if (!response.ok) throw new Error("Unable to load the engineer's applications.");
+        const data = await response.json();
+        applicationSelect.innerHTML = '<option value="">-- Select assigned application --</option>';
+        (data.applications || []).forEach(application => {
+            const option = document.createElement("option");
+            option.value = application.application_id;
+            option.textContent = application.application_name;
+            applicationSelect.appendChild(option);
+        });
+        applicationSelect.disabled = false;
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+
+async function removeSpecificEngineerApplication() {
+    const engineerId = $("specificEngineerDelete").value;
+    const applicationId = $("specificApplicationDelete").value;
+    if (!engineerId || !applicationId) {
+        alert("Select an engineer and an assigned application first.");
+        return;
+    }
+    await removeApplicationFromEngineer(applicationId, Number(engineerId));
+    await loadSpecificEngineerApplications();
+}
+
+
+async function removeApplicationFromEngineer(applicationId, engineerId = selectedEngineerId) {
+    if (!engineerId) return;
+    if (!confirm("Remove this application from the selected engineer only?")) return;
+
+    try {
+        const response = await fetch(
+            `/api/supervisor/${SUPERVISOR_ID}/engineer/${engineerId}/application/${applicationId}`,
+            {method: "DELETE", credentials: "same-origin"}
+        );
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || "Unable to remove application.");
+        }
+        if (selectedEngineerId === Number(engineerId)) {
+            await loadEngineerDetails(selectedEngineerId);
+        }
+        await loadEngineers();
+        await loadDashboard();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+
 /* ============================================================
    SESSION REFRESH
    ============================================================ */
@@ -2470,6 +2749,8 @@ async function resetApplication(
 loadDashboard();
 
 loadEngineers();
+
+loadApplicationManagementList();
 
 
 </script>

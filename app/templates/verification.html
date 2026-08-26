@@ -935,6 +935,14 @@ tbody tr:hover {
         </p>
 
 
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px;margin:16px 0;border:1px solid #bfdbfe;border-radius:12px;background:linear-gradient(135deg,#eff6ff,#ecfeff)">
+            <strong>➕ Add application</strong>
+            <input id="newApplicationName" maxlength="200" placeholder="Application name" style="flex:1;min-width:180px">
+            <input id="newApplicationAccess" maxlength="50" value="Required" placeholder="Access status" style="flex:1;min-width:150px">
+            <button class="btn verify" onclick="addApplication()">Add application</button>
+            <span id="addApplicationMessage"></span>
+        </div>
+
         <div class="table-wrap">
 
 
@@ -962,7 +970,7 @@ tbody tr:hover {
                         </th>
 
                         <th>
-                            ARM Request Number
+                            Request Number
                         </th>
 
                         <th>
@@ -1024,6 +1032,33 @@ const ENGINEER_ALIAS =
 
 const initialApps =
     {{ applications | tojson }};
+
+
+async function addApplication() {
+    const name = document.getElementById('newApplicationName').value.trim();
+    const accessStatus = document.getElementById('newApplicationAccess').value.trim();
+    const message = document.getElementById('addApplicationMessage');
+    if (!name || !accessStatus) {
+        message.textContent = 'Application name and access status are required.';
+        return;
+    }
+    message.textContent = 'Adding application...';
+    try {
+        const response = await fetch(`/api/engineers/${ENGINEER_ID}/applications`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin',
+            body: JSON.stringify({name, access_status: accessStatus})
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Unable to add application.');
+        message.textContent = data.message;
+        document.getElementById('newApplicationName').value = '';
+        await reload();
+    } catch (error) {
+        message.textContent = error.message;
+    }
+}
 
 
 /* ============================================================
@@ -1140,7 +1175,7 @@ function armBadge(status) {
 
             ${esc(
                 status ||
-                'Not Required'
+                'Not Started'
             )}
 
         </span>

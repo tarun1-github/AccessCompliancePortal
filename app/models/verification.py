@@ -23,7 +23,7 @@ class EngineerApplicationAccess(Base):
     # ARM
     arm_ticket = Column(String(100), nullable=True)
     ticket_status = Column(
-        String(30), nullable=False, default="Request Not Initiated"
+        String(30), nullable=False, default="Not Started"
     )
 
     # Reminder / email tracking

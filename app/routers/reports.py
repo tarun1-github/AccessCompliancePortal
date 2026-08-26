@@ -15,7 +15,7 @@ router = APIRouter(prefix="/api/reports", tags=["reports"])
 def rows(db):
     data = db.query(EngineerApplicationAccess, Engineer, Application).join(Engineer, Engineer.id==EngineerApplicationAccess.engineer_id).join(Application, Application.id==EngineerApplicationAccess.application_id).order_by(Engineer.name, Application.name).all()
     for access, engineer, app in data:
-        yield [engineer.name, engineer.alias, engineer.email or "", engineer.rm_email or "", engineer.role, app.name, access.access_status, access.verification_status, access.arm_ticket or "", access.ticket_status or "Approval Pending", access.remarks or "", access.last_verified_date.isoformat() if access.last_verified_date else ""]
+        yield [engineer.name, engineer.alias, engineer.email or "", engineer.rm_email or "", engineer.role, app.name, access.access_status, access.verification_status, access.arm_ticket or "", access.ticket_status or "Not Started", access.remarks or "", access.last_verified_date.isoformat() if access.last_verified_date else ""]
 
 HEADERS=["User","Alias","User Email","Supervisor Email","Role","Application","Access Status","Verification Status","ARM Ticket","Ticket Status","Remarks","Last Verified"]
 

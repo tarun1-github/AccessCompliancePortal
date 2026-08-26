@@ -11,6 +11,7 @@ from app.models.applications import Application
 from app.models.audit import AuditLog
 from app.models.engineer import Engineer
 from app.models.verification import EngineerApplicationAccess
+from app.auth import get_current_engineer, require_supervisor
 
 
 router = APIRouter()
@@ -20,7 +21,7 @@ router = APIRouter()
 # CONSTANTS
 # ============================================================
 
-DEFAULT_ARM_STATUS = "Not Required"
+DEFAULT_ARM_STATUS = "Not Started"
 
 VALID_VERIFICATION_STATUSES = {
     "Verified",
@@ -29,11 +30,25 @@ VALID_VERIFICATION_STATUSES = {
 }
 
 VALID_ARM_STATUSES = {
-    "Request Not Initiated",
-    "Not Required",
-    "Approval Pending",
+    "Not Started",
+    "In Progress",
+    "Pending Approval",
     "Completed",
 }
+
+LEGACY_ARM_STATUSES = {
+    "Request Not Initiated": "Not Started",
+    "Not Required": "Not Started",
+    "Approval Pending": "Pending Approval",
+    "Pending": "Pending Approval",
+}
+
+
+def normalize_arm_status(value: Optional[str]) -> str:
+    value = (value or "").strip()
+    if value in LEGACY_ARM_STATUSES:
+        return LEGACY_ARM_STATUSES[value]
+    return value if value in VALID_ARM_STATUSES else DEFAULT_ARM_STATUS
 
 
 # ============================================================
@@ -75,6 +90,12 @@ class ArmUpdate(BaseModel):
     )
 
 
+class ApplicationCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=200)
+    description: Optional[str] = Field(default=None, max_length=500)
+    access_status: str = Field(default="Required", min_length=1, max_length=50)
+
+
 # ============================================================
 # CREATE AUDIT ENTRY
 # ============================================================
@@ -100,6 +121,56 @@ def create_audit_entry(
     )
 
     db.add(audit)
+
+
+@router.post("/api/engineers/{engineer_id}/applications")
+def add_application_for_engineer(
+    engineer_id: int,
+    data: ApplicationCreate,
+    db: Session = Depends(get_db),
+    current_user: Engineer = Depends(get_current_engineer),
+):
+    if current_user.id != engineer_id:
+        raise HTTPException(status_code=403, detail="You can add applications only to your own access page.")
+
+    name = data.name.strip()
+    access_status = data.access_status.strip()
+    if not name or not access_status:
+        raise HTTPException(status_code=400, detail="Application name and access status are required.")
+
+    application = db.query(Application).filter(Application.name == name).first()
+    if application is None:
+        application = Application(name=name, active=True)
+        db.add(application)
+        db.flush()
+    elif not application.active:
+        application.active = True
+
+    access = db.query(EngineerApplicationAccess).filter(
+        EngineerApplicationAccess.engineer_id == engineer_id,
+        EngineerApplicationAccess.application_id == application.id,
+    ).first()
+    if access is not None:
+        raise HTTPException(status_code=409, detail="This application is already assigned to you.")
+
+    db.add(EngineerApplicationAccess(
+        engineer_id=engineer_id,
+        application_id=application.id,
+        access_status=access_status,
+        verification_status="Pending",
+        ticket_status=DEFAULT_ARM_STATUS,
+    ))
+    create_audit_entry(
+        db, engineer_id, application.id, "APPLICATION_ADDED_BY_ENGINEER",
+        None, name, "Added from the engineer access page.",
+        current_user.alias or current_user.email or current_user.name,
+    )
+    try:
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Unable to add application: {exc}")
+    return {"message": "Application added to your access list."}
 
 
 # ============================================================
@@ -160,13 +231,7 @@ def get_engineer_access(
         if verification_status not in VALID_VERIFICATION_STATUSES:
             verification_status = "Pending"
 
-        ticket_status = (
-            access.ticket_status
-            or DEFAULT_ARM_STATUS
-        )
-
-        if ticket_status not in VALID_ARM_STATUSES:
-            ticket_status = DEFAULT_ARM_STATUS
+        ticket_status = normalize_arm_status(access.ticket_status)
 
         applications.append(
             {
@@ -376,22 +441,15 @@ def update_arm_details(
     application_id: int,
     data: ArmUpdate,
     db: Session = Depends(get_db),
+    current_user: Engineer = Depends(require_supervisor),
 ):
-    supervisor = (
-        db.query(Engineer)
-        .filter(
-            Engineer.id == supervisor_id,
-            Engineer.role == "SUPERVISOR",
-            Engineer.active == True,
-        )
-        .first()
-    )
-
-    if supervisor is None:
+    if current_user.id != supervisor_id:
         raise HTTPException(
             status_code=403,
-            detail="Valid supervisor not found",
+            detail="You are not authorized to update ARM details for this supervisor.",
         )
+
+    supervisor = current_user
 
     engineer = (
         db.query(Engineer)
@@ -445,16 +503,14 @@ def update_arm_details(
             status_code=400,
             detail=(
                 "Invalid ARM request status. Allowed values: "
-                "Request Not Initiated, Not Required, "
-                "Approval Pending, Completed"
+                "Not Started, In Progress, Pending Approval, Completed"
             ),
         )
 
     old_arm_ticket = access.arm_ticket
 
     old_ticket_status = (
-        access.ticket_status
-        or DEFAULT_ARM_STATUS
+        normalize_arm_status(access.ticket_status)
     )
 
     access.arm_ticket = (
@@ -535,22 +591,15 @@ def reset_application(
     engineer_id: int,
     application_id: int,
     db: Session = Depends(get_db),
+    current_user: Engineer = Depends(require_supervisor),
 ):
-    supervisor = (
-        db.query(Engineer)
-        .filter(
-            Engineer.id == supervisor_id,
-            Engineer.role == "SUPERVISOR",
-            Engineer.active == True,
-        )
-        .first()
-    )
-
-    if supervisor is None:
+    if current_user.id != supervisor_id:
         raise HTTPException(
             status_code=403,
-            detail="Valid supervisor not found",
+            detail="You are not authorized to reset applications for this supervisor.",
         )
+
+    supervisor = current_user
 
     engineer = (
         db.query(Engineer)
@@ -590,8 +639,7 @@ def reset_application(
     old_arm = access.arm_ticket
 
     old_ticket_status = (
-        access.ticket_status
-        or DEFAULT_ARM_STATUS
+        normalize_arm_status(access.ticket_status)
     )
 
     performed_by = (
@@ -658,3 +706,155 @@ def reset_application(
             or DEFAULT_ARM_STATUS
         ),
     }
+
+
+# ============================================================
+# SUPERVISOR APPLICATION MANAGEMENT
+# ============================================================
+
+def require_matching_supervisor(
+    supervisor_id: int,
+    current_user: Engineer,
+) -> Engineer:
+    if current_user.id != supervisor_id:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not authorized to manage applications for this supervisor.",
+        )
+    return current_user
+
+
+@router.get("/api/supervisor/{supervisor_id}/applications")
+def list_supervisor_applications(
+    supervisor_id: int,
+    db: Session = Depends(get_db),
+    current_user: Engineer = Depends(require_supervisor),
+):
+    require_matching_supervisor(supervisor_id, current_user)
+    applications = db.query(Application).filter(Application.active == True).order_by(Application.name).all()
+    return [{"id": application.id, "name": application.name} for application in applications]
+
+
+@router.post("/api/supervisor/{supervisor_id}/applications")
+def create_application_for_all_engineers(
+    supervisor_id: int,
+    data: ApplicationCreate,
+    db: Session = Depends(get_db),
+    current_user: Engineer = Depends(require_supervisor),
+):
+    supervisor = require_matching_supervisor(supervisor_id, current_user)
+    name = data.name.strip()
+    access_status = data.access_status.strip()
+
+    if not name or not access_status:
+        raise HTTPException(status_code=400, detail="Application name and access status are required.")
+
+    application = db.query(Application).filter(Application.name == name).first()
+    if application and application.active:
+        raise HTTPException(status_code=409, detail="An active application with this name already exists.")
+
+    if application is None:
+        application = Application(
+            name=name,
+            description=(data.description or "").strip() or None,
+            active=True,
+        )
+        db.add(application)
+        db.flush()
+    else:
+        application.active = True
+        application.description = (data.description or "").strip() or application.description
+
+    engineers = (
+        db.query(Engineer)
+        .filter(Engineer.active == True, Engineer.role != "SUPERVISOR")
+        .all()
+    )
+    existing_engineer_ids = {
+        row.engineer_id
+        for row in db.query(EngineerApplicationAccess)
+        .filter(EngineerApplicationAccess.application_id == application.id)
+        .all()
+    }
+
+    assigned = 0
+    for engineer in engineers:
+        if engineer.id not in existing_engineer_ids:
+            db.add(EngineerApplicationAccess(
+                engineer_id=engineer.id,
+                application_id=application.id,
+                access_status=access_status,
+                verification_status="Pending",
+                ticket_status=DEFAULT_ARM_STATUS,
+            ))
+            assigned += 1
+
+    create_audit_entry(
+        db, None, application.id, "APPLICATION_CREATED_FOR_ALL_ENGINEERS",
+        None, name, f"Assigned to {assigned} engineers; access status: {access_status}",
+        supervisor.alias or supervisor.email or supervisor.name,
+    )
+
+    try:
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Unable to add application: {exc}")
+
+    return {"message": "Application added for all engineers.", "application_id": application.id, "assigned": assigned}
+
+
+@router.delete("/api/supervisor/{supervisor_id}/applications/{application_id}")
+def remove_application_for_all_engineers(
+    supervisor_id: int,
+    application_id: int,
+    db: Session = Depends(get_db),
+    current_user: Engineer = Depends(require_supervisor),
+):
+    supervisor = require_matching_supervisor(supervisor_id, current_user)
+    application = db.query(Application).filter(Application.id == application_id, Application.active == True).first()
+    if application is None:
+        raise HTTPException(status_code=404, detail="Application not found.")
+
+    application.active = False
+    create_audit_entry(
+        db, None, application_id, "APPLICATION_REMOVED_FOR_ALL_ENGINEERS",
+        application.name, None, "Application was deactivated and is no longer shown to engineers.",
+        supervisor.alias or supervisor.email or supervisor.name,
+    )
+    try:
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Unable to remove application: {exc}")
+    return {"message": "Application removed for all engineers."}
+
+
+@router.delete("/api/supervisor/{supervisor_id}/engineer/{engineer_id}/application/{application_id}")
+def remove_application_for_engineer(
+    supervisor_id: int,
+    engineer_id: int,
+    application_id: int,
+    db: Session = Depends(get_db),
+    current_user: Engineer = Depends(require_supervisor),
+):
+    supervisor = require_matching_supervisor(supervisor_id, current_user)
+    access = db.query(EngineerApplicationAccess).filter(
+        EngineerApplicationAccess.engineer_id == engineer_id,
+        EngineerApplicationAccess.application_id == application_id,
+    ).first()
+    if access is None:
+        raise HTTPException(status_code=404, detail="Application access record not found.")
+
+    create_audit_entry(
+        db, engineer_id, application_id, "APPLICATION_REMOVED_FROM_ENGINEER",
+        access.access_status, None, "Removed from this engineer only.",
+        supervisor.alias or supervisor.email or supervisor.name,
+    )
+    db.delete(access)
+    try:
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Unable to remove application access: {exc}")
+    return {"message": "Application removed from the engineer."}

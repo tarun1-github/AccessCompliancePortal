@@ -33,15 +33,15 @@ templates = Jinja2Templates(
 
 DEFAULT_REMINDER_DAYS = 15
 
-ARM_REQUEST_NOT_INITIATED = "Request Not Initiated"
-ARM_NOT_REQUIRED = "Not Required"
-ARM_APPROVAL_PENDING = "Approval Pending"
+ARM_NOT_STARTED = "Not Started"
+ARM_IN_PROGRESS = "In Progress"
+ARM_PENDING_APPROVAL = "Pending Approval"
 ARM_COMPLETED = "Completed"
 
 VALID_ARM_STATUSES = {
-    ARM_REQUEST_NOT_INITIATED,
-    ARM_NOT_REQUIRED,
-    ARM_APPROVAL_PENDING,
+    ARM_NOT_STARTED,
+    ARM_IN_PROGRESS,
+    ARM_PENDING_APPROVAL,
     ARM_COMPLETED,
 }
 
@@ -71,27 +71,34 @@ def normalize_verification_status(value):
 # NORMALIZE ARM STATUS
 #
 # IMPORTANT:
-# Default ARM status is NOT REQUIRED.
-# Old "Pending" values are treated as Approval Pending.
+# Default ARM status is NOT STARTED.
+# Legacy values are mapped to the current supervisor workflow.
 # ============================================================
 
 def normalize_ticket_status(value):
 
     if not value:
-        return ARM_NOT_REQUIRED
+        return ARM_NOT_STARTED
 
     value = str(value).strip()
 
     if not value:
-        return ARM_NOT_REQUIRED
+        return ARM_NOT_STARTED
 
-    if value.lower() == "pending":
-        return ARM_APPROVAL_PENDING
+    legacy_statuses = {
+        "Request Not Initiated": ARM_NOT_STARTED,
+        "Not Required": ARM_NOT_STARTED,
+        "Approval Pending": ARM_PENDING_APPROVAL,
+        "Pending": ARM_PENDING_APPROVAL,
+    }
+
+    if value in legacy_statuses:
+        return legacy_statuses[value]
 
     if value in VALID_ARM_STATUSES:
         return value
 
-    return ARM_NOT_REQUIRED
+    return ARM_NOT_STARTED
 
 
 # ============================================================
@@ -665,21 +672,21 @@ def supervisor_engineer_details(
         1
         for x in applications
         if x["ticket_status"]
-        == ARM_REQUEST_NOT_INITIATED
+        == ARM_NOT_STARTED
     )
 
     not_required = sum(
         1
         for x in applications
         if x["ticket_status"]
-        == ARM_NOT_REQUIRED
+        == ARM_IN_PROGRESS
     )
 
     approval_pending = sum(
         1
         for x in applications
         if x["ticket_status"]
-        == ARM_APPROVAL_PENDING
+        == ARM_PENDING_APPROVAL
     )
 
     completed = sum(
@@ -775,13 +782,13 @@ def dashboard(
         else:
             pending += 1
 
-        if ticket_status == ARM_REQUEST_NOT_INITIATED:
+        if ticket_status == ARM_NOT_STARTED:
             request_not_initiated += 1
 
-        elif ticket_status == ARM_NOT_REQUIRED:
+        elif ticket_status == ARM_IN_PROGRESS:
             not_required += 1
 
-        elif ticket_status == ARM_APPROVAL_PENDING:
+        elif ticket_status == ARM_PENDING_APPROVAL:
             approval_pending += 1
 
         elif ticket_status == ARM_COMPLETED:
@@ -882,21 +889,21 @@ def analytics_rows(
             1
             for x in applications
             if x["ticket_status"]
-            == ARM_REQUEST_NOT_INITIATED
+            == ARM_NOT_STARTED
         )
 
         not_required = sum(
             1
             for x in applications
             if x["ticket_status"]
-            == ARM_NOT_REQUIRED
+            == ARM_IN_PROGRESS
         )
 
         approval_pending = sum(
             1
             for x in applications
             if x["ticket_status"]
-            == ARM_APPROVAL_PENDING
+            == ARM_PENDING_APPROVAL
         )
 
         completed = sum(
@@ -1042,7 +1049,7 @@ def analytics_csv(
             "Application",
             "Access Status",
             "Verification Status",
-            "ARM Request Number",
+            "Request Number",
             "ARM Request Status",
             "Remarks",
             "Last Verified",
@@ -1140,9 +1147,9 @@ def analytics_xlsx(
         "Pending",
         "Issues",
         "Progress %",
-        "Request Not Initiated",
-        "Not Required",
-        "Approval Pending",
+        "Not Started",
+        "In Progress",
+        "Pending Approval",
         "Completed",
     ]
 
@@ -1194,7 +1201,7 @@ def analytics_xlsx(
         "Application",
         "Access Status",
         "Verification Status",
-        "ARM Request Number",
+        "Request Number",
         "ARM Request Status",
         "Remarks",
         "Last Verified",
