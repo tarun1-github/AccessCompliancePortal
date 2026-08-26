@@ -37,10 +37,22 @@ def startup_event():
 
 
 # ============================================================
+# HEALTH CHECK
+# ============================================================
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "ok",
+        "application": "CMS BOA EV Access Compliance Portal",
+    }
+
+
+# ============================================================
 # INCLUDE ROUTERS
 #
 # IMPORTANT:
-# auth.router MUST come before portal.router.
+# auth.router and verification.router MUST come before portal.router.
 #
 # portal.py contains:
 #
@@ -60,17 +72,4 @@ app.include_router(
 
 app.include_router(
     portal.router
-)
-
-
-# ============================================================
-# HEALTH CHECK
-# ============================================================
-
-@app.get("/health")
-def health_check():
-
-    return {
-        "status": "ok",
-        "application": "CMS BOA EV Access Compliance Portal",
-    }
+)
