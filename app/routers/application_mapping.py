@@ -15,16 +15,24 @@ router = APIRouter()
 IM_ABOVE_LEVELS = {"IM", "QM", "TL"}
 
 
-def level_allows_mapping(level, mapping):
-    level = str(level or "").strip().upper()
+def level_allows_mapping(level, mapping, role=None):
+    """Return whether a level/role is allowed the application."""
+    normalized_role = str(role or "").strip().upper()
+    normalized_level = str(level or "").strip().upper()
 
-    if level == "L1":
+    # Supervisors receive the IM & Above application set regardless
+    # of their stored engineer level (for example, a supervisor may
+    # remain recorded as L3 in the organizational roster).
+    if normalized_role == "SUPERVISOR":
+        return bool(mapping.im_above_access)
+
+    if normalized_level == "L1":
         return bool(mapping.tier1_access)
-    if level == "L2":
+    if normalized_level == "L2":
         return bool(mapping.tier2_access)
-    if level == "L3":
+    if normalized_level == "L3":
         return bool(mapping.tier3_access)
-    if level in IM_ABOVE_LEVELS:
+    if normalized_level in IM_ABOVE_LEVELS:
         return bool(mapping.im_above_access)
 
     return False
@@ -69,7 +77,11 @@ def build_engineer_applications(engineer_id: int, db: Session):
     applications = []
 
     for access, application, mapping in rows:
-        if not level_allows_mapping(engineer.level, mapping):
+        if not level_allows_mapping(
+            engineer.level,
+            mapping,
+            engineer.role,
+        ):
             continue
 
         applications.append(
