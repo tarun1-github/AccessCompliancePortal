@@ -1138,10 +1138,12 @@ async function loadEngineers() {
 function renderEngineerSelectOptions(engineers) {
     const select = $("engineerSelect");
     select.innerHTML = '<option value="">-- Select Engineer --</option>';
+
     engineers.forEach(engineer => {
         const option = document.createElement("option");
         option.value = engineer.id;
-        option.textContent = engineer.display_name || `${engineer.name} (${engineer.alias || ''}) - ${engineer.level || ''} [${engineer.total || 0} Apps]`;
+        option.textContent =
+            `${engineer.name} (${engineer.alias || ''}) - ${engineer.level || ''}`;
         select.appendChild(option);
     });
 }
@@ -1149,14 +1151,20 @@ function renderEngineerSelectOptions(engineers) {
 function renderSpecificEngineerManageOptions(engineers) {
     const select = $("specificEngineerManageSelect");
     const currentVal = select.value;
+
     select.innerHTML = '<option value="">-- Choose an engineer --</option>';
+
     engineers.forEach(engineer => {
         const option = document.createElement("option");
         option.value = engineer.id;
-        option.textContent = engineer.display_name || `${engineer.name} (${engineer.alias || ''}) - ${engineer.level || ''} [${engineer.total || 0} Apps]`;
+        option.textContent =
+            `${engineer.name} (${engineer.alias || ''}) - ${engineer.level || ''}`;
         select.appendChild(option);
     });
-    if (currentVal) select.value = currentVal;
+
+    if (currentVal) {
+        select.value = currentVal;
+    }
 }
 
 function handleEngineerSearch(query) {
