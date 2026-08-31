@@ -14,6 +14,13 @@ router = APIRouter()
 
 IM_ABOVE_LEVELS = {"IM", "QM", "TL"}
 
+# These engineers are present in the database but are not part of the
+# supervisor's active engineer-selection roster requested for the portal.
+EXCLUDED_ENGINEER_ALIASES = {
+    "skumar",    # Sandeep Kumar
+    "sataneja",  # Sanjay Taneja
+}
+
 
 def level_allows_mapping(level, mapping, role=None):
     """Return whether a level/role is allowed the application."""
@@ -21,8 +28,7 @@ def level_allows_mapping(level, mapping, role=None):
     normalized_level = str(level or "").strip().upper()
 
     # Supervisors receive the IM & Above application set regardless
-    # of their stored engineer level (for example, a supervisor may
-    # remain recorded as L3 in the organizational roster).
+    # of their stored engineer level.
     if normalized_role == "SUPERVISOR":
         return bool(mapping.im_above_access)
 
@@ -38,6 +44,25 @@ def level_allows_mapping(level, mapping, role=None):
     return False
 
 
+def allowed_application_ids_for_engineer(engineer, db: Session):
+    """Return application IDs allowed by the DB tier matrix."""
+    mappings = (
+        db.query(ApplicationTierAccess)
+        .filter(ApplicationTierAccess.active == True)
+        .all()
+    )
+
+    return {
+        mapping.application_id
+        for mapping in mappings
+        if level_allows_mapping(
+            engineer.level,
+            mapping,
+            engineer.role,
+        )
+    }
+
+
 def build_engineer_applications(engineer_id: int, db: Session):
     engineer = (
         db.query(Engineer)
@@ -51,44 +76,55 @@ def build_engineer_applications(engineer_id: int, db: Session):
     if engineer is None:
         raise HTTPException(status_code=404, detail="Engineer not found")
 
+    allowed_ids = allowed_application_ids_for_engineer(
+        engineer,
+        db,
+    )
+
+    if not allowed_ids:
+        return []
+
     rows = (
         db.query(
             EngineerApplicationAccess,
             Application,
-            ApplicationTierAccess,
         )
         .join(
             Application,
             Application.id == EngineerApplicationAccess.application_id,
         )
-        .join(
-            ApplicationTierAccess,
-            ApplicationTierAccess.application_id == Application.id,
-        )
         .filter(
             EngineerApplicationAccess.engineer_id == engineer_id,
+            EngineerApplicationAccess.application_id.in_(allowed_ids),
             Application.active == True,
-            ApplicationTierAccess.active == True,
         )
-        .order_by(ApplicationTierAccess.display_name)
+        .order_by(Application.name)
         .all()
     )
 
     applications = []
 
-    for access, application, mapping in rows:
-        if not level_allows_mapping(
-            engineer.level,
-            mapping,
-            engineer.role,
-        ):
-            continue
+    # Optional display names from the tier matrix. If a mapping row is
+    # missing, fall back to the application master name.
+    mapping_names = {
+        row.application_id: row.display_name
+        for row in db.query(ApplicationTierAccess)
+        .filter(
+            ApplicationTierAccess.application_id.in_(allowed_ids),
+            ApplicationTierAccess.active == True,
+        )
+        .all()
+    }
 
+    for access, application in rows:
         applications.append(
             {
                 "access_id": access.id,
                 "application_id": application.id,
-                "application_name": mapping.display_name,
+                "application_name": mapping_names.get(
+                    application.id,
+                    application.name,
+                ),
                 "access_status": access.access_status,
                 "verification_status": access.verification_status or "Pending",
                 "arm_ticket": access.arm_ticket or "",
@@ -103,6 +139,31 @@ def build_engineer_applications(engineer_id: int, db: Session):
         )
 
     return applications
+
+
+def application_count_for_engineer(engineer, db: Session):
+    """Calculate the engineer's count from assigned rows + tier matrix."""
+    allowed_ids = allowed_application_ids_for_engineer(
+        engineer,
+        db,
+    )
+
+    if not allowed_ids:
+        return 0
+
+    return (
+        db.query(EngineerApplicationAccess.id)
+        .join(
+            Application,
+            Application.id == EngineerApplicationAccess.application_id,
+        )
+        .filter(
+            EngineerApplicationAccess.engineer_id == engineer.id,
+            EngineerApplicationAccess.application_id.in_(allowed_ids),
+            Application.active == True,
+        )
+        .count()
+    )
 
 
 def engineer_payload(engineer: Engineer, db: Session):
@@ -157,10 +218,22 @@ def supervisor_engineers(
     result = []
 
     for engineer in engineers:
-        if str(engineer.role or "").upper() == "SUPERVISOR":
+        normalized_role = str(engineer.role or "").strip().upper()
+        normalized_alias = str(engineer.alias or "").strip().lower()
+
+        # Supervisors select engineers only; do not place the supervisor
+        # themself in this dropdown.
+        if normalized_role == "SUPERVISOR":
             continue
 
-        applications = build_engineer_applications(engineer.id, db)
+        # Explicitly exclude non-roster records requested by the owner.
+        if normalized_alias in EXCLUDED_ENGINEER_ALIASES:
+            continue
+
+        application_count = application_count_for_engineer(
+            engineer,
+            db,
+        )
 
         result.append(
             {
@@ -170,11 +243,11 @@ def supervisor_engineers(
                 "level": engineer.level,
                 "email": engineer.email,
                 "role": engineer.role,
-                "total": len(applications),
-                "application_count": len(applications),
+                "total": application_count,
+                "application_count": application_count,
                 "display_name": (
                     f"{engineer.name} ({engineer.alias}) - "
-                    f"{engineer.level} [{len(applications)} Apps]"
+                    f"{engineer.level} [{application_count} Apps]"
                 ),
             }
         )
