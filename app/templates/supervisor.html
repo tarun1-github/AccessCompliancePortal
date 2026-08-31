@@ -29,78 +29,527 @@
     --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
     --shadow-hover: 0 16px 36px rgba(15, 23, 42, 0.14);
 }
-* { box-sizing: border-box; }
-body { margin: 0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: var(--bg-gradient); color: #1e293b; min-height: 100vh; }
-h1, h2, h3, h4, .stat-value, .engineer-name { font-family: 'Outfit', 'Segoe UI', sans-serif; }
-.header { padding: 20px 32px; color: #fff; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #0284c7 100%); box-shadow: 0 8px 25px rgba(15, 23, 42, 0.25); }
-.header-row { max-width: 1550px; margin: auto; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.header h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
-.header p { margin: 5px 0 0; opacity: 0.9; font-size: 13.5px; letter-spacing: 0.2px; }
-.header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.header-user { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 8px 14px; border-radius: 10px; font-size: 13px; white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.25); }
-.header-btn { border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(8px); color: white; text-decoration: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; }
-.header-btn:hover { background: rgba(255, 255, 255, 0.26); transform: translateY(-1px); }
-.analytics-btn { background: #fff; color: #1d4ed8; text-decoration: none; padding: 9px 16px; border-radius: 10px; font-weight: 800; font-size: 13px; white-space: nowrap; box-shadow: 0 4px 0 #93c5fd, 0 6px 14px rgba(37, 99, 235, 0.25); transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; }
-.analytics-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #93c5fd, 0 8px 18px rgba(37, 99, 235, 0.35); }
-.analytics-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #93c5fd; }
-.logout-btn { background: rgba(220, 38, 38, 0.85); border-color: rgba(255, 255, 255, 0.25); }
-.logout-btn:hover { background: #b91c1c; }
-.container { max-width: 1550px; margin: 24px auto; padding: 0 24px; }
-.card { background: var(--card-bg); border-radius: 18px; padding: 24px; margin-bottom: 22px; border: var(--card-border); box-shadow: var(--shadow-soft); backdrop-filter: blur(12px); transition: box-shadow 0.2s ease; }
-.card:hover { box-shadow: var(--shadow-hover); }
-.card h2 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
-.card-desc { margin: 0 0 16px; color: #64748b; font-size: 13.5px; line-height: 1.5; }
-.btn-3d { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 10px; padding: 10px 18px; color: #fff; font-weight: 700; font-size: 13.5px; cursor: pointer; text-decoration: none; position: relative; transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease; user-select: none; }
-.btn-3d-primary { background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 4px 0 #1d4ed8, 0 8px 16px rgba(37, 99, 235, 0.3); }
-.btn-3d-primary:hover { filter: brightness(1.06); transform: translateY(-2px); box-shadow: 0 6px 0 #1d4ed8, 0 12px 22px rgba(37, 99, 235, 0.38); }
-.btn-3d-primary:active { transform: translateY(3px); box-shadow: 0 1px 0 #1d4ed8, 0 3px 6px rgba(37, 99, 235, 0.3); }
-.btn-3d-success { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 4px 0 #047857, 0 8px 16px rgba(16, 185, 129, 0.3); }
-.btn-3d-success:hover { filter: brightness(1.06); transform: translateY(-2px); box-shadow: 0 6px 0 #047857, 0 12px 22px rgba(16, 185, 129, 0.38); }
-.btn-3d-success:active { transform: translateY(3px); box-shadow: 0 1px 0 #047857, 0 3px 6px rgba(16, 185, 129, 0.3); }
-.btn-3d-danger { background: linear-gradient(135deg, #dc2626, #ef4444); box-shadow: 0 4px 0 #b91c1c, 0 8px 16px rgba(239, 68, 68, 0.3); }
-.btn-3d-danger:hover { filter: brightness(1.06); transform: translateY(-2px); box-shadow: 0 6px 0 #b91c1c, 0 12px 22px rgba(239, 68, 68, 0.38); }
-.btn-3d-danger:active { transform: translateY(3px); box-shadow: 0 1px 0 #b91c1c, 0 3px 6px rgba(239, 68, 68, 0.3); }
-.btn-3d-warning { background: linear-gradient(135deg, #d97706, #f59e0b); box-shadow: 0 4px 0 #b45309, 0 8px 16px rgba(245, 158, 11, 0.3); }
-.btn-3d-warning:hover { filter: brightness(1.06); transform: translateY(-2px); box-shadow: 0 6px 0 #b45309, 0 12px 22px rgba(245, 158, 11, 0.38); }
-.btn-3d-warning:active { transform: translateY(3px); box-shadow: 0 1px 0 #b45309, 0 3px 6px rgba(245, 158, 11, 0.3); }
-.btn-3d-purple { background: linear-gradient(135deg, #7c3aed, #8b5cf6); box-shadow: 0 4px 0 #6d28d9, 0 8px 16px rgba(124, 58, 237, 0.3); }
-.btn-3d-purple:hover { filter: brightness(1.06); transform: translateY(-2px); box-shadow: 0 6px 0 #6d28d9, 0 12px 22px rgba(124, 58, 237, 0.38); }
-.btn-3d-purple:active { transform: translateY(3px); box-shadow: 0 1px 0 #6d28d9, 0 3px 6px rgba(124, 58, 237, 0.3); }
-.btn-3d-sm { padding: 7px 13px; font-size: 12px; border-radius: 8px; box-shadow: 0 3px 0 rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.12); }
-.btn-3d-sm:hover { transform: translateY(-1.5px); box-shadow: 0 4.5px 0 rgba(0,0,0,0.22), 0 6px 14px rgba(0,0,0,0.18); }
-.btn-3d-sm:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.22); }
-.tabs-nav { display: flex; gap: 8px; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; overflow-x: auto; padding-bottom: 2px; }
-.tab-btn { background: transparent; border: 0; padding: 11px 18px; font-size: 14px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 10px 10px 0 0; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; position: relative; white-space: nowrap; }
-.tab-btn:hover { color: var(--primary); background: rgba(37, 99, 235, 0.05); }
-.tab-btn.active { color: var(--primary); background: #eff6ff; border-bottom: 3px solid var(--primary); font-weight: 800; }
-.tab-pane { display: none; animation: fadeIn 0.25s ease; }
-.tab-pane.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.app-mgmt-box { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #cbd5e1; border-radius: 14px; padding: 22px; box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.8), 0 4px 12px rgba(0, 0, 0, 0.03); }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; align-items: end; }
-.form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: #334155; }
-.form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; background: #fff; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
-.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 22px; }
-.stat { color: #fff; padding: 20px; border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.12); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.stat:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0,0,0,0.16); }
-.stat-label { font-size: 12px; opacity: 0.9; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; }
-.stat-value { margin-top: 6px; font-size: 32px; font-weight: 800; }
-.stat.blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-.stat.green { background: linear-gradient(135deg, #059669, #047857); }
-.stat.amber { background: linear-gradient(135deg, #d97706, #b45309); }
-.stat.red { background: linear-gradient(135deg, #dc2626, #b91c1c); }
-.stat.purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
-.stat.cyan { background: linear-gradient(135deg, #0891b2, #0e7490); }
-.search-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 18px; align-items: end; }
-.engineer-name { margin: 0 0 5px; font-size: 24px; font-weight: 800; color: #0f172a; }
-.engineer-details { font-size: 13px; color: #64748b; }
-.table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-table { width: 100%; border-collapse: collapse; min-width: 1200px; background: #fff; }
-th { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; padding: 14px 16px; font-size: 13px; font-weight: 700; text-align: left; white-space: nowrap; letter-spacing: 0.3px; }
-td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; font-size: 13.5px; }
-tr:hover { background: #f8fafc; }
-.badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: var(--bg-gradient);
+    color: #1e293b;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, .stat-value, .engineer-name {
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+    padding: 20px 32px;
+    color: #fff;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #0284c7 100%);
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.25);
+}
+
+.header-row {
+    max-width: 1550px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header p {
+    margin: 5px 0 0;
+    opacity: 0.9;
+    font-size: 13.5px;
+    letter-spacing: 0.2px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.header-user {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.header-btn {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(8px);
+    color: white;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.26);
+    transform: translateY(-1px);
+}
+
+.analytics-btn {
+    background: #fff;
+    color: #1d4ed8;
+    text-decoration: none;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 13px;
+    white-space: nowrap;
+    box-shadow: 0 4px 0 #93c5fd, 0 6px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.analytics-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #93c5fd, 0 8px 18px rgba(37, 99, 235, 0.35);
+}
+
+.analytics-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #93c5fd;
+}
+
+.logout-btn {
+    background: rgba(220, 38, 38, 0.85);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.logout-btn:hover {
+    background: #b91c1c;
+}
+
+/* ============================================================
+   CONTAINER & CARDS
+   ============================================================ */
+.container {
+    max-width: 1550px;
+    margin: 24px auto;
+    padding: 0 24px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 22px;
+    border: var(--card-border);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(12px);
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.card h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-desc {
+    margin: 0 0 16px;
+    color: #64748b;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+/* ============================================================
+   3D TACTILE BUTTONS
+   ============================================================ */
+.btn-3d {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 18px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    user-select: none;
+}
+
+.btn-3d-primary {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 0 #1d4ed8, 0 8px 16px rgba(37, 99, 235, 0.3);
+}
+.btn-3d-primary:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #1d4ed8, 0 12px 22px rgba(37, 99, 235, 0.38);
+}
+.btn-3d-primary:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #1d4ed8, 0 3px 6px rgba(37, 99, 235, 0.3);
+}
+
+.btn-3d-success {
+    background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 4px 0 #047857, 0 8px 16px rgba(16, 185, 129, 0.3);
+}
+.btn-3d-success:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #047857, 0 12px 22px rgba(16, 185, 129, 0.38);
+}
+.btn-3d-success:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #047857, 0 3px 6px rgba(16, 185, 129, 0.3);
+}
+
+.btn-3d-danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    box-shadow: 0 4px 0 #b91c1c, 0 8px 16px rgba(239, 68, 68, 0.3);
+}
+.btn-3d-danger:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #b91c1c, 0 12px 22px rgba(239, 68, 68, 0.38);
+}
+.btn-3d-danger:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #b91c1c, 0 3px 6px rgba(239, 68, 68, 0.3);
+}
+
+.btn-3d-warning {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    box-shadow: 0 4px 0 #b45309, 0 8px 16px rgba(245, 158, 11, 0.3);
+}
+.btn-3d-warning:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #b45309, 0 12px 22px rgba(245, 158, 11, 0.38);
+}
+.btn-3d-warning:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #b45309, 0 3px 6px rgba(245, 158, 11, 0.3);
+}
+
+.btn-3d-purple {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    box-shadow: 0 4px 0 #6d28d9, 0 8px 16px rgba(124, 58, 237, 0.3);
+}
+.btn-3d-purple:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #6d28d9, 0 12px 22px rgba(124, 58, 237, 0.38);
+}
+.btn-3d-purple:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #6d28d9, 0 3px 6px rgba(124, 58, 237, 0.3);
+}
+
+.btn-3d-sm {
+    padding: 7px 13px;
+    font-size: 12px;
+    border-radius: 8px;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.12);
+}
+.btn-3d-sm:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 4.5px 0 rgba(0,0,0,0.22), 0 6px 14px rgba(0,0,0,0.18);
+}
+.btn-3d-sm:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.22);
+}
+
+/* ============================================================
+   TABBED APPLICATION MANAGEMENT
+   ============================================================ */
+.tabs-nav {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: 0;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 10px 10px 0 0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    background: #eff6ff;
+    border-bottom: 3px solid var(--primary);
+    font-weight: 800;
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.25s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.app-mgmt-box {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.8), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #334155;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ============================================================
+   STATS KPI GRID
+   ============================================================ */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.stat {
+    color: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(0,0,0,0.18);
+}
+
+.stat::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -30%;
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.92;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 34px;
+    font-weight: 800;
+    margin-top: 6px;
+    letter-spacing: -1px;
+}
+
+.blue { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+.green { background: linear-gradient(135deg, #059669, #34d399); }
+.amber { background: linear-gradient(135deg, #d97706, #fbbf24); }
+.red { background: linear-gradient(135deg, #dc2626, #fb7185); }
+.purple { background: linear-gradient(135deg, #7c3aed, #c084fc); }
+.cyan { background: linear-gradient(135deg, #0891b2, #22d3ee); }
+
+/* ============================================================
+   ENGINEER SELECTION & DETAILS
+   ============================================================ */
+.search-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 18px;
+}
+
+.engineer-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1d4ed8;
+    margin: 0;
+}
+
+.engineer-details {
+    color: #64748b;
+    margin-top: 4px;
+    font-size: 14px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.summary-title {
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.9;
+    text-transform: uppercase;
+}
+
+/* ============================================================
+   TABLE STYLING
+   ============================================================ */
+.table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1200px;
+    background: #fff;
+}
+
+th {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: #fff;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 13.5px;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .verified { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
 .pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 .issue { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
@@ -108,20 +557,70 @@ tr:hover { background: #f8fafc; }
 .in-prog { background: #fef08a; color: #854d0e; border: 1px solid #fde047; }
 .approval { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
 .completed { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-.arm-input { min-width: 170px; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; }
-.arm-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-.message { font-size: 12px; margin-top: 5px; min-height: 16px; font-weight: 600; }
+
+.arm-input {
+    min-width: 170px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+}
+.arm-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.message {
+    font-size: 12px;
+    margin-top: 5px;
+    min-height: 16px;
+    font-weight: 600;
+}
 .success { color: #15803d; }
 .error { color: #b91c1c; }
 .info { color: #1d4ed8; }
-.empty-state { text-align: center; color: #64748b; padding: 40px 20px; font-size: 15px; }
-.session-status { position: fixed; right: 20px; bottom: 20px; background: #0f172a; color: white; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; opacity: 0; transition: opacity 0.25s ease; z-index: 9999; box-shadow: 0 8px 20px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 8px; }
+
+.empty-state {
+    text-align: center;
+    color: #64748b;
+    padding: 40px 20px;
+    font-size: 15px;
+}
+
+.session-status {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: #0f172a;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 9999;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 .session-status.show { opacity: 1; }
-@media(max-width: 900px) { .search-grid { grid-template-columns: 1fr; } .header-row { align-items: flex-start; flex-direction: column; } .header-actions { width: 100%; } .container { padding: 0 14px; } }
+
+@media(max-width: 900px) {
+    .search-grid { grid-template-columns: 1fr; }
+    .header-row { align-items: flex-start; flex-direction: column; }
+    .header-actions { width: 100%; }
+    .container { padding: 0 14px; }
+}
 </style>
 </head>
 <body>
 
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
 <header class="header">
     <div class="header-row">
         <div>
@@ -132,115 +631,502 @@ tr:hover { background: #f8fafc; }
             <div class="header-user">
                 👤 Supervisor: <strong>{{ engineer.alias }}</strong> ({{ engineer.name }})
             </div>
-            <a class="analytics-btn" href="/analytics/{{ engineer.id }}">📊 Analytics Report</a>
-            <a class="header-btn" href="/change-password">🔑 Change Password</a>
-            <form method="post" action="/logout" style="margin:0;"><button type="submit" class="header-btn logout-btn">🚪 Logout</button></form>
+            <a class="analytics-btn" href="/analytics/{{ engineer.id }}">
+                📊 Analytics Report
+            </a>
+            <a class="header-btn" href="/change-password">
+                🔑 Change Password
+            </a>
+            <form method="post" action="/logout" style="margin:0;">
+                <button type="submit" class="header-btn logout-btn">
+                    🚪 Logout
+                </button>
+            </form>
         </div>
     </div>
 </header>
 
 <main class="container">
+
+<!-- ============================================================
+     APPLICATION MANAGEMENT (TABBED INTERFACE)
+     ============================================================ -->
 <section class="card">
     <h2>⚙️ Application Management</h2>
     <p class="card-desc">Add new applications across the board, de-register applications globally, or manage application assignments for a specific engineer.</p>
+
     <div class="tabs-nav">
-        <button class="tab-btn active" onclick="switchAppTab('tab-add-global', this)">➕ Add Application (All Engineers)</button>
-        <button class="tab-btn" onclick="switchAppTab('tab-remove-global', this)">🌐 Remove Application (All Engineers)</button>
-        <button class="tab-btn" onclick="switchAppTab('tab-specific-engineer', this)">👤 Manage Specific Engineer Applications</button>
+        <button class="tab-btn active" onclick="switchAppTab('tab-add-global', this)">
+            ➕ Add Application (All Engineers)
+        </button>
+        <button class="tab-btn" onclick="switchAppTab('tab-remove-global', this)">
+            🌐 Remove Application (All Engineers)
+        </button>
+        <button class="tab-btn" onclick="switchAppTab('tab-specific-engineer', this)">
+            👤 Manage Specific Engineer Applications
+        </button>
     </div>
+
+    <!-- TAB 1: ADD GLOBAL -->
     <div id="tab-add-global" class="tab-pane active">
         <div class="app-mgmt-box">
             <div class="form-grid">
-                <div class="form-group"><label for="newApplicationName">Application Name *</label><input id="newApplicationName" maxlength="200" placeholder="e.g. Citrix, ServiceNow, Jira"></div>
-                <div class="form-group"><label for="newApplicationAccess">Access Status (Default)</label><select id="newApplicationAccess"><option value="Required" selected>Required</option><option value="Optional">Optional</option><option value="Standard">Standard</option><option value="Restricted">Restricted</option></select></div>
-                <div class="form-group"><label for="newApplicationDescription">Description (Optional)</label><input id="newApplicationDescription" maxlength="500" placeholder="Brief notes about the application"></div>
-                <div><button class="btn-3d btn-3d-primary" onclick="addApplicationForAll()" style="width:100%;height:44px;">🚀 Add for All Engineers</button></div>
+                <div class="form-group">
+                    <label for="newApplicationName">Application Name *</label>
+                    <input id="newApplicationName" maxlength="200" placeholder="e.g. Citrix, ServiceNow, Jira">
+                </div>
+                <div class="form-group">
+                    <label for="newApplicationAccess">Access Status (Default)</label>
+                    <select id="newApplicationAccess">
+                        <option value="Required" selected>Required</option>
+                        <option value="Optional">Optional</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Restricted">Restricted</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newApplicationDescription">Description (Optional)</label>
+                    <input id="newApplicationDescription" maxlength="500" placeholder="Brief notes about the application">
+                </div>
+                <div>
+                    <button class="btn-3d btn-3d-primary" onclick="addApplicationForAll()" style="width:100%;height:44px;">
+                        🚀 Add for All Engineers
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- TAB 2: REMOVE GLOBAL -->
     <div id="tab-remove-global" class="tab-pane">
         <div class="app-mgmt-box" style="background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 100%); border-color: #fca5a5;">
             <div class="form-grid">
-                <div class="form-group" style="grid-column: span 2;"><label for="globalApplicationDelete" style="color:#991b1b;">Select Active Application to Deactivate</label><select id="globalApplicationDelete"><option value="">-- Loading active applications... --</option></select></div>
-                <div style="grid-column: span 1;"><button class="btn-3d btn-3d-danger" onclick="removeApplicationForAll()" style="width:100%;height:44px;">🗑️ Deactivate for All Engineers</button></div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="globalApplicationDelete" style="color:#991b1b;">Select Active Application to Deactivate</label>
+                    <select id="globalApplicationDelete">
+                        <option value="">-- Loading active applications... --</option>
+                    </select>
+                </div>
+                <div style="grid-column: span 1;">
+                    <button class="btn-3d btn-3d-danger" onclick="removeApplicationForAll()" style="width:100%;height:44px;">
+                        🗑️ Deactivate for All Engineers
+                    </button>
+                </div>
             </div>
-            <div style="margin-top:10px;font-size:12.5px;color:#991b1b;">⚠️ <strong>Note:</strong> This will deactivate the application across the entire portal and remove it from all engineers' access views.</div>
+            <div style="margin-top:10px;font-size:12.5px;color:#991b1b;">
+                ⚠️ <strong>Note:</strong> This will deactivate the application across the entire portal and remove it from all engineers' access views.
+            </div>
         </div>
     </div>
+
+    <!-- TAB 3: SPECIFIC ENGINEER -->
     <div id="tab-specific-engineer" class="tab-pane">
         <div class="app-mgmt-box" style="background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border-color: #bfdbfe;">
             <div class="form-grid" style="margin-bottom:16px;">
-                <div class="form-group" style="grid-column: span 2;"><label for="specificEngineerManageSelect">Select Engineer</label><select id="specificEngineerManageSelect" onchange="loadSpecificEngineerManagement()"><option value="">-- Choose an engineer --</option></select></div>
-                <div style="grid-column: span 1;"><button class="btn-3d btn-3d-purple" onclick="refreshSpecificEngineerTab()" style="width:100%;height:44px;">🔄 Refresh Assigned List</button></div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="specificEngineerManageSelect">Select Engineer</label>
+                    <select id="specificEngineerManageSelect" onchange="loadSpecificEngineerManagement()">
+                        <option value="">-- Choose an engineer --</option>
+                    </select>
+                </div>
+                <div style="grid-column: span 1;">
+                    <button class="btn-3d btn-3d-purple" onclick="refreshSpecificEngineerTab()" style="width:100%;height:44px;">
+                        🔄 Refresh Assigned List
+                    </button>
+                </div>
             </div>
+
+            <!-- Specific Engineer App Container -->
             <div id="specificEngineerAppContainer" style="display:none;margin-top:16px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;"><h3 id="specificEngineerHeader" style="margin:0;font-size:16px;color:#1e3a8a;"></h3><div id="specificEngineerAppCount" class="badge not-init" style="font-size:13px;"></div></div>
-                <div style="background:#fff;padding:14px;border-radius:10px;border:1px solid #bfdbfe;margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;"><strong style="font-size:13px;color:#1e3a8a;">➕ Assign Application:</strong><input id="specificAddAppName" placeholder="Application name" list="activeAppsDatalist" style="flex:1;min-width:180px;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;"><datalist id="activeAppsDatalist"></datalist><select id="specificAddAppAccess" style="width:130px;padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;"><option value="Required" selected>Required</option><option value="Optional">Optional</option><option value="Standard">Standard</option></select><button class="btn-3d btn-3d-success btn-3d-sm" onclick="assignApplicationToSelectedEngineer()">➕ Assign to Engineer</button></div>
-                <div class="table-wrap"><table style="min-width:750px;"><thead><tr><th>Application Name</th><th>Access Status</th><th>Verification Status</th><th>Request Status</th><th style="text-align:center;">Action</th></tr></thead><tbody id="specificEngineerAppTableBody"></tbody></table></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
+                    <h3 id="specificEngineerHeader" style="margin:0;font-size:16px;color:#1e3a8a;"></h3>
+                    <div id="specificEngineerAppCount" class="badge not-init" style="font-size:13px;"></div>
+                </div>
+
+                <!-- Add quick assign app for this engineer -->
+                <div style="background:#fff;padding:14px;border-radius:10px;border:1px solid #bfdbfe;margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                    <strong style="font-size:13px;color:#1e3a8a;">➕ Assign Application:</strong>
+                    <input id="specificAddAppName" placeholder="Application name" list="activeAppsDatalist" style="flex:1;min-width:180px;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;">
+                    <datalist id="activeAppsDatalist"></datalist>
+                    <select id="specificAddAppAccess" style="width:130px;padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;">
+                        <option value="Required" selected>Required</option>
+                        <option value="Optional">Optional</option>
+                        <option value="Standard">Standard</option>
+                    </select>
+                    <button class="btn-3d btn-3d-success btn-3d-sm" onclick="assignApplicationToSelectedEngineer()">
+                        ➕ Assign to Engineer
+                    </button>
+                </div>
+
+                <!-- Assigned Applications Table -->
+                <div class="table-wrap">
+                    <table style="min-width:750px;">
+                        <thead>
+                            <tr>
+                                <th>Application Name</th>
+                                <th>Access Status</th>
+                                <th>Verification Status</th>
+                                <th>Request Status</th>
+                                <th style="text-align:center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="specificEngineerAppTableBody"></tbody>
+                    </table>
+                </div>
             </div>
-            <div id="specificEngineerEmptyPrompt" class="empty-state" style="padding:20px 0;">Select an engineer above to view and manage their assigned applications.</div>
+            <div id="specificEngineerEmptyPrompt" class="empty-state" style="padding:20px 0;">
+                Select an engineer above to view and manage their assigned applications.
+            </div>
         </div>
     </div>
+
+    <!-- Notification message box -->
     <div id="applicationManagementMessage" class="message" style="margin-top:14px;"></div>
 </section>
 
+<!-- ============================================================
+     OVERALL DASHBOARD STATS
+     ============================================================ -->
 <section class="stats">
-    <div class="stat blue"><div class="stat-label">Total Access Records</div><div class="stat-value" id="dashboardTotal">-</div></div>
-    <div class="stat green"><div class="stat-label">Verified</div><div class="stat-value" id="dashboardVerified">-</div></div>
-    <div class="stat amber"><div class="stat-label">Pending Verification</div><div class="stat-value" id="dashboardPending">-</div></div>
-    <div class="stat red"><div class="stat-label">Issues Reported</div><div class="stat-value" id="dashboardIssues">-</div></div>
-    <div class="stat purple"><div class="stat-label">Pending Approval</div><div class="stat-value" id="dashboardApproval">-</div></div>
-    <div class="stat cyan"><div class="stat-label">Requests Completed</div><div class="stat-value" id="dashboardTickets">-</div></div>
+    <div class="stat blue">
+        <div class="stat-label">Total Access Records</div>
+        <div class="stat-value" id="dashboardTotal">-</div>
+    </div>
+    <div class="stat green">
+        <div class="stat-label">Verified</div>
+        <div class="stat-value" id="dashboardVerified">-</div>
+    </div>
+    <div class="stat amber">
+        <div class="stat-label">Pending Verification</div>
+        <div class="stat-value" id="dashboardPending">-</div>
+    </div>
+    <div class="stat red">
+        <div class="stat-label">Issues Reported</div>
+        <div class="stat-value" id="dashboardIssues">-</div>
+    </div>
+    <div class="stat purple">
+        <div class="stat-label">Pending Approval</div>
+        <div class="stat-value" id="dashboardApproval">-</div>
+    </div>
+    <div class="stat cyan">
+        <div class="stat-label">Requests Completed</div>
+        <div class="stat-value" id="dashboardTickets">-</div>
+    </div>
 </section>
 
+<!-- ============================================================
+     SEARCH AND SELECT ENGINEER
+     ============================================================ -->
 <section class="card">
     <h2>🔎 Search and Select Engineer</h2>
     <div class="search-grid">
-        <div class="form-group"><label for="engineerSearch">Live Search</label><input id="engineerSearch" autocomplete="off" placeholder="Type at least 2 letters of engineer name, alias or email..." oninput="handleEngineerSearch(this.value)"><div style="font-size:12px;color:#64748b;margin-top:4px;">Filter active engineers instantly</div></div>
-        <div class="form-group"><label for="engineerSelect">Select Engineer</label><select id="engineerSelect" onchange="onEngineerSelectChange(this.value)"><option value="">-- Select Engineer --</option></select></div>
+        <div class="form-group">
+            <label for="engineerSearch">Live Search</label>
+            <input id="engineerSearch" autocomplete="off" placeholder="Type at least 2 letters of engineer name, alias or email..." oninput="handleEngineerSearch(this.value)">
+            <div style="font-size:12px;color:#64748b;margin-top:4px;">Filter active engineers instantly</div>
+        </div>
+        <div class="form-group">
+            <label for="engineerSelect">Select Engineer</label>
+            <select id="engineerSelect" onchange="onEngineerSelectChange(this.value)">
+                <option value="">-- Select Engineer --</option>
+            </select>
+        </div>
     </div>
 </section>
 
+<!-- ============================================================
+     SELECTED ENGINEER PROFILE & STATS
+     ============================================================ -->
 <section class="card" id="engineerInfo" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;">
-        <div><h2 class="engineer-name" id="selectedEngineerName"></h2><div class="engineer-details" id="selectedEngineerDetails"></div></div>
-        <a id="engineerDirectLink" href="#" target="_blank" class="btn-3d btn-3d-primary btn-3d-sm">🔗 Open Engineer Portal View</a>
+        <div>
+            <h2 class="engineer-name" id="selectedEngineerName"></h2>
+            <div class="engineer-details" id="selectedEngineerDetails"></div>
+        </div>
+        <a id="engineerDirectLink" href="#" target="_blank" class="btn-3d btn-3d-primary btn-3d-sm">
+            🔗 Open Engineer Portal View
+        </a>
     </div>
-    <div class="summary-grid"><div class="stat blue" style="padding:14px;"><div class="summary-title">Total Applications</div><div class="stat-value" style="font-size:26px;" id="engineerTotal">0</div></div><div class="stat green" style="padding:14px;"><div class="summary-title">Verified</div><div class="stat-value" style="font-size:26px;" id="engineerVerified">0</div></div><div class="stat amber" style="padding:14px;"><div class="summary-title">Pending</div><div class="stat-value" style="font-size:26px;" id="engineerPending">0</div></div><div class="stat red" style="padding:14px;"><div class="summary-title">Issues</div><div class="stat-value" style="font-size:26px;" id="engineerIssues">0</div></div><div class="stat purple" style="padding:14px;"><div class="summary-title">Requests Completed</div><div class="stat-value" style="font-size:26px;" id="engineerTickets">0</div></div></div>
+
+    <div class="summary-grid">
+        <div class="stat blue" style="padding:14px;">
+            <div class="summary-title">Total Applications</div>
+            <div class="stat-value" style="font-size:26px;" id="engineerTotal">0</div>
+        </div>
+        <div class="stat green" style="padding:14px;">
+            <div class="summary-title">Verified</div>
+            <div class="stat-value" style="font-size:26px;" id="engineerVerified">0</div>
+        </div>
+        <div class="stat amber" style="padding:14px;">
+            <div class="summary-title">Pending</div>
+            <div class="stat-value" style="font-size:26px;" id="engineerPending">0</div>
+        </div>
+        <div class="stat red" style="padding:14px;">
+            <div class="summary-title">Issues</div>
+            <div class="stat-value" style="font-size:26px;" id="engineerIssues">0</div>
+        </div>
+        <div class="stat purple" style="padding:14px;">
+            <div class="summary-title">Requests Completed</div>
+            <div class="stat-value" style="font-size:26px;" id="engineerTickets">0</div>
+        </div>
+    </div>
 </section>
 
+<!-- ============================================================
+     APPLICATION TABLE (SELECTED ENGINEER)
+     ============================================================ -->
 <section class="card">
     <h2>📋 Engineer Application Access & Request Governance</h2>
     <p class="card-desc">Review verification statuses, update Request Numbers and Request Statuses, or reset/remove individual application access for the selected engineer.</p>
-    <div id="tableContent" class="empty-state">👈 Please search and select an engineer above to view and govern their application access.</div>
-    <div class="table-wrap"><table id="applicationTable" style="display:none;"><thead><tr><th>Application</th><th>Access Status</th><th>Verification</th><th>Request Number</th><th>Request Status</th><th>Action</th><th>Remarks</th><th>Last Verified (IST)</th><th style="text-align:center;">Manage Access</th></tr></thead><tbody id="applicationTableBody"></tbody></table></div>
-</section>
-</main>
-<div id="sessionStatus" class="session-status"><span>🔄</span> Session active & refreshed</div>
 
+    <div id="tableContent" class="empty-state">
+        👈 Please search and select an engineer above to view and govern their application access.
+    </div>
+
+    <div class="table-wrap">
+        <table id="applicationTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Application</th>
+                    <th>Access Status</th>
+                    <th>Verification</th>
+                    <th>Request Number</th>
+                    <th>Request Status</th>
+                    <th>Action</th>
+                    <th>Remarks</th>
+                    <th>Last Verified (IST)</th>
+                    <th style="text-align:center;">Manage Access</th>
+                </tr>
+            </thead>
+            <tbody id="applicationTableBody"></tbody>
+        </table>
+    </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     SESSION STATUS TOAST
+     ============================================================ -->
+<div id="sessionStatus" class="session-status">
+    <span>🔄</span> Session active & refreshed
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
 <script>
 const SUPERVISOR_ID = {{ engineer.id }};
 let allEngineers = [];
 let activeApplications = [];
 let selectedEngineerId = null;
-const $ = id => document.getElementById(id);
-function esc(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#039;'); }
-function handleUnauthorized() { window.location.href = "/login"; }
-function formatIST(value) { if (!value) return '-'; const date = new Date(value); if (isNaN(date)) return '-'; return new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZoneName: 'short' }).format(date); }
-function badge(status) { if (status === 'Verified') return '<span class="badge verified">✓ Verified</span>'; if (status === 'Issue') return '<span class="badge issue">⚠ Issue</span>'; return '<span class="badge pending">⏳ Pending</span>'; }
-function armBadge(status) { if (status === 'Completed') return '<span class="badge completed">✓ Completed</span>'; if (status === 'Pending Approval') return '<span class="badge approval">⏳ Approval Pending</span>'; if (status === 'In Progress') return '<span class="badge in-prog">⚡ In Progress</span>'; return '<span class="badge not-init">● Not Started</span>'; }
-function switchAppTab(tabId, btn) { document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); $(tabId).classList.add('active'); btn.classList.add('active'); $('applicationManagementMessage').innerHTML = ''; }
-async function loadDashboard() { try { const response = await fetch("/api/dashboard", { credentials: "same-origin" }); if (response.status === 401) { handleUnauthorized(); return; } const data = await response.json(); $("dashboardTotal").textContent = data.total ?? 0; $("dashboardVerified").textContent = data.verified ?? 0; $("dashboardPending").textContent = data.pending ?? 0; $("dashboardIssues").textContent = data.issues ?? 0; $("dashboardApproval").textContent = data.approval_pending ?? data.ticket_approval_pending ?? 0; $("dashboardTickets").textContent = data.completed ?? data.ticket_completed ?? 0; } catch (error) { console.error("Dashboard loading failed:", error); } }
-async function loadApplicationManagementList() { const select = $("globalApplicationDelete"); const datalist = $("activeAppsDatalist"); try { let response = await fetch(`/api/supervisor/applications`, { credentials: "same-origin" }); if (response.status === 401) { handleUnauthorized(); return; } if (!response.ok) throw new Error("Unable to load applications list."); activeApplications = await response.json(); select.innerHTML = '<option value="">-- Select application to remove --</option>'; datalist.innerHTML = ''; activeApplications.forEach(app => { const opt = document.createElement("option"); opt.value = app.id; opt.textContent = `${app.name}${app.description ? ' - ' + app.description : ''}`; select.appendChild(opt); const dopt = document.createElement("option"); dopt.value = app.name; datalist.appendChild(dopt); }); } catch (error) { console.error("Application list loading failed:", error); $("applicationManagementMessage").innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`; } }
-async function addApplicationForAll() { const name = $("newApplicationName").value.trim(); const accessStatus = $("newApplicationAccess").value.trim(); const description = $("newApplicationDescription").value.trim(); const message = $("applicationManagementMessage"); if (!name || !accessStatus) { message.innerHTML = '<span class="error">⚠️ Application name and access status are required.</span>'; return; } message.innerHTML = '<span class="info">⏳ Adding application for all engineers...</span>'; try { const response = await fetch(`/api/supervisor/applications`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ name, description, access_status: accessStatus }) }); if (response.status === 401) { handleUnauthorized(); return; } const data = await response.json(); if (!response.ok) throw new Error(data.detail || "Unable to add application."); message.innerHTML = `<span class="success">✓ ${esc(data.message)} (${data.assigned} engineers assigned)</span>`; $("newApplicationName").value = ""; $("newApplicationDescription").value = ""; await loadApplicationManagementList(); await loadEngineers(); if (selectedEngineerId) await loadEngineerDetails(selectedEngineerId); await loadDashboard(); } catch (error) { message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`; } }
-async function removeApplicationForAll() { const select = $("globalApplicationDelete"); const applicationId = select.value; const applicationName = select.selectedOptions[0]?.textContent; const message = $("applicationManagementMessage"); if (!applicationId) { message.innerHTML = '<span class="error">⚠️ Please select an application from the dropdown first.</span>'; return; } if (!confirm(`Are you sure you want to deactivate "${applicationName}" for ALL engineers?\n\nThis will remove it from all active portal views.`)) return; message.innerHTML = '<span class="info">⏳ Deactivating application globally...</span>'; try { const response = await fetch(`/api/supervisor/applications/${applicationId}`, { method: "DELETE", credentials: "same-origin" }); if (response.status === 401) { handleUnauthorized(); return; } const data = await response.json(); if (!response.ok) throw new Error(data.detail || "Unable to remove application."); message.innerHTML = `<span class="success">✓ ${esc(data.message)}</span>`; await loadApplicationManagementList(); await loadEngineers(); if (selectedEngineerId) await loadEngineerDetails(selectedEngineerId); if ($("specificEngineerManageSelect").value) await loadSpecificEngineerManagement(); await loadDashboard(); } catch (error) { message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`; } }
 
+const $ = id => document.getElementById(id);
+
+function esc(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function handleUnauthorized() {
+    window.location.href = "/login";
+}
+
+function formatIST(value) {
+    if (!value) return '-';
+    const date = new Date(value);
+    if (isNaN(date)) return '-';
+    return new Intl.DateTimeFormat('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true, timeZoneName: 'short'
+    }).format(date);
+}
+
+function badge(status) {
+    if (status === 'Verified') return '<span class="badge verified">✓ Verified</span>';
+    if (status === 'Issue') return '<span class="badge issue">⚠ Issue</span>';
+    return '<span class="badge pending">⏳ Pending</span>';
+}
+
+function armBadge(status) {
+    if (status === 'Completed') return '<span class="badge completed">✓ Completed</span>';
+    if (status === 'Pending Approval') return '<span class="badge approval">⏳ Approval Pending</span>';
+    if (status === 'In Progress') return '<span class="badge in-prog">⚡ In Progress</span>';
+    return '<span class="badge not-init">● Not Started</span>';
+}
+
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+function switchAppTab(tabId, btn) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    $(tabId).classList.add('active');
+    btn.classList.add('active');
+    $('applicationManagementMessage').innerHTML = '';
+}
+
+/* ============================================================
+   DASHBOARD METRICS
+   ============================================================ */
+async function loadDashboard() {
+    try {
+        const response = await fetch("/api/dashboard", { credentials: "same-origin" });
+        if (response.status === 401) { handleUnauthorized(); return; }
+        const data = await response.json();
+        $("dashboardTotal").textContent = data.total ?? 0;
+        $("dashboardVerified").textContent = data.verified ?? 0;
+        $("dashboardPending").textContent = data.pending ?? 0;
+        $("dashboardIssues").textContent = data.issues ?? 0;
+        $("dashboardApproval").textContent = data.approval_pending ?? data.ticket_approval_pending ?? 0;
+        $("dashboardTickets").textContent = data.completed ?? data.ticket_completed ?? 0;
+    } catch (error) {
+        console.error("Dashboard loading failed:", error);
+    }
+}
+
+/* ============================================================
+   APPLICATIONS LIST (GLOBAL)
+   ============================================================ */
+async function loadApplicationManagementList() {
+    const select = $("globalApplicationDelete");
+    const datalist = $("activeAppsDatalist");
+    try {
+        // Resilient fetch: try standard route
+        let response = await fetch(`/api/supervisor/applications`, { credentials: "same-origin" });
+        if (!response.ok && response.status === 404) {
+            response = await fetch(`/api/supervisor/applications`, { credentials: "same-origin" });
+        }
+        if (response.status === 401) { handleUnauthorized(); return; }
+        if (!response.ok) throw new Error("Unable to load applications list.");
+        
+        activeApplications = await response.json();
+        select.innerHTML = '<option value="">-- Select application to remove --</option>';
+        datalist.innerHTML = '';
+        
+        activeApplications.forEach(app => {
+            const opt = document.createElement("option");
+            opt.value = app.id;
+            opt.textContent = `${app.name}${app.description ? ' - ' + app.description : ''}`;
+            select.appendChild(opt);
+
+            const dopt = document.createElement("option");
+            dopt.value = app.name;
+            datalist.appendChild(dopt);
+        });
+    } catch (error) {
+        console.error("Application list loading failed:", error);
+        $("applicationManagementMessage").innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+/* ============================================================
+   ADD APPLICATION FOR ALL ENGINEERS
+   ============================================================ */
+async function addApplicationForAll() {
+    const name = $("newApplicationName").value.trim();
+    const accessStatus = $("newApplicationAccess").value.trim();
+    const description = $("newApplicationDescription").value.trim();
+    const message = $("applicationManagementMessage");
+
+    if (!name || !accessStatus) {
+        message.innerHTML = '<span class="error">⚠️ Application name and access status are required.</span>';
+        return;
+    }
+
+    message.innerHTML = '<span class="info">⏳ Adding application for all engineers...</span>';
+    try {
+        let response = await fetch(`/api/supervisor/applications`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ name, description, access_status: accessStatus })
+        });
+        if (!response.ok && response.status === 404) {
+            response = await fetch(`/api/supervisor/applications`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify({ name, description, access_status: accessStatus })
+            });
+        }
+        if (response.status === 401) { handleUnauthorized(); return; }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Unable to add application.");
+
+        message.innerHTML = `<span class="success">✓ ${esc(data.message)} (${data.assigned} engineers assigned)</span>`;
+        $("newApplicationName").value = "";
+        $("newApplicationDescription").value = "";
+        
+        await loadApplicationManagementList();
+        await loadEngineers();
+        if (selectedEngineerId) await loadEngineerDetails(selectedEngineerId);
+        await loadDashboard();
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+/* ============================================================
+   REMOVE APPLICATION FOR ALL ENGINEERS
+   ============================================================ */
+async function removeApplicationForAll() {
+    const select = $("globalApplicationDelete");
+    const applicationId = select.value;
+    const applicationName = select.selectedOptions[0]?.textContent;
+    const message = $("applicationManagementMessage");
+
+    if (!applicationId) {
+        message.innerHTML = '<span class="error">⚠️ Please select an application from the dropdown first.</span>';
+        return;
+    }
+    if (!confirm(`Are you sure you want to deactivate "${applicationName}" for ALL engineers?\n\nThis will remove it from all active portal views.`)) {
+        return;
+    }
+
+    message.innerHTML = '<span class="info">⏳ Deactivating application globally...</span>';
+    try {
+        let response = await fetch(`/api/supervisor/applications/${applicationId}`, {
+            method: "DELETE",
+            credentials: "same-origin"
+        });
+        if (!response.ok && response.status === 404) {
+            response = await fetch(`/api/supervisor/applications/${applicationId}`, {
+                method: "DELETE",
+                credentials: "same-origin"
+            });
+        }
+        if (response.status === 401) { handleUnauthorized(); return; }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Unable to remove application.");
+
+        message.innerHTML = `<span class="success">✓ ${esc(data.message)}</span>`;
+        await loadApplicationManagementList();
+        await loadEngineers();
+        if (selectedEngineerId) await loadEngineerDetails(selectedEngineerId);
+        if ($("specificEngineerManageSelect").value) await loadSpecificEngineerManagement();
+        await loadDashboard();
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+/* ============================================================
+   LOAD ENGINEERS
+   ============================================================ */
 async function loadEngineers() {
     try {
         const response = await fetch("/api/supervisor/engineers", { credentials: "same-origin" });
         if (response.status === 401) { handleUnauthorized(); return; }
         if (!response.ok) throw new Error("Unable to load engineers.");
         allEngineers = await response.json();
+
         renderEngineerSelectOptions(allEngineers);
         renderSpecificEngineerManageOptions(allEngineers);
     } catch (error) {
@@ -249,22 +1135,15 @@ async function loadEngineers() {
     }
 }
 
-function engineerLabel(engineer) {
-    if (engineer.display_name) return engineer.display_name;
-    return `${engineer.name || ''} (${engineer.alias || ''}) - ${engineer.level || ''} [${engineer.application_count ?? engineer.total ?? 0} Apps]`;
-}
-
 function renderEngineerSelectOptions(engineers) {
     const select = $("engineerSelect");
-    const currentVal = select.value;
     select.innerHTML = '<option value="">-- Select Engineer --</option>';
     engineers.forEach(engineer => {
         const option = document.createElement("option");
         option.value = engineer.id;
-        option.textContent = engineerLabel(engineer);
+        option.textContent = `${engineer.name} (${engineer.alias || engineer.level || 'Engineer'}) - [${engineer.total || 0} Apps]`;
         select.appendChild(option);
     });
-    if (currentVal && engineers.some(e => String(e.id) === String(currentVal))) select.value = currentVal;
 }
 
 function renderSpecificEngineerManageOptions(engineers) {
@@ -274,58 +1153,599 @@ function renderSpecificEngineerManageOptions(engineers) {
     engineers.forEach(engineer => {
         const option = document.createElement("option");
         option.value = engineer.id;
-        option.textContent = engineerLabel(engineer);
+        option.textContent = `${engineer.name} (${engineer.alias || engineer.level || ''}) - [${engineer.total || 0} Apps]`;
         select.appendChild(option);
     });
-    if (currentVal && engineers.some(e => String(e.id) === String(currentVal))) select.value = currentVal;
+    if (currentVal) select.value = currentVal;
 }
 
-function handleEngineerSearch(query) { const q = query.trim().toLowerCase(); if (!q) { renderEngineerSelectOptions(allEngineers); return; } const filtered = allEngineers.filter(e => (e.name || '').toLowerCase().includes(q) || (e.alias || '').toLowerCase().includes(q) || (e.email || '').toLowerCase().includes(q)); renderEngineerSelectOptions(filtered); if (filtered.length === 1) { $("engineerSelect").value = filtered[0].id; onEngineerSelectChange(filtered[0].id); } }
-function onEngineerSelectChange(id) { if (!id) { selectedEngineerId = null; $("engineerInfo").style.display = "none"; $("tableContent").style.display = "block"; $("applicationTable").style.display = "none"; return; } loadEngineerDetails(Number(id)); }
+function handleEngineerSearch(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+        renderEngineerSelectOptions(allEngineers);
+        return;
+    }
+    const filtered = allEngineers.filter(e =>
+        (e.name || '').toLowerCase().includes(q) ||
+        (e.alias || '').toLowerCase().includes(q) ||
+        (e.email || '').toLowerCase().includes(q)
+    );
+    renderEngineerSelectOptions(filtered);
+    if (filtered.length === 1) {
+        $("engineerSelect").value = filtered[0].id;
+        onEngineerSelectChange(filtered[0].id);
+    }
+}
 
-async function loadSpecificEngineerManagement() { const engineerId = $("specificEngineerManageSelect").value; const container = $("specificEngineerAppContainer"); const emptyPrompt = $("specificEngineerEmptyPrompt"); const tbody = $("specificEngineerAppTableBody"); const message = $("applicationManagementMessage"); if (!engineerId) { container.style.display = "none"; emptyPrompt.style.display = "block"; return; } try { const response = await fetch(`/api/supervisor/engineer/${engineerId}`, { credentials: "same-origin" }); if (response.status === 401) { handleUnauthorized(); return; } if (!response.ok) throw new Error("Unable to load engineer applications."); const data = await response.json(); $("specificEngineerHeader").innerHTML = `👤 <strong>${esc(data.engineer_name)}</strong> (Alias: <code>${esc(data.alias)}</code> | ${esc(data.email || 'No email')})`; $("specificEngineerAppCount").textContent = `${(data.applications || []).length} Applications Assigned`; tbody.innerHTML = ''; if (!data.applications || data.applications.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748b;padding:24px;">No applications currently assigned to this engineer.</td></tr>'; } else { data.applications.forEach(app => { const tr = document.createElement("tr"); tr.innerHTML = `<td><strong>${esc(app.application_name)}</strong></td><td><span class="badge not-init">${esc(app.access_status || 'Required')}</span></td><td>${badge(app.verification_status)}</td><td>${armBadge(app.ticket_status)}</td><td style="text-align:center;"><button class="btn-3d btn-3d-danger btn-3d-sm" onclick="removeApplicationFromEngineer(${app.application_id}, ${engineerId}, '${esc(app.application_name)}')">🗑️ Remove from Engineer</button></td>`; tbody.appendChild(tr); }); } container.style.display = "block"; emptyPrompt.style.display = "none"; } catch (error) { message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`; } }
-function refreshSpecificEngineerTab() { loadSpecificEngineerManagement(); }
-async function assignApplicationToSelectedEngineer() { const engineerId = $("specificEngineerManageSelect").value; const name = $("specificAddAppName").value.trim(); const accessStatus = $("specificAddAppAccess").value.trim(); const message = $("applicationManagementMessage"); if (!engineerId) { message.innerHTML = '<span class="error">⚠️ Please select an engineer first.</span>'; return; } if (!name) { message.innerHTML = '<span class="error">⚠️ Please enter or select an application name.</span>'; return; } message.innerHTML = '<span class="info">⏳ Assigning application to engineer...</span>'; try { const response = await fetch(`/api/supervisor/engineer/${engineerId}/application`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ name, access_status: accessStatus }) }); if (response.status === 401) { handleUnauthorized(); return; } const data = await response.json(); if (!response.ok) throw new Error(data.detail || "Unable to assign application."); message.innerHTML = `<span class="success">✓ ${esc(data.message)}</span>`; $("specificAddAppName").value = ''; await loadSpecificEngineerManagement(); await loadEngineers(); if (selectedEngineerId === Number(engineerId)) await loadEngineerDetails(selectedEngineerId); await loadDashboard(); } catch (error) { message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`; } }
-async function removeApplicationFromEngineer(applicationId, engineerId = selectedEngineerId, appName = 'this application') { if (!engineerId) { alert("Please select an engineer first."); return; } if (!confirm(`Remove "${appName}" for the selected engineer only?\n\nThis application will remain active for other engineers.`)) return; try { const response = await fetch(`/api/supervisor/engineer/${engineerId}/application/${applicationId}`, { method: "DELETE", credentials: "same-origin" }); if (response.status === 401) { handleUnauthorized(); return; } const data = await response.json(); if (!response.ok) throw new Error(data.detail || "Unable to remove application."); if (selectedEngineerId === Number(engineerId)) await loadEngineerDetails(selectedEngineerId); if ($("specificEngineerManageSelect").value === String(engineerId)) await loadSpecificEngineerManagement(); await loadEngineers(); await loadDashboard(); } catch (error) { alert(error.message); } }
+function onEngineerSelectChange(id) {
+    if (!id) {
+        selectedEngineerId = null;
+        $("engineerInfo").style.display = "none";
+        $("tableContent").style.display = "block";
+        $("applicationTable").style.display = "none";
+        return;
+    }
+    loadEngineerDetails(Number(id));
+}
 
+/* ============================================================
+   SPECIFIC ENGINEER TAB MANAGEMENT
+   ============================================================ */
+async function loadSpecificEngineerManagement() {
+    const engineerId = $("specificEngineerManageSelect").value;
+    const container = $("specificEngineerAppContainer");
+    const emptyPrompt = $("specificEngineerEmptyPrompt");
+    const tbody = $("specificEngineerAppTableBody");
+    const message = $("applicationManagementMessage");
+
+    if (!engineerId) {
+        container.style.display = "none";
+        emptyPrompt.style.display = "block";
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/supervisor/engineer/${engineerId}`, { credentials: "same-origin" });
+        if (response.status === 401) { handleUnauthorized(); return; }
+        if (!response.ok) throw new Error("Unable to load engineer applications.");
+        const data = await response.json();
+
+        $("specificEngineerHeader").innerHTML = `👤 <strong>${esc(data.engineer_name)}</strong> (Alias: <code>${esc(data.alias)}</code> | ${esc(data.email || 'No email')})`;
+        $("specificEngineerAppCount").textContent = `${(data.applications || []).length} Applications Assigned`;
+
+        tbody.innerHTML = '';
+        if (!data.applications || data.applications.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748b;padding:24px;">No applications currently assigned to this engineer.</td></tr>';
+        } else {
+            data.applications.forEach(app => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${esc(app.application_name)}</strong></td>
+                    <td><span class="badge not-init">${esc(app.access_status || 'Required')}</span></td>
+                    <td>${badge(app.verification_status)}</td>
+                    <td>${armBadge(app.ticket_status)}</td>
+                    <td style="text-align:center;">
+                        <button class="btn-3d btn-3d-danger btn-3d-sm" onclick="removeApplicationFromEngineer(${app.application_id}, ${engineerId}, '${esc(app.application_name)}')">
+                            🗑️ Remove from Engineer
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        container.style.display = "block";
+        emptyPrompt.style.display = "none";
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+function refreshSpecificEngineerTab() {
+    loadSpecificEngineerManagement();
+}
+
+async function assignApplicationToSelectedEngineer() {
+    const engineerId = $("specificEngineerManageSelect").value;
+    const name = $("specificAddAppName").value.trim();
+    const accessStatus = $("specificAddAppAccess").value.trim();
+    const message = $("applicationManagementMessage");
+
+    if (!engineerId) {
+        message.innerHTML = '<span class="error">⚠️ Please select an engineer first.</span>';
+        return;
+    }
+    if (!name) {
+        message.innerHTML = '<span class="error">⚠️ Please enter or select an application name.</span>';
+        return;
+    }
+
+    message.innerHTML = '<span class="info">⏳ Assigning application to engineer...</span>';
+    try {
+        let response = await fetch(`/api/supervisor/engineer/${engineerId}/application`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ name, access_status: accessStatus })
+        });
+        if (!response.ok && response.status === 404) {
+            response = await fetch(`/api/supervisor/engineer/${engineerId}/application`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify({ name, access_status: accessStatus })
+            });
+        }
+        if (response.status === 401) { handleUnauthorized(); return; }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Unable to assign application.");
+
+        message.innerHTML = `<span class="success">✓ ${esc(data.message)}</span>`;
+        $("specificAddAppName").value = '';
+        await loadSpecificEngineerManagement();
+        await loadEngineers();
+        if (selectedEngineerId === Number(engineerId)) await loadEngineerDetails(selectedEngineerId);
+        await loadDashboard();
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+/* ============================================================
+   REMOVE APPLICATION FOR SINGLE ENGINEER
+   ============================================================ */
+async function removeApplicationFromEngineer(applicationId, engineerId = selectedEngineerId, appName = 'this application') {
+    if (!engineerId) {
+        alert("Please select an engineer first.");
+        return;
+    }
+    if (!confirm(`Remove "${appName}" for the selected engineer only?\n\nThis application will remain active for other engineers.`)) {
+        return;
+    }
+
+    try {
+        // Resilient DELETE call with dual route support
+        let response = await fetch(`/api/supervisor/engineer/${engineerId}/application/${applicationId}`, {
+            method: "DELETE",
+            credentials: "same-origin"
+        });
+        if (!response.ok && response.status === 404) {
+            response = await fetch(`/api/supervisor/engineer/${engineerId}/application/${applicationId}`, {
+                method: "DELETE",
+                credentials: "same-origin"
+            });
+        }
+        if (response.status === 401) { handleUnauthorized(); return; }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Unable to remove application.");
+
+        // Update UI
+        if (selectedEngineerId === Number(engineerId)) {
+            await loadEngineerDetails(selectedEngineerId);
+        }
+        if ($("specificEngineerManageSelect").value === String(engineerId)) {
+            await loadSpecificEngineerManagement();
+        }
+        await loadEngineers();
+        await loadDashboard();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+/* ============================================================
+   LOAD SELECTED ENGINEER DETAILS (TABLE)
+   ============================================================ */
 async function loadEngineerDetails(id) {
     selectedEngineerId = id;
     $("engineerSelect").value = id;
+
     try {
         const response = await fetch(`/api/supervisor/engineer/${id}`, { credentials: "same-origin" });
         if (response.status === 401) { handleUnauthorized(); return; }
         if (!response.ok) throw new Error("Unable to load engineer details.");
         const data = await response.json();
-        $("engineerInfo").style.display = "block";
-        $("selectedEngineerName").textContent = `${data.engineer_name || data.name || ''} (${data.alias || ''})`;
-        $("selectedEngineerDetails").textContent = `${data.level || ''} | ${data.email || 'No email'} | ${data.role || ''}`;
-        $("engineerDirectLink").href = `/${encodeURIComponent(data.alias || '')}`;
-        const apps = data.applications || [];
-        $("engineerTotal").textContent = data.summary?.total ?? data.total ?? apps.length;
+
+        // Populate Engineer Info
+        $("selectedEngineerName").textContent = data.engineer_name;
+        $("selectedEngineerDetails").innerHTML = `
+            <span>🏷️ <strong>Alias:</strong> ${esc(data.alias)}</span>
+            <span>⭐ <strong>Level:</strong> ${esc(data.level || '-')}</span>
+            <span>✉️ <strong>Email:</strong> ${esc(data.email || '-')}</span>
+        `;
+        $("engineerDirectLink").href = `/${data.alias}`;
+        $("engineerTotal").textContent = data.summary?.total ?? (data.applications || []).length;
         $("engineerVerified").textContent = data.summary?.verified ?? 0;
         $("engineerPending").textContent = data.summary?.pending ?? 0;
         $("engineerIssues").textContent = data.summary?.issues ?? 0;
-        $("engineerTickets").textContent = data.summary?.tickets_completed ?? data.summary?.completed ?? 0;
-        const tbody = $("applicationTableBody");
-        tbody.innerHTML = '';
-        if (!apps.length) { $("tableContent").style.display = "block"; $("tableContent").textContent = "No applications currently assigned to this engineer."; $("applicationTable").style.display = "none"; return; }
-        $("tableContent").style.display = "none";
-        $("applicationTable").style.display = "table";
-        apps.forEach(app => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `<td><strong>${esc(app.application_name)}</strong></td><td><span class="badge not-init">${esc(app.access_status || 'Required')}</span></td><td>${badge(app.verification_status)}</td><td><input class="arm-input" id="ticket-${app.access_id}" value="${esc(app.arm_ticket || '')}" maxlength="100"></td><td>${armBadge(app.ticket_status)}</td><td><button class="btn-3d btn-3d-success btn-3d-sm" onclick="saveApplicationRequest(${app.access_id})">💾 Save</button></td><td>${esc(app.remarks || '')}</td><td>${formatIST(app.last_verified_date)}</td><td style="text-align:center;"><button class="btn-3d btn-3d-danger btn-3d-sm" onclick="removeApplicationFromEngineer(${app.application_id}, ${id}, '${esc(app.application_name)}')">🗑️ Remove</button></td>`;
-            tbody.appendChild(tr);
-        });
-    } catch (error) { console.error("Engineer detail loading failed:", error); $("tableContent").textContent = error.message; }
+        $("engineerTickets").textContent = data.summary?.completed ?? data.summary?.tickets_completed ?? 0;
+        $("engineerInfo").style.display = "block";
+
+        renderApplicationRows(data.applications || []);
+    } catch (error) {
+        console.error("Loading engineer details failed:", error);
+        alert(error.message);
+    }
 }
 
-async function saveApplicationRequest(accessId) { const ticket = $("ticket-" + accessId)?.value?.trim() || ''; try { const response = await fetch(`/api/supervisor/application-access/${accessId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ arm_ticket: ticket }) }); if (response.status === 401) { handleUnauthorized(); return; } const data = await response.json(); if (!response.ok) throw new Error(data.detail || "Unable to save request."); await loadEngineerDetails(selectedEngineerId); await loadDashboard(); } catch (error) { alert(error.message); } }
+function renderApplicationRows(applications) {
+    const tbody = $("applicationTableBody");
+    tbody.innerHTML = '';
 
-async function refreshAll() { await loadEngineers(); await loadApplicationManagementList(); await loadDashboard(); }
+    if (applications.length === 0) {
+        $("tableContent").innerHTML = '<div class="empty-state">No applications found for this engineer. You can assign applications in the Application Management tab above.</div>';
+        $("tableContent").style.display = "block";
+        $("applicationTable").style.display = "none";
+        return;
+    }
 
-refreshAll();
-setInterval(loadDashboard, 300000);
-setInterval(loadEngineers, 300000);
+    applications.forEach(application => {
+        const status = application.ticket_status || "Not Started";
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>
+                <strong>${esc(application.application_name)}</strong>
+            </td>
+            <td>
+                <span class="badge not-init">${esc(application.access_status || '-')}</span>
+            </td>
+            <td>
+                ${badge(application.verification_status)}
+            </td>
+            <td>
+                <input class="arm-input" id="arm-${application.application_id}" value="${esc(application.arm_ticket || '')}" placeholder="Request / Ticket #">
+            </td>
+            <td>
+                <select class="arm-input" id="arm-status-${application.application_id}">
+                    <option value="Not Started" ${status === "Not Started" ? "selected" : ""}>Not Started</option>
+                    <option value="In Progress" ${status === "In Progress" ? "selected" : ""}>In Progress</option>
+                    <option value="Pending Approval" ${status === "Pending Approval" ? "selected" : ""}>Pending Approval</option>
+                    <option value="Completed" ${status === "Completed" ? "selected" : ""}>Completed</option>
+                </select>
+                <div style="margin-top:6px;">${armBadge(status)}</div>
+            </td>
+            <td>
+                <button class="btn-3d btn-3d-primary btn-3d-sm" onclick="saveArm(${application.application_id})">
+                    💾 Save Request
+                </button>
+                <div class="message" id="message-${application.application_id}"></div>
+            </td>
+            <td>
+                ${esc(application.remarks || "-")}
+            </td>
+            <td style="white-space:nowrap;font-size:12.5px;">
+                ${formatIST(application.last_verified_date)}
+            </td>
+            <td style="text-align:center;">
+                <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+                    <button class="btn-3d btn-3d-warning btn-3d-sm" onclick="resetApplication(${application.application_id})">
+                        ↻ Reset Request
+                    </button>
+                    <button class="btn-3d btn-3d-danger btn-3d-sm" onclick="removeApplicationFromEngineer(${application.application_id}, ${selectedEngineerId}, '${esc(application.application_name)}')">
+                        🗑️ Delete Access
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    $("tableContent").style.display = "none";
+    $("applicationTable").style.display = "table";
+}
+
+/* ============================================================
+   SAVE REQUEST NUMBER & REQUEST STATUS
+   ============================================================ */
+async function saveArm(applicationId) {
+    if (!selectedEngineerId) {
+        alert("Please select an engineer first.");
+        return;
+    }
+
+    const ticket = $(`arm-${applicationId}`).value.trim();
+    const status = $(`arm-status-${applicationId}`).value;
+    const message = $(`message-${applicationId}`);
+
+    message.innerHTML = '<span class="info">⏳ Saving...</span>';
+    try {
+        const response = await fetch(
+            `/supervisor/${SUPERVISOR_ID}/engineer/${selectedEngineerId}/application/${applicationId}/arm`,
+            {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify({ arm_ticket: ticket, ticket_status: status })
+            }
+        );
+        if (response.status === 401) { handleUnauthorized(); return; }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Unable to save request details.");
+
+        message.innerHTML = '<span class="success">✓ Saved</span>';
+        await loadEngineerDetails(selectedEngineerId);
+        await loadDashboard();
+    } catch (error) {
+        message.innerHTML = `<span class="error">✕ ${esc(error.message)}</span>`;
+    }
+}
+
+/* ============================================================
+   RESET APPLICATION
+   ============================================================ */
+async function resetApplication(applicationId) {
+    if (!selectedEngineerId) return;
+    if (!confirm("Reset verification status, remarks, Request Number and Request Status for this application?")) return;
+
+    try {
+        const response = await fetch(
+            `/supervisor/${SUPERVISOR_ID}/engineer/${selectedEngineerId}/application/${applicationId}/reset`,
+            { method: "PATCH", credentials: "same-origin" }
+        );
+        if (response.status === 401) { handleUnauthorized(); return; }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Unable to reset application.");
+
+        await loadEngineerDetails(selectedEngineerId);
+        await loadDashboard();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+/* ============================================================
+   SESSION REFRESH
+   ============================================================ */
+(function () {
+    const REFRESH_INTERVAL = 5 * 60 * 1000;
+    async function refreshSession() {
+        try {
+            const response = await fetch("/session/refresh", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            });
+            if (response.status === 401) { handleUnauthorized(); return; }
+            if (response.ok) {
+                const status = $("sessionStatus");
+                status.classList.add("show");
+                setTimeout(() => status.classList.remove("show"), 2500);
+            }
+        } catch (error) {
+            console.warn("Session refresh failed:", error);
+        }
+    }
+    setInterval(refreshSession, REFRESH_INTERVAL);
+})();
+
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+loadDashboard();
+loadEngineers();
+loadApplicationManagementList();
+</script>
+
+<script>
+/* ACCESS PORTAL ENGINEER MANAGEMENT - GENERATED UI */
+(function () {
+    "use strict";
+
+    function esc(value) {
+        if (value === null || value === undefined) return "";
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    async function loadEngineers() {
+        var body = document.getElementById("accessPortalEngineerTableBody");
+        if (!body) return;
+
+        body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;">Loading...</td></tr>';
+
+        try {
+            var response = await fetch("/api/supervisor/manage-engineers", { credentials: "same-origin" });
+            var data = await response.json().catch(function () { return {}; });
+            if (!response.ok) throw new Error(data.detail || "Unable to load engineers.");
+
+            if (!data.length) {
+                body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;">No engineers found.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = data.map(function (engineer) {
+                var status = engineer.active
+                    ? '<span style="color:#15803d;font-weight:700;">● Active</span>'
+                    : '<span style="color:#b91c1c;font-weight:700;">● Inactive</span>';
+                var action = engineer.active
+                    ? '<button type="button" onclick="window.accessPortalDeactivateEngineer(' + engineer.id + ')">🔴 Deactivate</button>'
+                    : '<button type="button" onclick="window.accessPortalReactivateEngineer(' + engineer.id + ')">🟢 Reactivate</button>';
+
+                return '<tr>' +
+                    '<td>' + esc(engineer.alias) + '</td>' +
+                    '<td>' + esc(engineer.name) + '</td>' +
+                    '<td>' + esc(engineer.email || '') + '</td>' +
+                    '<td>' + esc(engineer.role || 'ENGINEER') + '</td>' +
+                    '<td>' + (engineer.application_count || 0) + '</td>' +
+                    '<td>' + status + '</td>' +
+                    '<td><button type="button" onclick="window.accessPortalEditEngineer(' + engineer.id + ')">✏️ Edit</button> ' + action + '</td>' +
+                    '</tr>';
+            }).join("");
+        } catch (error) {
+            body.innerHTML = '<tr><td colspan="7" style="color:#b91c1c;text-align:center;padding:20px;">' + esc(error.message) + '</td></tr>';
+        }
+    }
+
+    function openForm(engineer) {
+        document.getElementById("accessPortalEngineerForm").style.display = "block";
+        document.getElementById("accessPortalEngineerFormTitle").textContent = engineer ? "Edit Engineer" : "Add Engineer";
+        document.getElementById("accessPortalEngineerId").value = engineer ? engineer.id : "";
+        document.getElementById("accessPortalEngineerAlias").value = engineer ? engineer.alias : "";
+        document.getElementById("accessPortalEngineerName").value = engineer ? engineer.name : "";
+        document.getElementById("accessPortalEngineerEmail").value = engineer ? (engineer.email || "") : "";
+        document.getElementById("accessPortalEngineerLevel").value = engineer ? (engineer.level || "") : "";
+        document.getElementById("accessPortalEngineerRmEmail").value = engineer ? (engineer.rm_email || "") : "";
+        document.getElementById("accessPortalEngineerRole").value = engineer ? (engineer.role || "ENGINEER") : "ENGINEER";
+        document.getElementById("accessPortalEngineerAlias").disabled = !!engineer;
+    }
+
+    function closeForm() {
+        document.getElementById("accessPortalEngineerForm").style.display = "none";
+    }
+
+    async function editEngineer(id) {
+        try {
+            var response = await fetch("/api/supervisor/manage-engineers", { credentials: "same-origin" });
+            var data = await response.json();
+            var engineer = data.find(function (item) { return item.id === id; });
+            if (!engineer) throw new Error("Engineer not found.");
+            openForm(engineer);
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    async function saveEngineer() {
+        var id = document.getElementById("accessPortalEngineerId").value;
+        var payload = {
+            name: document.getElementById("accessPortalEngineerName").value.trim(),
+            email: document.getElementById("accessPortalEngineerEmail").value.trim(),
+            level: document.getElementById("accessPortalEngineerLevel").value.trim(),
+            rm_email: document.getElementById("accessPortalEngineerRmEmail").value.trim(),
+            role: document.getElementById("accessPortalEngineerRole").value
+        };
+
+        if (!payload.name) {
+            alert("Name is required.");
+            return;
+        }
+
+        var url = id ? "/api/supervisor/manage-engineers/" + id : "/api/supervisor/manage-engineers";
+        var method = id ? "PATCH" : "POST";
+
+        if (!id) {
+            payload.alias = document.getElementById("accessPortalEngineerAlias").value.trim();
+            if (!payload.alias) {
+                alert("Alias is required.");
+                return;
+            }
+        }
+
+        try {
+            var response = await fetch(url, {
+                method: method,
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            var data = await response.json().catch(function () { return {}; });
+            if (!response.ok) throw new Error(data.detail || "Unable to save engineer.");
+            alert(data.message);
+            closeForm();
+            await loadEngineers();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    async function deactivateEngineer(id) {
+        if (!confirm("Deactivate this engineer? Historical access and audit data will be retained.")) return;
+        try {
+            var response = await fetch("/api/supervisor/manage-engineers/" + id, {
+                method: "DELETE",
+                credentials: "same-origin"
+            });
+            var data = await response.json().catch(function () { return {}; });
+            if (!response.ok) throw new Error(data.detail || "Unable to deactivate engineer.");
+            alert(data.message);
+            await loadEngineers();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    async function reactivateEngineer(id) {
+        if (!confirm("Reactivate this engineer and restore missing active applications?")) return;
+        try {
+            var response = await fetch("/api/supervisor/manage-engineers/" + id + "/reactivate", {
+                method: "POST",
+                credentials: "same-origin"
+            });
+            var data = await response.json().catch(function () { return {}; });
+            if (!response.ok) throw new Error(data.detail || "Unable to reactivate engineer.");
+            alert(data.message + "\nApplications restored: " + (data.applications_restored || 0));
+            await loadEngineers();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    function install() {
+        if (document.getElementById("accessPortalEngineerManagement")) {
+            loadEngineers();
+            return;
+        }
+
+        var container = document.createElement("div");
+        container.id = "accessPortalEngineerManagement";
+        container.style.cssText = "margin:24px 0;padding:20px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:12px;";
+        container.innerHTML =
+            '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">' +
+            '<div><h3 style="margin:0;color:#1e3a8a;">👥 Engineer Management</h3><div style="font-size:12px;color:#64748b;margin-top:4px;">Add, edit, deactivate and reactivate engineers and supervisors.</div></div>' +
+            '<button type="button" onclick="window.accessPortalOpenEngineerForm(null)">➕ Add Engineer</button>' +
+            '</div>' +
+            '<div id="accessPortalEngineerForm" style="display:none;margin:18px 0;padding:16px;background:white;border:1px solid #cbd5e1;border-radius:10px;">' +
+            '<h4 id="accessPortalEngineerFormTitle">Add Engineer</h4>' +
+            '<input type="hidden" id="accessPortalEngineerId">' +
+            '<div style="display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:12px;">' +
+            '<label>Alias *<input id="accessPortalEngineerAlias" style="width:100%;"></label>' +
+            '<label>Name *<input id="accessPortalEngineerName" style="width:100%;"></label>' +
+            '<label>Email<input id="accessPortalEngineerEmail" style="width:100%;"></label>' +
+            '<label>Level<input id="accessPortalEngineerLevel" style="width:100%;"></label>' +
+            '<label>RM Email<input id="accessPortalEngineerRmEmail" style="width:100%;"></label>' +
+            '<label>Role<select id="accessPortalEngineerRole" style="width:100%;"><option value="ENGINEER">ENGINEER</option><option value="SUPERVISOR">SUPERVISOR</option></select></label>' +
+            '</div>' +
+            '<div style="margin-top:14px;"><button type="button" onclick="window.accessPortalSaveEngineer()">💾 Save</button> <button type="button" onclick="window.accessPortalCloseEngineerForm()">Cancel</button></div>' +
+            '</div>' +
+            '<div style="overflow:auto;margin-top:18px;">' +
+            '<table style="width:100%;border-collapse:collapse;">' +
+            '<thead><tr><th>Alias</th><th>Name</th><th>Email</th><th>Role</th><th>Applications</th><th>Status</th><th>Actions</th></tr></thead>' +
+            '<tbody id="accessPortalEngineerTableBody"></tbody></table></div>';
+
+        var headings = document.querySelectorAll("h1,h2,h3");
+        var inserted = false;
+        for (var i = 0; i < headings.length; i += 1) {
+            var text = (headings[i].textContent || "").toLowerCase();
+            if (text.indexOf("application management") !== -1) {
+                headings[i].parentElement.insertAdjacentElement("afterend", container);
+                inserted = true;
+                break;
+            }
+        }
+        if (!inserted) {
+            (document.querySelector("main") || document.body).appendChild(container);
+        }
+        loadEngineers();
+    }
+
+    window.accessPortalOpenEngineerForm = openForm;
+    window.accessPortalCloseEngineerForm = closeForm;
+    window.accessPortalEditEngineer = editEngineer;
+    window.accessPortalSaveEngineer = saveEngineer;
+    window.accessPortalDeactivateEngineer = deactivateEngineer;
+    window.accessPortalReactivateEngineer = reactivateEngineer;
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", install);
+    } else {
+        install();
+    }
+}());
+/* END ACCESS PORTAL ENGINEER MANAGEMENT - GENERATED UI */
 </script>
 </body>
 </html>
