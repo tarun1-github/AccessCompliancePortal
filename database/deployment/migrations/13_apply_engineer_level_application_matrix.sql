@@ -6,7 +6,6 @@ GO
 
 /* ============================================================
    Engineer Level -> Application Matrix
-
    Source: supplied Access Requirements matrix screenshots.
 
    Active matrix rows: 31 unique applications.
@@ -25,10 +24,11 @@ GO
    Existing verification / ARM values are preserved for rows that
    remain eligible. New rows are created as Pending / Not Started.
 
-   This script only changes engineer/application assignments and
-   the application master names needed to align the portal with the
-   supplied matrix. It does NOT remove application master records
-   that are no longer assigned.
+   IMPORTANT:
+       Existing application master IDs are reused when a clear
+       naming-equivalent exists. Other legacy application masters
+       remain in the DB but are removed from engineer assignments
+       because they are not present in the supplied matrix.
    ============================================================ */
 
 BEGIN TRY
@@ -66,7 +66,7 @@ BEGIN TRY
     END;
 
     /* ========================================================
-       2. Matrix source
+       2. Exact matrix from screenshots
        ======================================================== */
     DECLARE @Matrix TABLE
     (
@@ -108,18 +108,16 @@ BEGIN TRY
         ('TTSM REMEDY',1,1,1,1),
         ('CMSPR',1,1,1,1),
         ('MEDT - New Whitelisting',1,1,1,1),
-        ('WebEx Control Hub/Softphone',1,1,1,0),
+        ('WebEx Control Hub / Softphone',1,1,1,0),
         ('Horizon - New Confluence',0,0,0,1);
 
     /* ========================================================
-       3. Normalize known existing application names.
-
-       These are naming-only changes. Existing application IDs and
-       engineer/application references are retained.
+       3. Reuse clear existing application equivalents.
+          Existing IDs and engineer/application history are kept.
        ======================================================== */
     UPDATE a
        SET a.name = v.matrix_name
-    FROM dbo.ac_applications a
+    FROM dbo.ac_applications AS a
     INNER JOIN
     (
         VALUES
@@ -129,37 +127,37 @@ BEGIN TRY
             ('Netscout','NETSCOUT/SONUS'),
             ('UCAT','UCAT - Moved to (CWM)'),
             ('Add and Revoke Access to CUCM/CUC','CUCM'),
-            ('WebEx Control Hub / Softphone','WebEx Control Hub/Softphone'),
+            ('WebEx Control Hub / Softphone','WebEx Control Hub / Softphone'),
             ('Ansible horizon','Horizon - New Confluence'),
             ('Windows or Linux Servers','Windows or Linux Servers, ciscopub,pbciscop')
-    ) v(old_name,matrix_name)
+    ) AS v(old_name,matrix_name)
       ON a.name = v.old_name
     WHERE NOT EXISTS
     (
         SELECT 1
-        FROM dbo.ac_applications x
+        FROM dbo.ac_applications AS x
         WHERE x.name = v.matrix_name
           AND x.id <> a.id
     );
 
     /* ========================================================
-       4. Add all matrix applications that do not yet exist.
+       4. Add missing matrix applications.
        ======================================================== */
     INSERT INTO dbo.ac_applications(name,description,active)
     SELECT
         m.matrix_name,
         'Application from Access Requirements tier matrix',
         1
-    FROM @Matrix m
+    FROM @Matrix AS m
     WHERE NOT EXISTS
     (
         SELECT 1
-        FROM dbo.ac_applications a
+        FROM dbo.ac_applications AS a
         WHERE a.name = m.matrix_name
     );
 
     /* ========================================================
-       5. Upsert matrix mapping.
+       5. Upsert application/tier mapping.
        ======================================================== */
     UPDATE x
        SET x.display_name = m.matrix_name,
@@ -170,10 +168,10 @@ BEGIN TRY
            x.source_label = m.matrix_name,
            x.active = 1,
            x.updated_at = SYSDATETIME()
-    FROM dbo.ac_application_tier_access x
-    INNER JOIN dbo.ac_applications a
+    FROM dbo.ac_application_tier_access AS x
+    INNER JOIN dbo.ac_applications AS a
         ON a.id = x.application_id
-    INNER JOIN @Matrix m
+    INNER JOIN @Matrix AS m
         ON m.matrix_name = a.name;
 
     INSERT INTO dbo.ac_application_tier_access
@@ -196,55 +194,50 @@ BEGIN TRY
         m.im_above,
         1,
         m.matrix_name
-    FROM dbo.ac_applications a
-    INNER JOIN @Matrix m
+    FROM dbo.ac_applications AS a
+    INNER JOIN @Matrix AS m
         ON m.matrix_name = a.name
     WHERE NOT EXISTS
     (
         SELECT 1
-        FROM dbo.ac_application_tier_access x
+        FROM dbo.ac_application_tier_access AS x
         WHERE x.application_id = a.id
     );
 
     /* ========================================================
-       6. Deactivate any mapping that is not part of the current
-          matrix. It remains in the DB for history, but cannot be
-          assigned by this matrix.
+       6. Make only current matrix applications active in mapping.
+       Old application master records are retained for history.
        ======================================================== */
     UPDATE x
        SET x.active = 0,
            x.updated_at = SYSDATETIME()
-    FROM dbo.ac_application_tier_access x
-    INNER JOIN dbo.ac_applications a
+    FROM dbo.ac_application_tier_access AS x
+    INNER JOIN dbo.ac_applications AS a
         ON a.id = x.application_id
     WHERE NOT EXISTS
     (
         SELECT 1
-        FROM @Matrix m
+        FROM @Matrix AS m
         WHERE m.matrix_name = a.name
     );
 
     /* ========================================================
-       7. Remove existing engineer assignments that are not
-          allowed by the matrix.
-
-          This removes only the assignment row. Application master
-          records are preserved. Eligible rows retain their current
-          verification / ARM history.
+       7. Reconcile engineer/application rows.
+          Existing eligible rows stay intact.
+          All disallowed/legacy rows are removed from the active
+          engineer assignment set.
        ======================================================== */
     DELETE eaa
-    FROM dbo.ac_engineer_application_access eaa
-    INNER JOIN dbo.ac_engineers e
+    FROM dbo.ac_engineer_application_access AS eaa
+    INNER JOIN dbo.ac_engineers AS e
         ON e.id = eaa.engineer_id
-    LEFT JOIN dbo.ac_application_tier_access map
+    LEFT JOIN dbo.ac_application_tier_access AS map
         ON map.application_id = eaa.application_id
        AND map.active = 1
-    WHERE
-        e.active = 0
-        OR UPPER(ISNULL(e.role,'')) = 'SUPERVISOR'
-        OR map.application_id IS NULL
-        OR
-        CASE UPPER(LTRIM(RTRIM(ISNULL(e.level,''))))
+    WHERE e.active = 0
+       OR UPPER(ISNULL(e.role,'')) = 'SUPERVISOR'
+       OR map.application_id IS NULL
+       OR CASE UPPER(LTRIM(RTRIM(ISNULL(e.level,''))))
             WHEN 'L1' THEN map.tier1_access
             WHEN 'L2' THEN map.tier2_access
             WHEN 'L3' THEN map.tier3_access
@@ -252,10 +245,11 @@ BEGIN TRY
             WHEN 'QM' THEN map.im_above_access
             WHEN 'TL' THEN map.im_above_access
             ELSE 0
-        END = 0;
+          END = 0;
 
     /* ========================================================
-       8. Add missing eligible engineer assignments.
+       8. Add exactly the missing eligible rows.
+       Ticket status is compatible with CK_ac_eaa_ticket_status.
        ======================================================== */
     INSERT INTO dbo.ac_engineer_application_access
     (
@@ -285,14 +279,12 @@ BEGIN TRY
         NULL,
         NULL,
         0
-    FROM dbo.ac_engineers e
-    CROSS JOIN dbo.ac_application_tier_access map
-    WHERE
-        e.active = 1
-        AND UPPER(ISNULL(e.role,'')) <> 'SUPERVISOR'
-        AND map.active = 1
-        AND
-        CASE UPPER(LTRIM(RTRIM(ISNULL(e.level,''))))
+    FROM dbo.ac_engineers AS e
+    CROSS JOIN dbo.ac_application_tier_access AS map
+    WHERE e.active = 1
+      AND UPPER(ISNULL(e.role,'')) <> 'SUPERVISOR'
+      AND map.active = 1
+      AND CASE UPPER(LTRIM(RTRIM(ISNULL(e.level,''))))
             WHEN 'L1' THEN map.tier1_access
             WHEN 'L2' THEN map.tier2_access
             WHEN 'L3' THEN map.tier3_access
@@ -300,14 +292,14 @@ BEGIN TRY
             WHEN 'QM' THEN map.im_above_access
             WHEN 'TL' THEN map.im_above_access
             ELSE 0
-        END = 1
-        AND NOT EXISTS
-        (
-            SELECT 1
-            FROM dbo.ac_engineer_application_access x
-            WHERE x.engineer_id = e.id
-              AND x.application_id = map.application_id
-        );
+          END = 1
+      AND NOT EXISTS
+      (
+          SELECT 1
+          FROM dbo.ac_engineer_application_access AS x
+          WHERE x.engineer_id = e.id
+            AND x.application_id = map.application_id
+      );
 
     COMMIT TRANSACTION;
 END TRY
@@ -320,15 +312,22 @@ END CATCH;
 GO
 
 /* ============================================================
-   VALIDATION 1: engineer -> level -> count
+   VALIDATION 1: engineer counts
+   Expected from the 31-row matrix:
+       L1 = 28
+       L2 = 29
+       L3 = 30
+       IM = 30
+       QM = 30
+       TL = 30
    ============================================================ */
 SELECT
     e.name,
     e.alias,
     e.level,
     COUNT(a.id) AS application_count
-FROM dbo.ac_engineers e
-LEFT JOIN dbo.ac_engineer_application_access a
+FROM dbo.ac_engineers AS e
+LEFT JOIN dbo.ac_engineer_application_access AS a
     ON a.engineer_id = e.id
 WHERE e.active = 1
   AND UPPER(ISNULL(e.role,'')) <> 'SUPERVISOR'
@@ -336,17 +335,34 @@ GROUP BY e.name,e.alias,e.level
 ORDER BY e.name;
 
 /* ============================================================
-   VALIDATION 2: exact assignments for sample engineers
+   VALIDATION 2: sample engineers
+   ============================================================ */
+SELECT
+    e.name,
+    e.alias,
+    e.level,
+    COUNT(a.id) AS application_count
+FROM dbo.ac_engineers AS e
+LEFT JOIN dbo.ac_engineer_application_access AS x
+    ON x.engineer_id = e.id
+LEFT JOIN dbo.ac_applications AS a
+    ON a.id = x.application_id
+WHERE e.alias IN ('dgarg','mkumar','ttaneja','vbhat')
+GROUP BY e.name,e.alias,e.level
+ORDER BY e.alias;
+
+/* ============================================================
+   VALIDATION 3: actual application list for sample engineers
    ============================================================ */
 SELECT
     e.name,
     e.alias,
     e.level,
     a.name AS application_name
-FROM dbo.ac_engineers e
-INNER JOIN dbo.ac_engineer_application_access x
+FROM dbo.ac_engineers AS e
+INNER JOIN dbo.ac_engineer_application_access AS x
     ON x.engineer_id = e.id
-INNER JOIN dbo.ac_applications a
+INNER JOIN dbo.ac_applications AS a
     ON a.id = x.application_id
 WHERE e.alias IN ('dgarg','mkumar','ttaneja','vbhat')
 ORDER BY e.alias,a.name;
