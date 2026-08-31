@@ -7,12 +7,14 @@ from app.models.engineer import Engineer
 from app.models.applications import Application
 from app.models.verification import EngineerApplicationAccess
 from app.models.audit import AuditLog
+from app.models.application_tier_access import ApplicationTierAccess
 
 # Import routers
 from app.routers import auth
 from app.routers import verification
 from app.routers import portal
 from app.routers import engineer_management
+from app.routers import application_mapping
 
 
 app = FastAPI(
@@ -55,6 +57,12 @@ app.include_router(
 
 app.include_router(
     engineer_management.router
+)
+
+# Application mapping APIs must be registered before portal.
+# They use the DB-driven engineer/tier/application matrix.
+app.include_router(
+    application_mapping.router
 )
 
 app.include_router(
