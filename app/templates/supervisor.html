@@ -1141,7 +1141,7 @@ function renderEngineerSelectOptions(engineers) {
     engineers.forEach(engineer => {
         const option = document.createElement("option");
         option.value = engineer.id;
-        option.textContent = `${engineer.name} (${engineer.alias || engineer.level || 'Engineer'}) - [${engineer.total || 0} Apps]`;
+        option.textContent = engineer.display_name || `${engineer.name} (${engineer.alias || ''}) - ${engineer.level || ''} [${engineer.total || 0} Apps]`;
         select.appendChild(option);
     });
 }
@@ -1153,7 +1153,7 @@ function renderSpecificEngineerManageOptions(engineers) {
     engineers.forEach(engineer => {
         const option = document.createElement("option");
         option.value = engineer.id;
-        option.textContent = `${engineer.name} (${engineer.alias || engineer.level || ''}) - [${engineer.total || 0} Apps]`;
+        option.textContent = engineer.display_name || `${engineer.name} (${engineer.alias || ''}) - ${engineer.level || ''} [${engineer.total || 0} Apps]`;
         select.appendChild(option);
     });
     if (currentVal) select.value = currentVal;
